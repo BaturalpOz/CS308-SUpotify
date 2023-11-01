@@ -18,7 +18,7 @@ This API documentation provides detailed information about the endpoints availab
 
 ### Create User
 
-**Endpoint:** `/users`
+**Endpoint:** `backend/routers/users`
 
 **Method:** `POST`
 
@@ -39,7 +39,7 @@ This API documentation provides detailed information about the endpoints availab
 
 ### Get User
 
-**Endpoint:** `/users/{userId}`
+**Endpoint:** `backend/routers/users/{userId}`
 
 **Method:** `GET`
 
@@ -54,7 +54,7 @@ This API documentation provides detailed information about the endpoints availab
 
 ### Update User
 
-**Endpoint:** `/users/{userId}`
+**Endpoint:** `backend/routers/users/{userId}`
 
 **Method:** `PUT`
 
@@ -78,7 +78,7 @@ This API documentation provides detailed information about the endpoints availab
 
 ### Delete User
 
-**Endpoint:** `/users/{userId}`
+**Endpoint:** `backend/routers/users/{userId}`
 
 **Method:** `DELETE`
 
@@ -93,7 +93,7 @@ This API documentation provides detailed information about the endpoints availab
 
 ### List All Users
 
-**Endpoint:** `/users`
+**Endpoint:** `backend/routers/users`
 
 **Method:** `GET`
 
