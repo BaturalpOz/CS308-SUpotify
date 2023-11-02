@@ -1,0 +1,7 @@
+<resources>
+    <style name="SUPotify" parent="Theme.AppCompat.Light.DarkActionBar">
+    </style>
+
+    <style name="Theme.SUPOtify" parent="Theme.AppCompat.Light.DarkActionBar">
+    </style>
+</resources>

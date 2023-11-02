@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">SUPOtify</string>
+    <string name="create_account_header">Create Account</string>
+    <string name="username_prompt_createacc">Enter username</string>
+    <string name="email_prompt_createacc">Enter email</string>
+    <string name="password_prompt_createacc">Enter password</string>
+    <string name="create_button">Create Account</string>>
+    <string name="login_header">Welcome!</string>
+    <string name="username_prompt_login">Enter username</string>
+    <string name="password_prompt_login">Enter password</string>
+    <string name="login_button">Login</string>
+    <string name="create_account_link">You can Sign up if you dont have an account</string>
+
+
+</resources>
