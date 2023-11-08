@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Dashboard</title>
+    <style>
+        body {
+            background-image: url('WhatsApp Image 2022-10-14 at 13.22.23.jpeg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        #sidebar {
+            width: 250px;
+            position: fixed;
+            right: 0; /* Change right to 0 to keep the sidebar open */
+            height: 100%;
+            background-color: rgb(224, 221, 215); /* Change sidebar background color to match your style */
+            color: #000000; /* Text color */
+            padding-top: 50px;
+        }
+
+        #sidebar a {
+            background: linear-gradient(to right, #ff6600, #ffcc00);
+            padding: 30px;
+            width: 200px;
+            height: 30px;
+            background-color: bisque;
+            margin: 0 auto;
+            margin-bottom: 10px;
+            font-size: 20px;
+            color: #000000;
+            display: flex;
+            justify-content: center; /* Center the text content horizontally */
+            align-items: center; /* Center the text content vertically */
+            border: 1px solid #000;
+            border-radius: 25px;
+            border-color: darkgray;
+            box-shadow: 3px 3px 5px #888888;
+            font-weight: bold;
+        }
+
+
+        #content {
+            margin-right: 250px; /* Ensure content doesn't overlap with the sidebar */
+            padding: 20px;
+        }
+
+        .navbar {
+            background-color: orange; /* Match the background color of your login page navbar */
+            width: auto;
+        }
+
+        .navbar-brand {
+            color: #ffffff; /* White text color for the "SUpotify" name */
+            font-size: 30px;
+            margin-left: 15px; /* Adjust the margin as needed */
+        }
+
+        .navbar-toggler-icon {
+            background-color: #ffffff; /* White color for the toggler icon */
+        }
+
+        .sidebar-divider {
+            border: 5px solid rgb(0, 0, 0); /* Adjust the thickness and color as needed */
+            margin: 22px 0; /* Adjust the margin to position the divider */
+        }       
+
+
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div id="sidebar">
+
+        <!-- Profile icon -->
+        <div style="display: flex; align-items: center; padding: 10px;">
+            <i class="fas fa-user" style="font-size: 22px; margin-right: 10px;"></i>
+        Profile
+        </div>
+
+        <!-- Search bar -->
+        <div style="display: flex; align-items: center; padding: 10px;">
+            <input type="text" placeholder="Search..." style="flex: 1; padding: 10px; border-radius: 10px;">
+            <button style="background-color: orange; color: white; border: none; padding: 10px; font-size: 15px; border-radius: 10px;">Search</button>
+        </div>
+
+        
+        <hr class="sidebar-divider">
+
+
+        <a href="#" class="list-group-item list-group-item-action" style="margin-top: 100px;">Friends</a>
+        <a href="#" class="list-group-item list-group-item-action" style="margin-top: 30px;">Favorites</a>
+        <a href="#" class="list-group-item list-group-item-action" style="margin-top: 30px;">Discover</a>
+
+        <!-- Settings section with icon and text -->
+        <div style="position: absolute; bottom: 10px; left: 10px; right: 10px; text-align: center; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-cog" style="font-size: 20px; margin-right: 10px;"></i>
+            <span style="font-size: 24px; vertical-align: middle;">Settings</span>
+        </div>
+
+    </div>
+
+    <!-- Content -->
+    <div id="content">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <i class='fas fa-play' style='font-size:24px'></i> SUpotify
+                    <i style='font-size:24px' class='fas'>&#xf04b;</i>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Add your page content here -->
+        <h1> Main Page </h1>
+
+    </div>
+</body>
+</html>
