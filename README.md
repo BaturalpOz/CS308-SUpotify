@@ -42,51 +42,51 @@ The platform collects various data, including song title, artist, album and user
 
 ### Team Leader
 
-* Ulaş Yıldız
+   * Ulaş Yıldız
 
 ### Backend Team
 
-* Arda Güney
-
-* Baturalp Öztürk
-
-* Emirhan Böge
+   * Arda Güney
+   
+   * Baturalp Öztürk
+   
+   * Emirhan Böge
 
 ### Web Team
 
-* Atahan Bozkuş
-
-* Mehmet Emin Er
-
-* Zeynep Pancar
+   * Atahan Bozkuş
+   
+   * Mehmet Emin Er
+   
+   * Zeynep Pancar
 
 ### Mobile Team
 
-* Burak Kurtulmuş
-
-* Zeynep Merve Yaman
+   * Burak Kurtulmuş
+   
+   * Zeynep Merve Yaman
 
 ## Technologies 
 
 ### ☁️ Backend
 
-* Flask
-
-* Firebase
+   * Flask
+   
+   * Firebase
 
 ### 🌐 Web
 
-* HTML
-
-* CSS
-
-* JavaScript
+   * HTML
+   
+   * CSS
+   
+   * JavaScript
 
 ### 📱 Mobile
 
-* Android Studio
-
-* Kotlin
+   * Android Studio
+   
+   * Kotlin
 
 ## Project Management
 
