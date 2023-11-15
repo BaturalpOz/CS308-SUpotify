@@ -4,7 +4,7 @@ from firebase_admin import credentials, initialize_app
 from dotenv import load_dotenv
 import os
 
-from .routers.user_router import user_blueprint
+from .controller.user_controller import user_blueprint
 
 load_dotenv()  
 

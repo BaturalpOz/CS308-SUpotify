@@ -1,6 +1,7 @@
 from app.utils.firebase_user_service import FirebaseUserService
 from app.models.user import User
 
+
 class UserService:
     def __init__(self):
         self.firebase_user_service = FirebaseUserService()
@@ -9,13 +10,15 @@ class UserService:
         """
         Handles the business logic for creating a new user.
         """
-        invalid_chars = ['.', '#', '$', '[', ']', '/', '@']
+        invalid_chars = [".", "#", "$", "[", "]", "/", "@"]
         if self.firebase_user_service.get_user_by_username(username):
             raise ValueError("A user with that username already exists.")
         elif self.firebase_user_service.get_by_email(email):
             raise ValueError("A user with that email already exists.")
         elif any(char in username for char in invalid_chars):
-            raise ValueError("Username cannot contain '.', '#', '$', '[', ']', '/', or '@'.")
+            raise ValueError(
+                "Username cannot contain '.', '#', '$', '[', ']', '/', or '@'."
+            )
 
         # Create a new User instance
         new_user = User(username=username, email=email, raw_password=password)
@@ -31,34 +34,50 @@ class UserService:
     def authenticate_user(self, username_or_email: str, password: str):
         """
         Verifies if the provided username and password match a user in the system.
+        Returns the user if authenticated, otherwise returns None.
         """
-        if '@' in username_or_email:
+        user = None
+        if "@" in username_or_email:
             user = self.firebase_user_service.get_by_email(username_or_email)
         else:
             user = self.firebase_user_service.get_user_by_username(username_or_email)
-        
+
         if user and User.check_password(user, password):
             return user
         else:
-            raise ValueError("Invalid username or password.")
+            return None
 
     def get_user_by_id(self, user_id: str):
         """
         Retrieves a user by their unique user ID.
         """
+        if not user_id:
+            raise ValueError("User ID cannot be empty.")
+        elif not self.firebase_user_service.get_user(user_id):
+            raise ValueError("User does not exist.")
         return self.firebase_user_service.get_user(user_id)
+
+    def get_user_by_username(self, username: str):
+        """
+        Retrieves a user by their unique username.
+        """
+        if not username:
+            raise ValueError("Username cannot be empty.")
+        elif not self.firebase_user_service.get_user_by_username(username):
+            raise ValueError("User does not exist.")
+        return self.firebase_user_service.get_user_by_username(username)
 
     def update_user(self, user_id: str, update_data: dict):
         """
         Updates user information given the user ID and the new data.
         """
-        if 'password' in update_data:
+        if "password" in update_data:
             # If updating password, hash the new password before updating
-            update_data['password'] = User.hash_password(update_data['password'])
-            
+            update_data["password"] = User.hash_password(update_data["password"])
+
         # Update the user in Firebase
         success = self.firebase_user_service.update_user(user_id, update_data)
-        
+
         if not success:
             raise Exception("Failed to update the user.")
 
@@ -67,4 +86,9 @@ class UserService:
         Deletes a user by their unique user ID.
         """
         return self.firebase_user_service.delete_user(user_id)
-    
+
+    def get_all_user_ids(self):
+        """
+        Retrieves all user IDs from Firebase.
+        """
+        return self.firebase_user_service.get_all_user_ids()
