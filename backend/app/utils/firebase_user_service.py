@@ -46,6 +46,23 @@ class FirebaseUserService:
             print(f"An error occurred: {e}")
             return None
 
+    def get_by_email(self, email: str):
+        """
+        Retrieves a user document from the Users collection by email.
+        """
+        try:
+            # Query for documents in the 'Users' collection where the email matches
+            users_ref = self.db.collection(u'Users')
+            query = users_ref.where(u'email', u'==', email)
+            results = query.stream()
+            for doc in results:
+                # Convert the document to a User object
+                return User.from_dict(doc.to_dict())
+            return None
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
+
     def get_user(self, user_id: str):
         """
         Retrieves a user document from the Users collection by user ID.

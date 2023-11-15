@@ -9,9 +9,13 @@ class UserService:
         """
         Handles the business logic for creating a new user.
         """
-        # First, check if the user already exists by trying to fetch a user with the same username
+        invalid_chars = ['.', '#', '$', '[', ']', '/', '@']
         if self.firebase_user_service.get_user_by_username(username):
             raise ValueError("A user with that username already exists.")
+        elif self.firebase_user_service.get_by_email(email):
+            raise ValueError("A user with that email already exists.")
+        elif any(char in username for char in invalid_chars):
+            raise ValueError("Username cannot contain '.', '#', '$', '[', ']', '/', or '@'.")
 
         # Create a new User instance
         new_user = User(username=username, email=email, raw_password=password)
@@ -24,11 +28,14 @@ class UserService:
         else:
             raise Exception("Failed to create a new user in Firebase.")
 
-    def authenticate_user(self, username: str, password: str):
+    def authenticate_user(self, username_or_email: str, password: str):
         """
         Verifies if the provided username and password match a user in the system.
         """
-        user = self.firebase_user_service.get_user_by_username(username)
+        if '@' in username_or_email:
+            user = self.firebase_user_service.get_by_email(username_or_email)
+        else:
+            user = self.firebase_user_service.get_user_by_username(username_or_email)
         
         if user and User.check_password(user, password):
             return user

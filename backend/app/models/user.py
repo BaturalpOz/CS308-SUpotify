@@ -11,7 +11,7 @@ class User:
         self.username = username
         self.email = email
         self.password = self.hash_password(raw_password)  # Hash the password before storing
-        self.settings = settings if settings else {"setting1": "option1"}
+        self.settings = settings if settings else {}
         self.created_at = created_at if created_at else datetime.utcnow()
         self.last_login = last_login if last_login else datetime.utcnow()
         self.friends = friends if friends else []
@@ -41,12 +41,12 @@ class User:
             "User_Settings": self.settings,
             "createdAt": self.created_at.isoformat(),  # Convert datetime to string
             "lastLogin": self.last_login.isoformat(),  # Convert datetime to string
-            "friends": self.friends, 
-            "rated_songs": self.rated_songs 
+            "friends": [{"friendUserID": friend["friendUserID"], "includeInRecommendation": friend["includeInRecommendations"]} for friend in self.friends] if self.friends else [],
+            "rated_songs": [song["path"] for song in self.rated_songs] if self.rated_songs else []
         }
 
     @staticmethod
-    def from_dict(source: Dict) -> 'User':
+    def from_dict(source: Dict) -> 'User': 
         """
         Creates a User instance from a dictionary, used when retrieving data from Firestore.
         """
@@ -56,7 +56,7 @@ class User:
         user_id = source.get('user_id')
         username = source['username']
         email = source['email']
-        password = source['password']  # Assuming the password is already hashed and stored as a string
+        password = source['password']  
         settings = source.get('User_Settings', {"setting1": "option1"})
         created_at = datetime.fromisoformat(source.get('createdAt')) if source.get('createdAt') else datetime.utcnow()
         last_login = datetime.fromisoformat(source.get('lastLogin')) if source.get('lastLogin') else datetime.utcnow()

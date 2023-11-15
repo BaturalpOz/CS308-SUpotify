@@ -54,7 +54,7 @@ def login_user():
     data = request.get_json()
 
     try:
-        user = user_service.authenticate_user(data['username'], data['password'])
+        user = user_service.authenticate_user(data['username_or_email'], data['password'])
         token = jwt.encode({
             'user_id': user.user_id,
             'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
@@ -67,10 +67,16 @@ def login_user():
 
 @user_blueprint.route('/user', methods=['GET'])
 @token_required
-def get_user(current_user):
-    # 'current_user' parameter is a User object
-    user_data = current_user.to_dict()
-    return jsonify({'user': user_data}), 200
+def get_user():
+    print("GET USER")
+    data = request.get_json()
+    user_id = data['user_id'] 
+    user = user_service.get_user_by_id(user_id)
+    if user is None:
+        return jsonify({'message': 'User not found.'}), 404
+    else:
+        return jsonify({'user': user.to_dict()}), 200
+
 
 @user_blueprint.route('/user', methods=['PUT'])
 @token_required
