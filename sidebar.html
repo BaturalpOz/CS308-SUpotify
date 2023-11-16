@@ -10,7 +10,7 @@
     <title>Dashboard</title>
     <style>
         body {
-            background-image: url('WhatsApp Image 2022-10-14 at 13.22.23.jpeg');
+            background-image: url('DreamShaper_v7_Music_webpage_background_image_smoth_blue_and_w_1.jpg');
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;
@@ -21,13 +21,13 @@
             position: fixed;
             right: 0; /* Change right to 0 to keep the sidebar open */
             height: 100%;
-            background-color: rgb(224, 221, 215); /* Change sidebar background color to match your style */
+            background-color: #EBEDF1; /* Change sidebar background color to match your style */
             color: #000000; /* Text color */
             padding-top: 50px;
         }
 
         #sidebar a {
-            background: linear-gradient(to right, #ff6600, #ffcc00);
+            background: linear-gradient(to right, #0F4C8F, #394262);
             padding: 30px;
             width: 200px;
             height: 30px;
@@ -35,7 +35,7 @@
             margin: 0 auto;
             margin-bottom: 10px;
             font-size: 20px;
-            color: #000000;
+            color: #ffffff;
             display: flex;
             justify-content: center; /* Center the text content horizontally */
             align-items: center; /* Center the text content vertically */
@@ -53,7 +53,7 @@
         }
 
         .navbar {
-            background-color: orange; /* Match the background color of your login page navbar */
+            background-color: #0F4C8F; /* Match the background color of your login page navbar */
             width: auto;
         }
 
@@ -68,9 +68,32 @@
         }
 
         .sidebar-divider {
-            border: 5px solid rgb(0, 0, 0); /* Adjust the thickness and color as needed */
+            border: 5px solid #394262; /* Adjust the thickness and color as needed */
             margin: 22px 0; /* Adjust the margin to position the divider */
         }       
+
+        #logout-link {
+            position: absolute;
+            bottom: 50px;
+            left: 10px;
+            right: 10px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to right, #0F4C8F, #394262);
+            padding: 15px;
+            font-size: 20px;
+            color: #ffffff;
+            border-radius: 25px;
+            box-shadow: 3px 3px 5px #888888;
+            text-decoration: none;
+        }
+
+        #logout-link i {
+            font-size: 20px;
+            margin-right: 10px;
+        }
 
 
     </style>
@@ -88,7 +111,7 @@
         <!-- Search bar -->
         <div style="display: flex; align-items: center; padding: 10px;">
             <input type="text" placeholder="Search..." style="flex: 1; padding: 10px; border-radius: 10px;">
-            <button style="background-color: orange; color: white; border: none; padding: 10px; font-size: 15px; border-radius: 10px;">Search</button>
+            <button style="background-color: #0F4C8F; color: white; border: none; padding: 10px; font-size: 15px; border-radius: 10px;">Search</button>
         </div>
 
         
@@ -98,6 +121,13 @@
         <a href="#" class="list-group-item list-group-item-action" style="margin-top: 100px;">Friends</a>
         <a href="#" class="list-group-item list-group-item-action" style="margin-top: 30px;">Favorites</a>
         <a href="#" class="list-group-item list-group-item-action" style="margin-top: 30px;">Discover</a>
+
+
+        <!-- Logout link -->
+        <a href="#" id="logout-link">
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+        </a>
 
         <!-- Settings section with icon and text -->
         <div style="position: absolute; bottom: 10px; left: 10px; right: 10px; text-align: center; display: flex; align-items: center; justify-content: center;">
@@ -119,8 +149,10 @@
         </nav>
 
         <!-- Add your page content here -->
-        <h1> Main Page </h1>
+        <h1> ---------------------------------------------------------------------- </h1>
 
     </div>
 </body>
 </html>
+
+
