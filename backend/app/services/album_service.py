@@ -55,14 +55,17 @@ class AlbumService:
         if not success:
             raise Exception("Failed to update the album.")
 
-    def delete_album(self, album_id: str):
-        """
-        Deletes an album by its unique album ID.
-        """
-        self.firebase_album_service.delete_album(album_id)
+   
 
     def get_all_album_ids(self):
         """
         Retrieves all album IDs from Firebase.
         """
         return self.firebase_album_service.get_all_album_ids()
+    def delete_album(self, album_id: str):
+        """
+        Deletes an album by its unique album ID.
+        """
+        self.firebase_album_service.delete_album(album_id)
+
+

@@ -6,7 +6,7 @@ class ArtistService:
     def __init__(self):
         self.firebase_artist_service = FirebaseArtistService()
 
-    def create_artist(self, name: str, description: str, image_url: str):
+    def create_artist(self, name: str, description: str, image_url: str,albums):
         """
         Handles the business logic for creating a new artist.
         """
@@ -14,7 +14,7 @@ class ArtistService:
             raise ValueError("An artist with that name already exists.")
 
         # Create a new Artist instance
-        new_artist = Artist(name=name, description=description, image_url=image_url)
+        new_artist = Artist(name=name, description=description, image_url=image_url,albums=albums)
 
         # Add the new artist to Firebase, which returns the artist_id if successful
         artist_id = self.firebase_artist_service.add_artist(new_artist)

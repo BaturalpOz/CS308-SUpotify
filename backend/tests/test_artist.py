@@ -17,6 +17,7 @@ class ArtistBlueprintTestCase(unittest.TestCase):
             "Name": "Test Artist",
             "Description": "Test Description",
             "Image": "test_image_url",
+            "Albums" : []
         }
 
     def test1_create_artist(self):
@@ -61,7 +62,23 @@ class ArtistBlueprintTestCase(unittest.TestCase):
         data = json.loads(response.data.decode())
         self.assertIn("Artist updated!", data["message"])
 
-    def test4_delete_artist(self):
+    
+    def test4_get_all_artists(self):
+        response = self.client.get(
+            "/artist/all",
+            headers={"x-access-token": test_token},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data.decode())
+        self.assertTrue("artist_ids" in data)
+    def test5_get_artist_by_name(self):
+        response = self.client.get('/artist/get_by_name/Test Artist')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data.decode())
+        self.assertTrue("artist" in data)
+        self.assertEqual(data["artist"]["Name"], "Test Artist")
+    def test6_delete_artist(self):
         if not test_artist_id:
             self.fail("No artist ID available for test.")
 
@@ -73,16 +90,6 @@ class ArtistBlueprintTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data.decode())
         self.assertIn("Artist deleted!", data["message"])
-
-    def test5_get_all_artists(self):
-        response = self.client.get(
-            "/artist/all",
-            headers={"x-access-token": test_token},
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.data.decode())
-        self.assertTrue("artist_ids" in data)
 
 if __name__ == "__main__":
     unittest.main()

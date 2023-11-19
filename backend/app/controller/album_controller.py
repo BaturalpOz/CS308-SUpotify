@@ -25,6 +25,13 @@ def create_album():
 
     return jsonify({'message': 'New album created!', 'album_id': album_id}), 201
 
+@album_blueprint.route('/get_by_name/<album_name>', methods=['GET'])
+def get_album_by_name(album_name):
+    album = album_service.get_album_by_name(album_name)
+    if album is None:
+        raise NotFound('Album not found.')
+    return jsonify({'album': album.to_dict()}), 200
+
 @album_blueprint.route('/<album_id>', methods=['GET'])
 def get_album(album_id):
     album = album_service.get_album_by_id(album_id)

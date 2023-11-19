@@ -36,12 +36,12 @@ class FirebaseArtistService:
         try:
             # Query for documents in the 'Artists' collection where the name matches
             artists_ref = self.db.collection(u'Artists')
-            query = artists_ref.where(u'name', u'==', name)
-            results = query.stream()
-            for doc in results:
+            query = artists_ref.where(u'Name', u'==', name)
+            results = query.get()
+            # for doc in results:
                 # Convert the document to an Artist object
-                return Artist.from_dict(doc.to_dict())
-            return None
+            return Artist.from_dict(results[0].to_dict())
+            # return None
         except Exception as e:
             print(f"An error occurred: {e}")
             return None

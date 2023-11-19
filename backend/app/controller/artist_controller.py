@@ -16,14 +16,22 @@ def token_required(f):
         return f(*args, **kwargs)
     return decorated
 
+@artist_blueprint.route('/get_by_name/<artist_name>', methods=['GET'])
+@token_required
+def get_artist_by_name(artist_name):
+    artist = artist_service.get_artist_by_name(artist_name)
+    if artist is None:
+        raise NotFound(f'Artist with name {artist_name} not found.')
+    return jsonify({'artist': artist.to_dict()}), 200
+
 @artist_blueprint.route('/create', methods=['POST'])
 @token_required
 def create_artist():
     data = request.get_json()
-    if not data or not all(k in data for k in ('Name', 'Description', 'Image')):
+    if not data or not all(k in data for k in ('Name', 'Description', 'Image','Albums')):
         raise BadRequest('Missing name, description, or image_url.')
 
-    artist_id = artist_service.create_artist(data['Name'], data['Description'], data['Image'])
+    artist_id = artist_service.create_artist(data['Name'], data['Description'], data['Image'],data['Albums'])
     if not artist_id:
         raise NotFound('Could not create artist.')
 

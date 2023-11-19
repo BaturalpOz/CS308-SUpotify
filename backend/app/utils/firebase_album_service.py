@@ -36,12 +36,12 @@ class FirebaseAlbumService:
         try:
             # Query for documents in the 'Albums' collection where the name matches
             albums_ref = self.db.collection(u'Albums')
-            query = albums_ref.where(u'name', u'==', name)
-            results = query.stream()
-            for doc in results:
+            query = albums_ref.where(u'Name', u'==', name)
+            results = query.get()
+            #for doc in results:
                 # Convert the document to an Album object
-                return Album.from_dict(doc.to_dict())
-            return None
+            return Album.from_dict(results[0].to_dict())
+            #return None
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
