@@ -1,5 +1,5 @@
 from app.utils.firebase_user_service import FirebaseUserService
-from app.models.user import User
+from app.models.User import User
 
 
 class UserService:
