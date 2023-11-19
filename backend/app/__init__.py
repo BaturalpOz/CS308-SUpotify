@@ -7,6 +7,8 @@ import os
 from .controller.user_controller import user_blueprint
 from .controller.artist_controller import artist_blueprint
 from .controller.album_controller import album_blueprint
+from .controller.song_controller import song_blueprint
+
 load_dotenv()  
 
 def create_app():
@@ -23,4 +25,5 @@ def create_app():
     app.register_blueprint(user_blueprint, url_prefix='/user')
     app.register_blueprint(artist_blueprint, url_prefix='/artist')
     app.register_blueprint(album_blueprint, url_prefix='/album')
+    app.register_blueprint(song_blueprint, url_prefix='/song')
     return app
