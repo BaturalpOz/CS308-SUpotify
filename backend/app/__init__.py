@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 
 from .controller.user_controller import user_blueprint
-
+from .controller.artist_controller import artist_blueprint
 load_dotenv()  
 
 def create_app():
@@ -20,5 +20,5 @@ def create_app():
     init_app(app)
 
     app.register_blueprint(user_blueprint, url_prefix='/user')
-
+    app.register_blueprint(artist_blueprint, url_prefix='/artist')
     return app
