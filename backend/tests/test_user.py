@@ -57,7 +57,7 @@ class UserBlueprintTestCase(unittest.TestCase):
 
         response = self.client.get(
             f"/user/{test_user_id}",
-            headers={"x-access-token": test_token},
+            headers={"Cookie": test_token},
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -70,7 +70,7 @@ class UserBlueprintTestCase(unittest.TestCase):
 
         response = self.client.put(
             f"/user/{test_user_id}",
-            headers={"x-access-token": test_token},
+            headers={"Cookie": test_token},
             data=json.dumps({"username": "updatedusername"}),
             content_type="application/json",
         )
@@ -84,7 +84,7 @@ class UserBlueprintTestCase(unittest.TestCase):
 
         response = self.client.delete(
             f"/user/{test_user_id}",
-            headers={"x-access-token": test_token},
+            headers={"Cookie": test_token},
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)

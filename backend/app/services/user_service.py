@@ -1,6 +1,6 @@
 from app.utils.firebase_user_service import FirebaseUserService
 from app.models.user import User
-
+import random
 
 class UserService:
     def __init__(self):
@@ -92,3 +92,42 @@ class UserService:
         Retrieves all user IDs from Firebase.
         """
         return self.firebase_user_service.get_all_user_ids()
+
+    def check_friend_existence(self, user_id: str, friends: list):
+        for friend in friends:
+            if friend["friendUserID"] == user_id:
+                return True
+        return False
+
+    def add_friend(self, requester_id: str, friend_username: str):
+        requester = self.get_user_by_id(requester_id)
+        friend = self.get_user_by_username(friend_username)
+        if requester_id == friend.user_id:
+            raise ValueError("Cannot add yourself as a friend.")
+        elif self.check_friend_existence(friend.user_id, requester.friends):
+            raise ValueError("You are already friends with this user.")
+        
+        requester.friends.append({"friendUserID": friend.user_id, "includeInRecommendation": random.choice([True, False])})
+        
+        self.update_user(requester_id, {"friends": requester.friends})
+
+        return requester.friends
+
+    def remove_friend(self, requester_id: str, friend_username: str):
+        requester = self.get_user_by_id(requester_id)
+        friend = self.get_user_by_username(friend_username)
+        if requester_id == friend.user_id:
+            raise ValueError("Cannot remove yourself as a friend.")
+        elif not self.check_friend_existence(friend.user_id, requester.friends):
+            raise ValueError("You are not friends with this user.")
+
+        requester.friends = [friend_iter for friend_iter in requester.friends if friend.user_id != friend_iter["friendUserID"]]
+        
+        self.update_user(requester_id, {"friends": requester.friends})
+
+        return requester.friends
+    
+    def get_friends(self, user_id: str):
+        user = self.get_user_by_id(user_id)
+        return user.friends
+    

@@ -40,7 +40,9 @@ class FirebaseUserService:
             results = query.stream()
             for doc in results:
                 # Convert the document to a User object
-                return User.from_dict(doc.to_dict())
+                user = User.from_dict(doc.to_dict())
+                user.user_id = doc.id
+                return user
             return None
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -57,7 +59,9 @@ class FirebaseUserService:
             results = query.stream()
             for doc in results:
                 # Convert the document to a User object
-                return User.from_dict(doc.to_dict())
+                user = User.from_dict(doc.to_dict())
+                user.user_id = doc.id
+                return user
             return None
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -70,8 +74,13 @@ class FirebaseUserService:
         try:
             user_ref = self.db.collection(u'Users').document(user_id)
             user_doc = user_ref.get()
+            #print firebase document id
+            print(u'Document data: {}'.format(user_doc.id))
             if user_doc.exists:
-                return User.from_dict(user_doc.to_dict())
+                # Convert the document to a User object
+                user = User.from_dict(user_doc.to_dict())
+                user.user_id = user_doc.id
+                return user
             else:
                 return None
         except Exception as e:
