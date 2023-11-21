@@ -1,6 +1,6 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
-from app.models.user import User
+from app.models.User import User
 import os
 from typing import Dict
 

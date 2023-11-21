@@ -4,7 +4,7 @@
 .DS_Store
 venv/
 firebase-adminsdk.json
-
+.vscode
 ### PyCharm ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
 
