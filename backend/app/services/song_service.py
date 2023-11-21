@@ -1,25 +1,24 @@
 from app.utils.firebase_song_service import FirebaseSongService
-from app.models.song import Song
+from app.models.Song import Song
 from datetime import datetime
+from typing import List
 
 
 class SongService:
     def __init__(self):
         self.firebase_song_service = FirebaseSongService()
 
-    def add_song(self, title: str, duration: int, genre: str, language: str,
-                 release_country: str, release_date: datetime, albums: list, artists: list):
+    def add_song(self, name: str, duration: int, danceability: float, energy: float, loudness: float, tempo: float, albums: List[str], artists: List[str]):
         """
         Handles the business logic for adding a new song.
         """
-        # Create a new Song instance
         new_song = Song(
-            title=title,
-            duration=duration,
-            genre=genre,
-            language=language,
-            release_country=release_country,
-            release_date=release_date,
+            name=name,
+            duration_ms=duration,
+            danceability=danceability,
+            energy=energy,
+            loudness=loudness,
+            tempo=tempo,
             albums=albums,
             artists=artists
         )
@@ -42,7 +41,6 @@ class SongService:
         """
         Updates song information given the song ID and the new data.
         """
-        # Update the song in Firebase
         success = self.firebase_song_service.update_song(song_id, update_data)
 
         if not success:

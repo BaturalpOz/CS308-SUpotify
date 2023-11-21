@@ -1,6 +1,6 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
-from app.models.song import Song
+from app.models.Song import Song
 import os
 from typing import Dict
 
@@ -8,9 +8,12 @@ from typing import Dict
 class FirebaseSongService:
     def __init__(self):
         if not firebase_admin._apps:
-            cred = credentials.Certificate(
-                r"C:\Users\Arda\Downloads\supotify-57704-firebase-adminsdk-4iqts-e2c8b6f8d6.json")
-            firebase_admin.initialize_app(cred, {'databaseURL': 'https://supotify-57704.firebaseio.com/'})
+            cred_path = os.getenv('FIREBASE_ADMINSDK_JSON_PATH')
+            if cred_path is None:
+                raise ValueError("The FIREBASE_ADMINSDK_JSON_PATH environment variable must be set.")
+            cred = credentials.Certificate(cred_path)
+            firebase_admin.initialize_app(cred)
+            
         self.db = firestore.client()
 
     def add_song(self, song: Song):

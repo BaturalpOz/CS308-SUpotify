@@ -2,14 +2,13 @@ from typing import List
 from datetime import datetime
 
 class Album:
-    def __init__(self, name: str, imageURL: str, language: str, country: str, release_date: datetime, songs: List[str], title: str):
+    def __init__(self, name: str, imageURL: str, release_date: datetime, total_tracks: int, songs: List[str], artists: List[str]):
         self.name = name
         self.imageURL = imageURL
-        self.language = language
-        self.country = country
         self.release_date = release_date
+        self.total_tracks = total_tracks
         self.songs = songs
-        self.title = title
+        self.artists = artists
 
     def to_dict(self) -> dict:
         """
@@ -18,11 +17,10 @@ class Album:
         return {
             "Name": self.name,
             "Image": self.imageURL,
-            "Languages": self.language,
-            "Release Country": self.country,
-            "Release Date": self.release_date, #.isoformat(),
+            "Release Date": self.release_date,
+            "Total Tracks": self.total_tracks,
             "Songs": self.songs,
-            "Title": self.title
+            "Artists": self.artists
         }
 
     @staticmethod
@@ -32,10 +30,9 @@ class Album:
         """
         name = source['Name']
         imageURL = source['Image']
-        language = source['Languages']
-        country = source['Release Country']
-        release_date = source['Release Date'] #datetime.fromisoformat(source['Release Date'].strftime('%Y-%m-%dT%H:%M:%Ss'))
+        release_date = source['Release Date']
+        total_tracks = source['Total Tracks']
         songs = source['Songs']
-        title = source['Title']
+        artists = source['Artists']
 
-        return Album(name=name, imageURL=imageURL, language=language, country=country, release_date=release_date, songs=songs, title=title)
+        return Album(name=name, imageURL=imageURL, release_date=release_date, total_tracks=total_tracks, songs=songs, artists=artists)

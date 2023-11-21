@@ -89,6 +89,7 @@ class FirebaseArtistService:
         except Exception as e:
             print(f"An error occurred: {e}")
             return False
+
     def get_all_artist_ids(self):
         """
         Retrieves all artist IDs from Firebase.
@@ -101,3 +102,4 @@ class FirebaseArtistService:
         except Exception as e:
             print(f"An error occurred: {e}")
             return []
+            

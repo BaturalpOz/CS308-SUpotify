@@ -10,16 +10,16 @@ album_service = AlbumService()
 @album_blueprint.route('/create', methods=['POST'])
 def create_album():
     data = request.get_json()
-    if not data or not all(k in data for k in ('Name', 'Image', 'Languages', 'Release Country', 'Release Date', 'Songs', 'Title')):
+    if not data or not all(k in data for k in ('Name', 'Image', 'Release Date', 'Total Tracks', 'Songs', 'Artists')):
         raise BadRequest('Missing required fields.')
 
     release_date = data.get('Release Date')
     try:
-        release_date = datetime.strptime(release_date, '%Y-%m-%dT%H:%M:%S')
+        release_date = datetime.strptime(release_date, '%Y-%m-%d')
     except ValueError:
         raise BadRequest('Invalid release_date format. Use ISO 8601 format.')
 
-    album_id = album_service.create_album(data['Name'], data['Image'], data['Languages'], data['Release Country'], release_date, data['Songs'], data['Title'])
+    album_id = album_service.create_album(data['Name'], data['Image'], release_date, data['Total Tracks'], data['Songs'], data['Artists'])
     if not album_id:
         raise NotFound('Could not create album.')
 

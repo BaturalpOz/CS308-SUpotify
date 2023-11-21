@@ -28,10 +28,10 @@ def get_artist_by_name(artist_name):
 @token_required
 def create_artist():
     data = request.get_json()
-    if not data or not all(k in data for k in ('Name', 'Description', 'Image','Albums')):
+    if not data or not all(k in data for k in ('Name', 'Genres', 'Image', 'Popularity', 'Albums')):
         raise BadRequest('Missing name, description, or image_url.')
 
-    artist_id = artist_service.create_artist(data['Name'], data['Description'], data['Image'],data['Albums'])
+    artist_id = artist_service.create_artist(data['Name'], data['Genres'], data['Image'], data['Popularity'], data['Albums'])
     if not artist_id:
         raise NotFound('Could not create artist.')
 

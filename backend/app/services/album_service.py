@@ -7,7 +7,7 @@ class AlbumService:
     def __init__(self):
         self.firebase_album_service = FirebaseAlbumService()
 
-    def create_album(self, name: str, imageURL: str, language: str, country: str, release_date: datetime, songs: List[str], title: str):
+    def create_album(self, name: str, imageURL: str, release_date: datetime, total_tracks: int, songs: List[str], artists: List[str]):
         """
         Handles the business logic for creating a new album.
         """
@@ -15,7 +15,7 @@ class AlbumService:
             raise ValueError("An album with that name already exists.")
 
         # Create a new Album instance
-        new_album = Album(name=name, imageURL=imageURL, language=language, country=country, release_date=release_date, songs=songs, title=title)
+        new_album = Album(name=name, imageURL=imageURL, release_date=release_date, total_tracks=total_tracks, songs=songs, artists=artists)
 
         # Add the new album to Firebase, which returns the album_id if successful
         album_id = self.firebase_album_service.add_album(new_album)

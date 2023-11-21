@@ -37,12 +37,10 @@ class AlbumBlueprintTestCase(unittest.TestCase):
 
         test_album_id = data["album_id"]
     
-   
-
     def test2_get_album(self):
         if not test_album_id:
             self.fail("No album ID available for test.")
-        response = self.client.get(f"/album/{test_album_id}")  # Assuming you know the album ID from the previous test
+        response = self.client.get(f"/album/{test_album_id}")  
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data.decode())
         self.assertTrue("album" in data)
@@ -51,7 +49,7 @@ class AlbumBlueprintTestCase(unittest.TestCase):
         if not test_album_id:
             self.fail("No album ID available for test.")
         response = self.client.put(
-            f"/album/{test_album_id}",  # Assuming you know the album ID from the previous test
+            f"/album/{test_album_id}", 
             data=json.dumps({"name": "Updated Album"}),
             content_type="application/json"
         )
@@ -79,7 +77,7 @@ class AlbumBlueprintTestCase(unittest.TestCase):
     def test6_delete_album(self):
         if not test_album_id:
             self.fail("No album ID available for test.")
-        response = self.client.delete(f"/album/{test_album_id}")  # Assuming you know the album ID from the previous test
+        response = self.client.delete(f"/album/{test_album_id}") 
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data.decode())
         self.assertIn("Album deleted!", data["message"])

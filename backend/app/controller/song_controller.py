@@ -9,18 +9,14 @@ song_service = SongService()
 @song_blueprint.route('/songs', methods=['POST'])
 def add_song():
     data = request.get_json()
-
-    release_date_str = data['release_date']
-    release_date = datetime.strptime(release_date_str, '%Y-%m-%dT%H:%M:%SZ')
-
+    if not data or not all(k in data for k in ('Name', 'Duration', 'Danceability', 'Energy', 'Loudness', 'Tempo', 'Albums', 'Artists')):
+        return jsonify({'message': 'Missing song information.'}), 400
 
     try:
         song_id = song_service.add_song(
-            data['title'], data['duration'], data['genre'],
-            data['language'], data['release_country'],
-            release_date,  # Pass the datetime object
-            data.get('albums', []), data.get('artists', [])
-        )
+            data['Name'], data['Duration'], data['Danceability'],
+            data['Energy'], data['Loudness'], data['Tempo'],
+            data['Albums'], data['Artists'])
         return jsonify({'message': 'New song created!', 'song_id': song_id}), 201
     except Exception as e:
         return jsonify({'message': 'Could not create song.', 'error': str(e)}), 500
