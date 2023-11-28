@@ -107,7 +107,7 @@ class UserService:
         elif self.check_friend_existence(friend.user_id, requester.friends):
             raise ValueError("You are already friends with this user.")
         
-        requester.friends.append({"friendUserID": friend.user_id, "includeInRecommendation": random.choice([True, False])})
+        requester.friends.append({"friendUsername": friend.username, "friendUserID": friend.user_id, "includeInRecommendation": friend.settings["includeInRecommendations"]})
         
         self.update_user(requester_id, {"friends": requester.friends})
 

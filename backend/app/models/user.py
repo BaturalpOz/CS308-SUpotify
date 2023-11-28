@@ -6,15 +6,16 @@ class User:
     def __init__(self, username: str, email: str, raw_password: str, user_id: Optional[str] = None,
                  settings: Optional[Dict[str, str]] = None, created_at: Optional[datetime] = None,
                  last_login: Optional[datetime] = None, friends: Optional[List[Dict[str, str]]] = None,
-                 rated_songs: Optional[List[str]] = None):
+                 liked_songs: Optional[List[str]] = None, rated_songs: Optional[List[Dict[str, str]]] = None):
         self.user_id = user_id
         self.username = username
         self.email = email
         self.password = self.hash_password(raw_password)  # Hash the password before storing
-        self.settings = settings if settings else {}
+        self.settings = settings if settings else {"includeInRecommendations": True}
         self.created_at = created_at if created_at else datetime.utcnow()
         self.last_login = last_login if last_login else datetime.utcnow()
         self.friends = friends if friends else []
+        self.liked_songs = liked_songs if liked_songs else []
         self.rated_songs = rated_songs if rated_songs else []
 
     @staticmethod
@@ -41,7 +42,8 @@ class User:
             "User_Settings": self.settings,
             "createdAt": self.created_at.isoformat(),  # Convert datetime to string
             "lastLogin": self.last_login.isoformat(),  # Convert datetime to string
-            "friends": [{"friendUserID": friend["friendUserID"], "includeInRecommendation": friend["includeInRecommendations"]} for friend in self.friends] if self.friends else [],
+            "friends": [{"friendUsername": friend["friendUsername"], "friendUserID": friend["friendUserID"], "includeInRecommendation": friend["includeInRecommendations"]} for friend in self.friends] if self.friends else [],
+            "liked_songs": self.liked_songs if self.liked_songs else [],
             "rated_songs": [song["path"] for song in self.rated_songs] if self.rated_songs else []
         }
 
@@ -57,14 +59,15 @@ class User:
         username = source['username']
         email = source['email']
         password = source['password']  
-        settings = source.get('User_Settings', {"setting1": "option1"})
+        settings = source.get('User_Settings', {"includeInRecommendations": True})
         created_at = datetime.fromisoformat(source.get('createdAt')) if source.get('createdAt') else datetime.utcnow()
         last_login = datetime.fromisoformat(source.get('lastLogin')) if source.get('lastLogin') else datetime.utcnow()
         friends = source.get('friends', [])
+        liked_songs = source.get('liked_songs', [])
         rated_songs = source.get('rated_songs', [])
 
         user = User(username=username, email=email, raw_password=password, user_id=user_id,
                     settings=settings, created_at=created_at, last_login=last_login,
-                    friends=friends, rated_songs=rated_songs)
+                    friends=friends, liked_songs=liked_songs, rated_songs=rated_songs)
         user.password = password.encode('utf-8')  # Ensure the password is in bytes
         return user

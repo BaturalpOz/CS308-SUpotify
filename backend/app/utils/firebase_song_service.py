@@ -68,3 +68,17 @@ class FirebaseSongService:
         except Exception as e:
             print(f"An error occurred: {e}")
             return False
+
+    def get_all_song_ids(self):
+        """
+        Retrieves all song IDs from the Songs collection.
+        """
+        try:
+            song_ids = []
+            songs_ref = self.db.collection(u'Songs').stream()
+            for song in songs_ref:
+                song_ids.append(song.id)
+            return song_ids
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
