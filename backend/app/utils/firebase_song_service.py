@@ -45,6 +45,21 @@ class FirebaseSongService:
             print(f"An error occurred: {e}")
             return None
 
+    def get_song_by_name(self, song_name: str):
+        """
+        Retrieves a song document from the Songs collection by song name.
+        """
+        try:
+            songs_ref = self.db.collection(u'Songs')
+            query = songs_ref.where(u'Name', u'==', song_name)
+            song_docs = query.stream()
+            for song in song_docs:
+                return Song.from_dict(song.to_dict())
+            return None
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
+
     def update_song(self, song_id: str, update_data: Dict):
         """
         Updates a song document in the Songs collection.
@@ -82,3 +97,4 @@ class FirebaseSongService:
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
+            

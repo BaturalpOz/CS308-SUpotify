@@ -1,10 +1,14 @@
 from app.utils.firebase_user_service import FirebaseUserService
+from app.utils.firebase_song_service import FirebaseSongService
 from app.models.User import User
 import random
+from datetime import datetime
+
 
 class UserService:
     def __init__(self):
         self.firebase_user_service = FirebaseUserService()
+        self.firebase_song_service = FirebaseSongService()
 
     def create_user(self, username: str, email: str, password: str):
         """
@@ -106,9 +110,15 @@ class UserService:
             raise ValueError("Cannot add yourself as a friend.")
         elif self.check_friend_existence(friend.user_id, requester.friends):
             raise ValueError("You are already friends with this user.")
-        
-        requester.friends.append({"friendUsername": friend.username, "friendUserID": friend.user_id, "includeInRecommendation": friend.settings["includeInRecommendations"]})
-        
+
+        requester.friends.append(
+            {
+                "friendUsername": friend.username,
+                "friendUserID": friend.user_id,
+                "includeInRecommendation": friend.settings["includeInRecommendations"],
+            }
+        )
+
         self.update_user(requester_id, {"friends": requester.friends})
 
         return requester.friends
@@ -121,13 +131,97 @@ class UserService:
         elif not self.check_friend_existence(friend.user_id, requester.friends):
             raise ValueError("You are not friends with this user.")
 
-        requester.friends = [friend_iter for friend_iter in requester.friends if friend.user_id != friend_iter["friendUserID"]]
-        
+        requester.friends = [
+            friend_iter
+            for friend_iter in requester.friends
+            if friend.user_id != friend_iter["friendUserID"]
+        ]
+
         self.update_user(requester_id, {"friends": requester.friends})
 
         return requester.friends
-    
+
     def get_friends(self, user_id: str):
         user = self.get_user_by_id(user_id)
         return user.friends
+
+    def rate_song(self, user_id: str, song_name: str, rating: int):
+        user = self.get_user_by_id(user_id)
+        song = self.firebase_song_service.get_song_by_name(song_name)
+        rated_song = {
+            "artists": song["artists"],
+            "albums": song["albums"],
+            "song": song["song"],
+            "rating": rating,
+        }
+        user.rated_songs.append(rated_song)
+        self.update_user(user_id, {"rated_songs": user.rated_songs})
+        return user.rated_songs
+
+    def unrate_song(self, user_id: str, song_name: str):
+        user = self.get_user_by_id(user_id)
+        song = self.firebase_song_service.get_song_by_name(song_name)
+        user.rated_songs = [
+            song_iter
+            for song_iter in user.rated_songs
+            if song["song"] != song_iter["song"]
+        ]
+        self.update_user(user_id, {"rated_songs": user.rated_songs})
+        return user.rated_songs
+
+    def get_rated_songs(self, user_id: str):
+        user = self.get_user_by_id(user_id)
+        return user.rated_songs
+
+    def rate_artist(self, user_id: str, artist_name: str, rating: int):
+        user = self.get_user_by_id(user_id)
+        artist = self.firebase_song_service.get_artist_by_name(artist_name)
+        rated_artist = {
+            "artist": artist["artist"],
+            "rating": rating,
+        }
+        user.rated_artists.append(rated_artist)
+        self.update_user(user_id, {"rated_artists": user.rated_artists})
+        return user.rated_artists
+    
+    def unrate_artist(self, user_id: str, artist_name: str):
+        user = self.get_user_by_id(user_id)
+        artist = self.firebase_song_service.get_artist_by_name(artist_name)
+        user.rated_artists = [
+            artist_iter
+            for artist_iter in user.rated_artists
+            if artist["artist"] != artist_iter["artist"]
+        ]
+        self.update_user(user_id, {"rated_artists": user.rated_artists})
+        return user.rated_artists
+    
+    def get_rated_artists(self, user_id: str):
+        user = self.get_user_by_id(user_id)
+        return user.rated_artists
+    
+    def rate_album(self, user_id: str, album_name: str, rating: int):
+        user = self.get_user_by_id(user_id)
+        album = self.firebase_song_service.get_album_by_name(album_name)
+        rated_album = {
+            "album": album["album"],
+            "rating": rating,
+        }
+        user.rated_albums.append(rated_album)
+        self.update_user(user_id, {"rated_albums": user.rated_albums})
+        return user.rated_albums
+    
+    def unrate_album(self, user_id: str, album_name: str):
+        user = self.get_user_by_id(user_id)
+        album = self.firebase_song_service.get_album_by_name(album_name)
+        user.rated_albums = [
+            album_iter
+            for album_iter in user.rated_albums
+            if album["album"] != album_iter["album"]
+        ]
+        self.update_user(user_id, {"rated_albums": user.rated_albums})
+        return user.rated_albums
+    
+    def get_rated_albums(self, user_id: str):
+        user = self.get_user_by_id(user_id)
+        return user.rated_albums
     

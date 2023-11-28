@@ -23,21 +23,20 @@ class RecommendationService:
         """
         user = self.firebase_user_service.get_user(user_id)
         recommendations = {
-            "from_ratings_and_likes": self._recommend_from_ratings(user.rated_songs)
-            + self._recommend_from_likes(user.liked_songs),
+            "from_ratings": self._recommend_from_ratings(user.rated_songs),
             "from_friends": self._recommend_from_friends(user.friends),
         }
 
-        # Delete songs that are recomended and are in user.rated_songs, user.liked_songs
+        # Delete songs that are recomended and are in user.rated_songs
         for key in recommendations:
             if "from_friends" in key:
                 for friend in recommendations[key]:
                     for song in friend["songs"]:
-                        if song in user.rated_songs or song in user.liked_songs:
+                        if song in user.rated_songs:
                             friend["songs"].remove(song)
             else:
                 for song in recommendations[key]:
-                    if song in user.rated_songs or song in user.liked_songs:
+                    if song in user.rated_songs:
                         recommendations[key].remove(song)
 
         # Randomly select 10 songs from each recommendation category
@@ -57,9 +56,14 @@ class RecommendationService:
         """
         recommended_songs = []
         for entry in rated_songs:
-            if entry["rating"] > 3:
-                artist = self.artist_service.get_artist_by_name(entry["artist"])
-                genres = artist.genres
+            if entry["rating"] > 3 and entry["date"] > datetime.now() - timedelta(
+                days=3
+            ):
+                artists = entry["artists"]
+                genres = []
+                for artist in artists:
+                    artist_obj = self.artist_service.get_artist_by_name(artist)
+                    genres.extend(artist_obj.genres)
 
                 song = self.firebase_artist_service.get_song_by_name(entry["song"])
                 danceability, energy, loudness, tempo = (
@@ -74,31 +78,6 @@ class RecommendationService:
                 )
                 recommended_songs.extend(similar_songs)
 
-        recommended_songs = list(set(recommended_songs))
-        return recommended_songs
-
-    def _recommend_from_likes(self, liked_songs: List[dict]) -> List[Song]:
-        """
-        Recommend songs based on user's liked songs.
-        """
-        recommended_songs = []
-        for entry in liked_songs:
-            if entry["date_liked"] < datetime.now() - timedelta(days=3):
-                artist = self.artist_service.get_artist_by_name(entry["artist"])
-                genres = artist.genres
-
-                song = self.firebase_artist_service.get_song_by_name(entry["song"])
-                danceability, energy, loudness, tempo = (
-                    song.danceability,
-                    song.energy,
-                    song.loudness,
-                    song.tempo,
-                )
-
-                similar_songs = self._find_similar_songs(
-                    genres, danceability, energy, loudness, tempo
-                )
-                recommended_songs.extend(similar_songs)
         recommended_songs = list(set(recommended_songs))
         return recommended_songs
 
@@ -113,12 +92,10 @@ class RecommendationService:
             ]
             friend_name = friend["friendUsername"]
             friend_user = self.firebase_user_service.get_user_by_username(friend_name)
-            friend_liked_songs = friend_user.liked_songs
             friend_rated_songs = friend_user.rated_songs
             friend_recs = {
                 "username": friend_name if includeInRecommendations else "",
                 "songs": self._recommend_from_ratings(friend_rated_songs)
-                + self._recommend_from_likes(friend_liked_songs),
             }
             recommended_songs.append(friend_recs)
         recommended_songs = list(set(recommended_songs))

@@ -120,16 +120,6 @@ def delete_user(user_id, userid):
     return jsonify({"message": "User deleted!"}), 200
 
 
-@user_blueprint.errorhandler(BadRequest)
-def handle_bad_request(e):
-    return jsonify(error=str(e.description)), 400
-
-
-@user_blueprint.errorhandler(NotFound)
-def handle_not_found(e):
-    return jsonify(error=str(e.description)), 404
-
-
 """
       <form action = "http://localhost:5000/user/upload" method = "POST" 
          enctype = "multipart/form-data">
@@ -207,3 +197,105 @@ def get_recommendations(user_id):
         )
     except Exception as e:
         raise BadRequest(str(e))
+
+
+@user_blueprint.route("/rate-song", methods=["POST"])
+@token_required
+def rate_song(user_id):
+    data = request.get_json()
+    if not data or not "song" in data or not "rate" in data:
+        raise BadRequest("Missing song or rate")
+    rated_songs = user_service.rate_song(user_id, data["song"], data["rate"])
+    return jsonify({"message": "Song rated!", "rated_songs": rated_songs}), 200
+
+
+@user_blueprint.route("/unrate-song", methods=["POST"])
+@token_required
+def unrate_song(user_id):
+    data = request.get_json()
+    if not data or not "song" in data:
+        raise BadRequest("Missing song")
+    rated_songs = user_service.unrate_song(user_id, data["song"])
+    return jsonify({"message": "Song unrated!", "rated_songs": rated_songs}), 200
+
+
+@user_blueprint.route("/get-rated-songs", methods=["GET"])
+@token_required
+def get_rated_songs(user_id):
+    rated_songs = user_service.get_rated_songs(user_id)
+    return (
+        jsonify({"message": "Rated songs retrieved!", "rated_songs": rated_songs}),
+        200,
+    )
+
+
+@user_blueprint.route("/rate-album", methods=["POST"])
+@token_required
+def rate_album(user_id):
+    data = request.get_json()
+    if not data or not "album" in data or not "rate" in data:
+        raise BadRequest("Missing album or rate")
+    rated_albums = user_service.rate_album(user_id, data["album"], data["rate"])
+    return jsonify({"message": "Album rated!", "rated_albums": rated_albums}), 200
+
+
+@user_blueprint.route("/unrate-album", methods=["POST"])
+@token_required
+def unrate_album(user_id):
+    data = request.get_json()
+    if not data or not "album" in data:
+        raise BadRequest("Missing album")
+    rated_albums = user_service.unrate_album(user_id, data["album"])
+    return jsonify({"message": "Album unrated!", "rated_albums": rated_albums}), 200
+
+
+@user_blueprint.route("/get-rated-albums", methods=["GET"])
+@token_required
+def get_rated_albums(user_id):
+    rated_albums = user_service.get_rated_albums(user_id)
+    return (
+        jsonify({"message": "Rated albums retrieved!", "rated_albums": rated_albums}),
+        200,
+    )
+
+
+@user_blueprint.route("/rate-artist", methods=["POST"])
+@token_required
+def rate_artist(user_id):
+    data = request.get_json()
+    if not data or not "artist" in data or not "rate" in data:
+        raise BadRequest("Missing artist or rate")
+    rated_artists = user_service.rate_artist(user_id, data["artist"], data["rate"])
+    return jsonify({"message": "Artist rated!", "rated_artists": rated_artists}), 200
+
+
+@user_blueprint.route("/unrate-artist", methods=["POST"])
+@token_required
+def unrate_artist(user_id):
+    data = request.get_json()
+    if not data or not "artist" in data:
+        raise BadRequest("Missing artist")
+    rated_artists = user_service.unrate_artist(user_id, data["artist"])
+    return jsonify({"message": "Artist unrated!", "rated_artists": rated_artists}), 200
+
+
+@user_blueprint.route("/get-rated-artists", methods=["GET"])
+@token_required
+def get_rated_artists(user_id):
+    rated_artists = user_service.get_rated_artists(user_id)
+    return (
+        jsonify(
+            {"message": "Rated artists retrieved!", "rated_artists": rated_artists}
+        ),
+        200,
+    )
+
+
+@user_blueprint.errorhandler(BadRequest)
+def handle_bad_request(e):
+    return jsonify(error=str(e.description)), 400
+
+
+@user_blueprint.errorhandler(NotFound)
+def handle_not_found(e):
+    return jsonify(error=str(e.description)), 404
