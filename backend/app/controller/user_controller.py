@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, render_template
 from werkzeug.exceptions import NotFound, BadRequest
 import jwt
 import datetime
@@ -290,6 +290,41 @@ def get_rated_artists(user_id):
         200,
     )
 
+@user_blueprint.route("/statistics", methods=["GET"])
+@token_required
+def get_statistics(user_id):
+    # Extract query parameters for date constraints and other filters
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+    # Convert string dates to datetime objects, handle the case when dates are not provided
+    start_date = datetime.strptime(start_date, '%Y-%m-%d') if start_date else None
+    end_date = datetime.strptime(end_date, '%Y-%m-%d') if end_date else None
+
+    # Retrieve data from the database, filtering by the user and the date constraints
+    # This could be a complex operation depending on your database schema and the size of the data
+    # Let's assume you have a function in your user_service that handles this
+    data = user_service.get_user_statistics(user_id, start_date, end_date)
+
+    # Convert the data to a format suitable for rendering in tables or charts
+    # For example, you could convert it to a pandas DataFrame
+    df = pd.DataFrame(data)
+    
+    # You can now convert the DataFrame to various formats for tables or to be sent to the frontend for chart rendering
+    # For example, to get top 10 albums from the 90s
+    top_albums_90s = df[(df['year'] >= 1990) & (df['year'] < 2000)].nlargest(10, 'rating')
+    
+    # To get favorite 10 songs added in the last 6 months
+    six_months_ago = datetime.utcnow() - timedelta(months=6)
+    top_songs_last_6_months = df[df['date_added'] >= six_months_ago].nlargest(10, 'rating')
+    
+    # Convert your DataFrame to JSON or any other format that your frontend can handle
+    top_albums_90s_json = top_albums_90s.to_json(orient='records')
+    top_songs_last_6_months_json = top_songs_last_6_months.to_json(orient='records')
+
+    # Render the statistics page and pass the data
+    return render_template('statistics.html', 
+                           top_albums_90s=top_albums_90s_json, 
+                           top_songs_last_6_months=top_songs_last_6_months_json)
 
 @user_blueprint.errorhandler(BadRequest)
 def handle_bad_request(e):
