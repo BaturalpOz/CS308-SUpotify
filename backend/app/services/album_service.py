@@ -33,7 +33,7 @@ class AlbumService:
             raise ValueError("Album ID cannot be empty.")
         elif not self.firebase_album_service.get_album(album_id):
             raise ValueError("Album does not exist.")
-        return self.firebase_album_service.get_album(album_id)
+        return self.firebase_album_service.get_album(album_id).to_dict()
 
     def get_album_by_name(self, name: str):
         """
@@ -43,7 +43,7 @@ class AlbumService:
             raise ValueError("Name cannot be empty.")
         elif not self.firebase_album_service.get_album_by_name(name):
             raise ValueError("Album does not exist.")
-        return self.firebase_album_service.get_album_by_name(name)
+        return self.firebase_album_service.get_album_by_name(name).to_dict()
 
     def update_album(self, album_id: str, update_data: dict):
         """

@@ -33,7 +33,7 @@ class ArtistService:
             raise ValueError("Artist ID cannot be empty.")
         elif not self.firebase_artist_service.get_artist(artist_id):
             raise ValueError("Artist does not exist.")
-        return self.firebase_artist_service.get_artist(artist_id)
+        return self.firebase_artist_service.get_artist(artist_id).to_dict()
 
     def get_artist_by_name(self, name: str):
         """
@@ -43,7 +43,7 @@ class ArtistService:
             raise ValueError("Name cannot be empty.")
         elif not self.firebase_artist_service.get_artist_by_name(name):
             raise ValueError("Artist does not exist.")
-        return self.firebase_artist_service.get_artist_by_name(name)
+        return self.firebase_artist_service.get_artist_by_name(name).to_dict()
 
     def update_artist(self, artist_id: str, update_data: dict):
         """

@@ -35,13 +35,13 @@ class SongService:
         """
         Retrieves a song by its unique song ID.
         """
-        return self.firebase_song_service.get_song_by_id(song_id)
+        return self.firebase_song_service.get_song_by_id(song_id).to_dict()
 
     def get_song_by_name(self, name: str):
         """
         Retrieves a song by its name.
         """
-        return self.firebase_song_service.get_song_by_name(name)
+        return self.firebase_song_service.get_song_by_name(name).to_dict()
 
     def update_song(self, song_id: str, update_data: dict):
         """

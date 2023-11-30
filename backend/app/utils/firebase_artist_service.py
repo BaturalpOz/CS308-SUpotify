@@ -40,7 +40,7 @@ class FirebaseArtistService:
             results = query.get()
             # for doc in results:
                 # Convert the document to an Artist object
-            return Artist.from_dict(results[0].to_dict())
+            return Artist.from_dict(results[0].to_dict()).to_dict() 
             # return None
         except Exception as e:
             print(f"An error occurred: {e}")

@@ -54,7 +54,7 @@ class FirebaseSongService:
             query = songs_ref.where(u'Name', u'==', song_name)
             song_docs = query.stream()
             for song in song_docs:
-                return Song.from_dict(song.to_dict())
+                return Song.from_dict(song.to_dict()).to_dict()
             return None
         except Exception as e:
             print(f"An error occurred: {e}")
