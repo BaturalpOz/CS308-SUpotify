@@ -50,3 +50,8 @@ def delete_song(song_id):
         return jsonify({'message': 'Song deleted!'}), 200
     except Exception as e:
         return jsonify({'message': 'Could not delete song.', 'error': str(e)}), 500
+
+@song_blueprint.route('/all', methods=['GET'])
+def get_all_song_ids():
+    song_ids = song_service.get_all_song_ids()
+    return jsonify({'song_ids': song_ids}), 200
