@@ -14,10 +14,9 @@ class ArtistService:
         if self.firebase_artist_service.get_artist_by_name(name):
             raise ValueError("An artist with that name already exists.")
 
-        # Create a new Artist instance
         new_artist = Artist(name=name, genres=genres, image_url=image_url, popularity=popularity, albums=albums)
 
-        # Add the new artist to Firebase, which returns the artist_id if successful
+       
         artist_id = self.firebase_artist_service.add_artist(new_artist)
 
         if artist_id:
@@ -49,7 +48,7 @@ class ArtistService:
         """
         Updates artist information given the artist ID and the new data.
         """
-        # Update the artist in Firebase
+     
         success = self.firebase_artist_service.update_artist(artist_id, update_data)
 
         if not success:

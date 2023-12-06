@@ -3,7 +3,7 @@ from flask import Blueprint, request, jsonify
 from werkzeug.exceptions import NotFound, BadRequest
 from app.services.album_service import AlbumService
 
-# Blueprint setup
+
 album_blueprint = Blueprint('album', __name__)
 album_service = AlbumService()
 

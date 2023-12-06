@@ -53,9 +53,7 @@ class FirebaseArtistService:
             
             if artist_ref.exists:
                 artist_doc = artist_ref.to_dict()
-                if(len(artist_doc["Albums"]) > 0):
-                    for album_index in range(len(artist_doc["Albums"])):
-                        artist_doc["Albums"][album_index] = artist_doc["Albums"][album_index].path
+               
             
                 return Artist.from_dict(artist_doc)
             else:
