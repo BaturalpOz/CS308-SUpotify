@@ -30,7 +30,7 @@ class FirebaseSongService:
             print(f"An error occurred: {e}")
             return None
 
-    def get_song_by_id(self, song_id: int):
+    def get_song(self, song_id: int):
         """
         Retrieves a song document from the Songs collection by song ID.
         """
@@ -45,17 +45,18 @@ class FirebaseSongService:
             print(f"An error occurred: {e}")
             return None
 
-    def get_song_by_name(self, song_name: str):
+    def get_song_by_name(self, name: str):
         """
-        Retrieves a song document from the Songs collection by song name.
+        Retrieves a song document from the Songs collection by name.
         """
         try:
-            songs_ref = self.db.collection(u'Songs')
-            query = songs_ref.where(u'Name', u'==', song_name)
-            song_docs = query.stream()
-            for song in song_docs:
-                return Song.from_dict(song.to_dict())
-            return None
+
+            song_ref = self.db.collection(u'Songs')
+            query = song_ref.where(u'Name', u'==', name)
+            results = query.get()
+
+            return Song.from_dict(results[0].to_dict())
+
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
