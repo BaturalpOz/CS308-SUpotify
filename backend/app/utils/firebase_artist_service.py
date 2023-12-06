@@ -34,14 +34,13 @@ class FirebaseArtistService:
         Retrieves an artist document from the Artists collection by name.
         """
         try:
-            # Query for documents in the 'Artists' collection where the name matches
+            
             artists_ref = self.db.collection(u'Artists')
             query = artists_ref.where(u'Name', u'==', name)
             results = query.get()
-            # for doc in results:
-                # Convert the document to an Artist object
+           
             return Artist.from_dict(results[0].to_dict())
-            # return None
+           
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
@@ -54,11 +53,7 @@ class FirebaseArtistService:
             artist_ref = self.db.collection(u'Artists').document(artist_id).get()
             
             if artist_ref.exists:
-                artist_doc = artist_ref.to_dict()
-                if(len(artist_doc["Albums"]) > 0):
-                    for album_index in range(len(artist_doc["Albums"])):
-                        artist_doc["Albums"][album_index] = artist_doc["Albums"][album_index].path
-            
+                artist_doc = artist_ref.to_dict()               
                 return Artist.from_dict(artist_doc)
             else:
                 return None
