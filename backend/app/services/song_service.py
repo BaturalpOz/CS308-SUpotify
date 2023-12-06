@@ -33,7 +33,7 @@ class SongService:
 
     def get_song_by_id(self, song_id: str):
         """
-        Retrieves an album by its unique album ID.
+        Retrieves a song by its unique song ID.
         """
         if not song_id:
             raise ValueError("song ID cannot be empty.")
