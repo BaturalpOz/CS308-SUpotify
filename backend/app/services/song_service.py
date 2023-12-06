@@ -60,3 +60,9 @@ class SongService:
 
         if not success:
             raise Exception("Failed to delete the song.")
+
+    def get_all_song_ids(self):
+        """
+        Retrieves all song IDs from Firebase.
+        """
+        return self.firebase_song_service.get_all_song_ids()
