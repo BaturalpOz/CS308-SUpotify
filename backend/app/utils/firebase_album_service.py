@@ -1,6 +1,6 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
-from app.models.Album import Album  # Assuming your Album class is in 'app.models.album'
+from app.models.Album import Album  
 import os
 from typing import Dict
 
@@ -19,12 +19,12 @@ class FirebaseAlbumService:
         """
         Adds a new album document to the Albums collection.
         """
-        # Convert the Album object to a dict suitable for Firestore
+     
         album_dict = album.to_dict()
         try:
-            # Create a new document in the 'Albums' collection with a unique ID
+        
             _, doc_ref = self.db.collection(u'Albums').add(album_dict)
-            return doc_ref.id  # Return the generated document ID
+            return doc_ref.id  
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
@@ -34,14 +34,13 @@ class FirebaseAlbumService:
         Retrieves an album document from the Albums collection by name.
         """
         try:
-            # Query for documents in the 'Albums' collection where the name matches
+         
             albums_ref = self.db.collection(u'Albums')
             query = albums_ref.where(u'Name', u'==', name)
             results = query.get()
-            #for doc in results:
-                # Convert the document to an Album object
+         
             return Album.from_dict(results[0].to_dict())
-            #return None
+          
         except Exception as e:
             print(f"An error occurred: {e}")
             return None

@@ -23,7 +23,7 @@ class SongService:
             artists=artists
         )
 
-        # Add the new song to Firebase, which returns the song_id if successful
+       
         song_id = self.firebase_song_service.add_song(new_song)
 
         if song_id:

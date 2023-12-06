@@ -24,10 +24,10 @@ class UserService:
                 "Username cannot contain '.', '#', '$', '[', ']', '/', or '@'."
             )
 
-        # Create a new User instance
+    
         new_user = User(username=username, email=email, raw_password=password)
 
-        # Add the new user to Firebase, which returns the user_id if successful
+      
         user_id = self.firebase_user_service.add_user(new_user)
 
         if user_id:
@@ -76,10 +76,10 @@ class UserService:
         Updates user information given the user ID and the new data.
         """
         if "password" in update_data:
-            # If updating password, hash the new password before updating
+       
             update_data["password"] = User.hash_password(update_data["password"])
 
-        # Update the user in Firebase
+
         success = self.firebase_user_service.update_user(user_id, update_data)
 
         if not success:
