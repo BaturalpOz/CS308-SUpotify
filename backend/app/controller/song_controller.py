@@ -22,13 +22,19 @@ def add_song():
         return jsonify({'message': 'Could not create song.', 'error': str(e)}), 500
 
 
-@song_blueprint.route('/songs/<song_id>', methods=['GET'])
+@song_blueprint.route('/<song_id>', methods=['GET'])
 def get_song(song_id):
     song = song_service.get_song_by_id(song_id)
-    if song:
-        return jsonify({'song': song.to_dict()}), 200
-    else:
-        return jsonify({'message': 'Song not found.'}), 404
+    if song is None:
+        raise NotFound('Song not found.')
+    return jsonify({'song': song.to_dict()}), 200
+
+@song_blueprint.route('/get_by_name/<song_name>', methods=['GET'])
+def get_song_by_name(song_name):
+    song = song_service.get_song_by_name(song_name)
+    if song is None:
+        raise NotFound('Song not found.')
+    return jsonify({'song': song.to_dict()}), 200
 
 
 @song_blueprint.route('/songs/<song_id>', methods=['PUT'])
