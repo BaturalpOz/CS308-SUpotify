@@ -149,10 +149,11 @@ class UserService:
         user = self.get_user_by_id(user_id)
         song = self.firebase_song_service.get_song_by_name(song_name)
         rated_song = {
-            "artists": song["artists"],
-            "albums": song["albums"],
-            "song": song["song"],
+            "artists": song["Artists"],
+            "albums": song["Albums"],
+            "song": song["Name"],
             "rating": rating,
+            "date": f"{datetime.now():%Y-%m-%d %H:%M:%S}"
         }
         user.rated_songs.append(rated_song)
         self.update_user(user_id, {"rated_songs": user.rated_songs})
@@ -175,10 +176,11 @@ class UserService:
 
     def rate_artist(self, user_id: str, artist_name: str, rating: int):
         user = self.get_user_by_id(user_id)
-        artist = self.firebase_song_service.get_artist_by_name(artist_name)
+        artist = self.firebase_artist_service.get_artist_by_name(artist_name)
         rated_artist = {
-            "artist": artist["artist"],
+            "artist": artist_name,
             "rating": rating,
+            "date": f"{datetime.now():%Y-%m-%d %H:%M:%S}"
         }
         user.rated_artists.append(rated_artist)
         self.update_user(user_id, {"rated_artists": user.rated_artists})
@@ -186,7 +188,7 @@ class UserService:
     
     def unrate_artist(self, user_id: str, artist_name: str):
         user = self.get_user_by_id(user_id)
-        artist = self.firebase_song_service.get_artist_by_name(artist_name)
+        artist = self.firebase_artist_service.get_artist_by_name(artist_name)
         user.rated_artists = [
             artist_iter
             for artist_iter in user.rated_artists
@@ -201,10 +203,11 @@ class UserService:
     
     def rate_album(self, user_id: str, album_name: str, rating: int):
         user = self.get_user_by_id(user_id)
-        album = self.firebase_song_service.get_album_by_name(album_name)
+        album = self.firebase_album_service.get_album_by_name(album_name)
         rated_album = {
-            "album": album["album"],
+            "album": album_name,
             "rating": rating,
+            "date": f"{datetime.now():%Y-%m-%d %H:%M:%S}"
         }
         user.rated_albums.append(rated_album)
         self.update_user(user_id, {"rated_albums": user.rated_albums})
@@ -212,7 +215,7 @@ class UserService:
     
     def unrate_album(self, user_id: str, album_name: str):
         user = self.get_user_by_id(user_id)
-        album = self.firebase_song_service.get_album_by_name(album_name)
+        album = self.firebase_album_service.get_album_by_name(album_name)
         user.rated_albums = [
             album_iter
             for album_iter in user.rated_albums
@@ -224,4 +227,95 @@ class UserService:
     def get_rated_albums(self, user_id: str):
         user = self.get_user_by_id(user_id)
         return user.rated_albums
+
+    def get_rated_songs_by_date(self, user_id: str, start_date: str, end_date: str):
+        user = self.get_user_by_id(user_id)
+
+        to_ret = []
+        for song in user.rated_songs:
+            album = self.firebase_album_service.get_album_by_name(song["albums"][0])
+            album_date = album["Release Date"]
+            album_date = album_date.replace(tzinfo=None)
+
+            rating = song["rating"]
+
+            if album_date >= start_date and album_date <= end_date:
+                to_ret.append({"song":song, "album_date":album_date})
+
+        return sorted(to_ret, key=lambda x: x["song"]["rating"], reverse=True)[:10]
+
+    def get_rated_albums_by_date(self, user_id: str, start_date: str, end_date: str):
+        user = self.get_user_by_id(user_id)
+
+        to_ret = []
+        for alb in user.rated_albums:
+            album = self.firebase_album_service.get_album_by_name(alb["album"])
+
+            album_date = album["Release Date"]
+            album_date = album_date.replace(tzinfo=None)
+
+            rating = alb["rating"]
+
+            if album_date >= start_date and album_date <= end_date:
+                to_ret.append({"album":alb, "album_date":album_date, "album_data": album})
+
+        return sorted(to_ret, key=lambda x: x["album"]["rating"], reverse=True)[:10]
+
+    def get_rated_artists_by_date(self, user_id: str, start_date: str, end_date: str):
+        user = self.get_user_by_id(user_id)
+
+        to_ret = []
+        for artist in user.rated_artists:
+            artist_data = self.firebase_artist_service.get_artist_by_name(artist["artist"])
+            artist_album = self.firebase_album_service.get_album_by_name(artist_data["Albums"][0])
+
+            album_date = artist_album["Release Date"]
+            album_date = album_date.replace(tzinfo=None)
+
+            rating = artist["rating"]
+
+            if album_date >= start_date and album_date <= end_date:
+                to_ret.append({"artist":artist, "artist_first_album_date":album_date, "artist_data": artist_data})
+
+        return sorted(to_ret, key=lambda x: x["artist"]["rating"], reverse=True)[:10]
+
+    def get_user_ratings_by_date(self, user_id: str, start_date: str, end_date: str):
+        user = self.get_user_by_id(user_id)
+
+        to_ret = []
+        for song in user.rated_songs:
+            date = song["date"]
+            date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+
+            rating = song["rating"]
+
+            if date >= start_date and date <= end_date:
+                to_ret.append({"song":song, "date":date})
+
+        return sorted(to_ret, key=lambda x: x["song"]["rating"], reverse=True)[:10]
+
+    def get_ratings_for_user(self, user_id: str, type: str):
+        user = self.get_user_by_id(user_id)
+
+        to_ret = []
+        if type == "songs":
+            for song in user.rated_songs:
+                to_ret.append({"song":song, "date":datetime.strptime(song["date"], "%Y-%m-%d %H:%M:%S")})
+
+            return sorted(to_ret, key=lambda x: x["song"]["date"], reverse=True)[:10]
+        elif type == "albums":
+            for album in user.rated_albums:
+                to_ret.append({"album":album, "date":datetime.strptime(album["date"], "%Y-%m-%d %H:%M:%S")})
+
+            return sorted(to_ret, key=lambda x: x["album"]["date"], reverse=True)[:10]
+        
+        elif type == "artists":
+            for artist in user.rated_artists:
+                to_ret.append({"artist":artist, "date":datetime.strptime(artist["date"], "%Y-%m-%d %H:%M:%S")})
+
+            return sorted(to_ret, key=lambda x: x["artist"]["date"], reverse=True)[:10]
+        
+
+
+
     
