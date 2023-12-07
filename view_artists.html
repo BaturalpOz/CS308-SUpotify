@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+    <script defer src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+
+
+    <title>Top 25 Artists</title>
+    <style>
+        body {
+            background-color: #ffffff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Fixed background for better scrolling experience */
+        }
+
+        .navbar {
+            background-color: #0F4C8F; /* Dark purple background */
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff; /* White text color for navigation links */
+            font-size: 30px;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #ffffff; /* White color for the toggler icon */
+        }
+
+        .artist-list {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .artist-list-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd; /* Border color for each artist item */
+            border-radius: 5px;
+            background-color: #f9f9f9; /* Background color for each artist item */
+        }
+
+        .artist-image {
+            width: 50px; /* Adjust the width of the artist image */
+            height: 50px; /* Adjust the height of the artist image */
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 10px; /* Add spacing between image and text */
+        }
+
+        .artist-image img {
+            width: 100%;
+            height: auto;
+        }
+
+        .artist-name {
+            flex-grow: 1; /* Allow the name to grow and take remaining space */
+        }
+
+        .navbar-bottom {
+            background-color: #0F4C8F;
+            position: fixed;
+            bottom: -20px;
+            width: 100%;
+            z-index: 999;
+        }
+
+        .navbar-bottom .navbar-brand {
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .navbar-bottom-toggler-icon {
+            background-color: #ffffff;
+        }
+    </style>
+
+    <script>
+        window.onload = function () {
+            // Fetch and display artists when the page loads
+            fetch('http://127.0.0.1:5000/artist/all')
+                .then(response => response.json())
+                .then(data => {
+                    const artistList = document.querySelector('.artist-list ul');
+                    artistList.innerHTML = ''; // Clear existing list items
+
+                    data.artist_ids.forEach(artistID => {
+                        // Fetch each artist by id
+                        fetch(`http://127.0.0.1:5000/artist/${artistID}`)
+                            .then(response => response.json())
+                            .then(artistData => {
+                                const artistListItem = document.createElement('li');
+                                artistListItem.classList.add('list-group-item', 'artist-list-item');
+                                
+                                // Create an image for each artist
+                                const artistImageContainer = document.createElement('div');
+                                artistImageContainer.classList.add('artist-image');
+                                const artistImage = document.createElement('img');
+                                artistImage.src = artistData.artist.Image; // Replace with the actual property from your API
+                                artistImageContainer.appendChild(artistImage);
+                                
+                                // Create a link for each artist
+                                const artistLink = document.createElement('a');
+                                artistLink.href = `view_specific_artist.html?artistId=${artistData.artist.Id}`;
+                                artistLink.textContent = artistData.artist.Name; // Display artist name
+                                
+                                // Append the image and link to the list item
+                                artistListItem.appendChild(artistImageContainer);
+                                artistListItem.appendChild(artistLink);
+                                
+                                artistList.appendChild(artistListItem);
+                            })
+                            .catch(error => console.error('Error fetching artist:', error));
+                    });
+                })
+                .catch(error => console.error('Error fetching artist:', error));
+        };
+    </script>
+
+</head>
+<body>
+    <!-- Bottom Navbar -->
+    <nav class="navbar navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
+        </div>
+    </nav>
+    
+    <nav class="navbar navbar-expand-lg"> <!-- Navbar line-->
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                SUpotify
+            </a> 
+            <div class="collapse navbar-collapse" id="navbarColor01">
+            </div>
+        </div>
+    </nav>
+
+    <!-- Artist List -->
+    <div class="artist-list">
+        <h2>Top 25 Artists</h2>
+        <ul class="list-group">
+            <!-- Artists will be dynamically added here by the JavaScript code -->
+        </ul>
+    </div>
+</body>
+</html>
