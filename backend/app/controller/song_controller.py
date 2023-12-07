@@ -1,6 +1,7 @@
-from flask import Blueprint, request, jsonify
-from app.services.song_service import SongService  
 from datetime import datetime
+from flask import Blueprint, request, jsonify
+from werkzeug.exceptions import NotFound, BadRequest
+from app.services.album_service import SongService
 
 song_blueprint = Blueprint('song', __name__)
 song_service = SongService()  
@@ -61,3 +62,11 @@ def delete_song(song_id):
 def get_all_song_ids():
     song_ids = song_service.get_all_song_ids()
     return jsonify({'song_ids': song_ids}), 200
+
+@song_blueprint.errorhandler(BadRequest)
+def handle_bad_request(e):
+    return jsonify(error=str(e.description)), 400
+
+@song_blueprint.errorhandler(NotFound)
+def handle_not_found(e):
+    return jsonify(error=str(e.description)), 404
