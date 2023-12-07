@@ -1,0 +1,146 @@
+<!-- activity_updatesong.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mysugrey">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="150dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Update Song Record"
+            android:textSize="30sp"
+            android:textColor="@color/mysublue"
+            android:textStyle="bold"
+            android:layout_gravity="center"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp">
+
+            <TextView
+                android:id="@+id/songTitleLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Song Title:"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="@color/mysublue"/>
+
+            <EditText
+                android:id="@+id/songTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Update Song Title"
+                android:background="@android:color/white"
+                android:textColor="@color/mysugrey"
+                android:padding="10dp"
+                android:layout_below="@id/songTitleLabel"
+                android:layout_marginTop="4dp"/>
+
+            <TextView
+                android:id="@+id/artistNameLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Artist Name:"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="@color/mysublue"
+                android:layout_below="@id/songTitle"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:id="@+id/artistName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Update Artist Name"
+                android:background="@android:color/white"
+                android:textColor="@color/mysugrey"
+                android:padding="10dp"
+                android:layout_below="@id/artistNameLabel"
+                android:layout_marginTop="4dp"/>
+
+            <TextView
+                android:id="@+id/albumNameLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Album Name:"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="@color/mysublue"
+                android:layout_below="@id/artistName"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:id="@+id/albumName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Update Album Name"
+                android:background="@android:color/white"
+                android:textColor="@color/mysugrey"
+                android:padding="10dp"
+                android:layout_below="@id/albumNameLabel"
+                android:layout_marginTop="4dp"/>
+
+            <TextView
+                android:id="@+id/releaseDateLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Release Date:"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="@color/mysublue"
+                android:layout_below="@id/albumName"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:id="@+id/releaseDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="dd.mm.yyyy"
+                android:background="@android:color/white"
+                android:textColor="@color/mysugrey"
+                android:padding="10dp"
+                android:layout_below="@id/releaseDateLabel"
+                android:layout_marginTop="4dp"/>
+
+            <TextView
+                android:id="@+id/songLengthLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Song Length:"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="@color/mysublue"
+                android:layout_below="@id/releaseDate"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:id="@+id/songLength"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Update Song Length"
+                android:background="@android:color/white"
+                android:textColor="@color/mysugrey"
+                android:padding="10dp"
+                android:layout_below="@id/songLengthLabel"
+                android:layout_marginTop="4dp"/>
+
+            <Button
+                android:id="@+id/submitSongButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Update"
+                android:textColor="@color/mysugrey"
+                android:background="@color/mysublue"
+                android:layout_below="@id/songLength"
+                android:layout_marginTop="20dp"/>
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>
