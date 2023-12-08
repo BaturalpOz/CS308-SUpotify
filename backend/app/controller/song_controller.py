@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import Blueprint, request, jsonify
 from werkzeug.exceptions import NotFound, BadRequest
-from app.services.album_service import SongService
+from app.services.song_service import SongService
 
 song_blueprint = Blueprint('song', __name__)
 song_service = SongService()  
