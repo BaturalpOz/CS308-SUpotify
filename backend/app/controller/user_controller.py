@@ -35,7 +35,8 @@ def token_required(f):
             raise BadRequest("Token has expired.")
         except jwt.InvalidTokenError:
             raise BadRequest("Token is invalid.")
-        except:
+        except Exception as exc:
+            print(exc)
             raise BadRequest("Token is missing!:()")
 
         user_id = data.get("user_id")
@@ -83,7 +84,7 @@ def login_user():
     response = make_response(
         jsonify({"token": token, "message": "User logged in!"}), 200
     )
-    response.set_cookie("access_token_cookie", token, httponly=True, samesite="Strict")
+    response.set_cookie("access_token_cookie", value=token, domain="localhost", httponly=True, samesite="None", secure=False, path="/")
     return response
 
 
@@ -150,7 +151,17 @@ def file_upload(user_id):
         ),
         200,
     )
-
+    
+@user_blueprint.route("/get-rated-artists", methods=["GET"])
+@token_required
+def get_rated_artists(user_id):
+    rated_artists = user_service.get_rated_artists(user_id)
+    return (
+        jsonify(
+            {"message": "Rated artists retrieved!", "rated_artists": rated_artists}
+        ),
+        200,
+    )
 
 @user_blueprint.route("/add-friend", methods=["POST"])
 @token_required

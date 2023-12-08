@@ -19,7 +19,7 @@ def create_app():
         cred = credentials.Certificate(os.environ.get('FIREBASE_ADMINSDK_JSON_PATH'))
         initialize_app(cred)
     
-    CORS(app)
+    CORS(app, supports_credentials=True)
 
     from .routes import init_app
 
