@@ -84,7 +84,15 @@ def login_user():
     response = make_response(
         jsonify({"token": token, "message": "User logged in!"}), 200
     )
-    response.set_cookie("access_token_cookie", value=token, domain="localhost", httponly=True, samesite="None", secure=False, path="/")
+    response.set_cookie(
+        "access_token_cookie",
+        value=token,
+        domain="localhost",
+        httponly=True,
+        samesite="None",
+        secure=False,
+        path="/",
+    )
     return response
 
 
@@ -151,17 +159,16 @@ def file_upload(user_id):
         ),
         200,
     )
-    
-@user_blueprint.route("/get-rated-artists", methods=["GET"])
+
+
+@user_blueprint.route("/profile", methods=["GET"])
 @token_required
-def get_rated_artists(user_id):
-    rated_artists = user_service.get_rated_artists(user_id)
-    return (
-        jsonify(
-            {"message": "Rated artists retrieved!", "rated_artists": rated_artists}
-        ),
-        200,
-    )
+def get_user_profile(user_id):
+    user = user_service.get_user_by_id(user_id)
+    if user is None:
+        raise NotFound("User not found.")
+    return jsonify({"name": user.username, "email": user.email}), 200
+
 
 @user_blueprint.route("/add-friend", methods=["POST"])
 @token_required
@@ -306,12 +313,12 @@ def get_rated_artists(user_id):
 @token_required
 def get_statistics(user_id):
     data = request.get_json()
-    '''
+    """
     {
     "start_date": "%Y-%m-%d", 
     "end_date": "%Y-%m-%d",
     "filter_type": "user" | "songs" | "albums" | "artists"
-    }'''
+    }"""
 
     try:
         start_date = data["start_date"]
@@ -320,29 +327,63 @@ def get_statistics(user_id):
     except KeyError:
         raise BadRequest("Missing start_date or end_date or filter_type")
     # Convert string dates to datetime objects, handle the case when dates are not provided
-    start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d') if start_date else None
-    end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d') if end_date else None
+    start_date = (
+        datetime.datetime.strptime(start_date, "%Y-%m-%d") if start_date else None
+    )
+    end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d") if end_date else None
     if filter_type == "songs":
-        rated_songs = user_service.get_rated_songs_by_date(user_id, start_date, end_date)
-        return ( jsonify({"message": "Statistics retrieved!", "rated_songs": rated_songs}), 200, )
+        rated_songs = user_service.get_rated_songs_by_date(
+            user_id, start_date, end_date
+        )
+        return (
+            jsonify({"message": "Statistics retrieved!", "rated_songs": rated_songs}),
+            200,
+        )
     elif filter_type == "albums":
-        rated_albums = user_service.get_rated_albums_by_date(user_id, start_date, end_date)
-        return ( jsonify({"message": "Statistics retrieved!", "rated_songs": rated_albums}), 200, )
+        rated_albums = user_service.get_rated_albums_by_date(
+            user_id, start_date, end_date
+        )
+        return (
+            jsonify({"message": "Statistics retrieved!", "rated_songs": rated_albums}),
+            200,
+        )
     elif filter_type == "artists":
-        rated_artists = user_service.get_rated_artists_by_date(user_id, start_date, end_date)
-        return ( jsonify({"message": "Statistics retrieved!", "rated_songs": rated_artists}), 200, )
+        rated_artists = user_service.get_rated_artists_by_date(
+            user_id, start_date, end_date
+        )
+        return (
+            jsonify({"message": "Statistics retrieved!", "rated_songs": rated_artists}),
+            200,
+        )
     elif filter_type == "user":
-        # Frontend should give me last 6 month as a date range, not as a string "6 month". 
-        user_ratings = user_service.get_user_ratings_by_date(user_id, start_date, end_date)
-        return ( jsonify({"message": "Statistics retrieved!", "rated_songs": user_ratings}), 200, )
+        # Frontend should give me last 6 month as a date range, not as a string "6 month".
+        user_ratings = user_service.get_user_ratings_by_date(
+            user_id, start_date, end_date
+        )
+        return (
+            jsonify({"message": "Statistics retrieved!", "rated_songs": user_ratings}),
+            200,
+        )
     raise BadRequest("Invalid filter type")
-    
+
+
 @user_blueprint.route("/statistics-user", methods=["POST"])
 @token_required
 def get_statistics_user(user_id):
     data = request.get_json()
     # all songs and artists and albums rated by user sorted by date
-    return ( jsonify({"message": "Statistics retrieved!", "rated_songs": user_service.get_ratings_for_user(user_id, "songs"), "rated_albums":user_service.get_ratings_for_user(user_id, "albums"), "rated_artists": user_service.get_ratings_for_user(user_id, "artists")}), 200, )
+    return (
+        jsonify(
+            {
+                "message": "Statistics retrieved!",
+                "rated_songs": user_service.get_ratings_for_user(user_id, "songs"),
+                "rated_albums": user_service.get_ratings_for_user(user_id, "albums"),
+                "rated_artists": user_service.get_ratings_for_user(user_id, "artists"),
+            }
+        ),
+        200,
+    )
+
 
 @user_blueprint.errorhandler(BadRequest)
 def handle_bad_request(e):
