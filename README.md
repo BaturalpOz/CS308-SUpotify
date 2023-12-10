@@ -40,7 +40,7 @@ The platform collects various data, including song title, artist, album and user
 
 ### ER Diagram
 
-![ER Diagram](path/to/ER%20Diagram.png)
+![ER Diagram](path/to/ER Diagram.png)
 
 ## 👥 Teams
 
