@@ -32,17 +32,34 @@ class SongBlueprintTestCase(unittest.TestCase):
         self.assertTrue("song_id" in data)
         self.song_id = data["song_id"]  # Store the song ID
 
-    def test2_get_song(self):
-        if not self.song_id:
-            self.fail("No song ID available for test.")
-        response = self.client.get(f"/song/songs/{self.song_id}")
-        data = json.loads(response.data.decode())
-        if response.status_code == 200:
-            self.assertTrue("song" in data)
-        elif response.status_code == 404:
-            self.assertIn("Song not found", data["message"])
+def test2_get_song(self):
+    if not self.song_id:
+        self.fail("No song ID available for test.")
+    response = self.client.get(f"/song/songs/{self.song_id}")
+    data = json.loads(response.data.decode())
+    if response.status_code == 200:
+        self.assertTrue("song" in data)
+    elif response.status_code == 404:
+        self.assertIn("Song not found", data["message"])
 
-    def test3_update_song(self):
+def test3_get_all_songs(self):
+    if not self.song_id:
+        self.fail("No song ID available for test.")
+    response = self.client.get("/song/all")
+    self.assertEqual(response.status_code, 200)
+    data = json.loads(response.data.decode())
+    self.assertTrue("song_ids" in data)
+
+def test4_get_song_by_name(self):
+    if not self.song_id:
+        self.fail("No song ID available for test.")
+    response = self.client.get(f"/song/get_by_name/{self.test2_get_song['Name']}")
+    self.assertEqual(response.status_code, 200)
+    data = json.loads(response.data.decode())
+    self.assertTrue("song" in data)
+
+
+    def test5_update_song(self):
         song_id = "78Un1CEzUONSvewAA9Lz"
         update_data = {"duration": 300}
         response = self.client.put(
@@ -56,7 +73,7 @@ class SongBlueprintTestCase(unittest.TestCase):
         elif response.status_code == 404:
             self.assertIn("Song not found", data["message"])
 
-    def test_delete_song(self):
+    def test6_delete_song(self):
         song_id = "qWHRVo4dW9x78ss8tGbk"  # Replace with an existing or non-existent song ID in your test environment
         response = self.client.delete(f"/song/songs/{song_id}")
         data = json.loads(response.data.decode())
