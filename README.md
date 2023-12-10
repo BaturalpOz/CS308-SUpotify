@@ -38,6 +38,10 @@ The platform collects various data, including song title, artist, album and user
   
   * Data Export: The song rating database can be exported.
 
+### ER Diagram
+
+![ER Diagram](path/to/ER%20Diagram.png)
+
 ## 👥 Teams
 
 ### Team Leader
