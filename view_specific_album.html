@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+
+    <title>View Album Details</title>
+    <style>
+        body {
+            background-color: #ffffff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            padding-bottom: 60px;
+        }
+
+        .navbar {
+            background-color: #0F4C8F;
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff;
+            font-size: 30px;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #ffffff;
+        }
+
+        .album-details {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .album-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .album-image img {
+            width: 100%;
+            height: auto;
+        }
+
+        .album-info {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .navbar-bottom {
+            background-color: #0F4C8F;
+            position: fixed;
+            bottom: -20px;
+            width: 100%;
+            z-index: 999;
+        }
+
+        .navbar-bottom .navbar-brand {
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .navbar-bottom-toggler-icon {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Bottom Navbar -->
+    <nav class="navbar navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
+        </div>
+    </nav>
+
+    <nav class="navbar navbar-expand-lg">
+        <!-- Navbar line-->
+        <div class="container-fluid">
+            <img src="logo.jpeg" alt="Logo" style="height: 50px; margin-right: 10px;">
+            <a class="navbar-brand" href="dashboard.html">
+                SUpotify
+            </a>
+            <div class="collapse navbar-collapse" id="navbarColor01">
+            </div>
+        </div>
+    </nav>
+
+    <!-- Album Details -->
+    <div class="album-details">
+        <div class="album-image">
+            <img id="albumImage" src="" alt="Album Image">
+        </div>
+        <div class="album-info" id="albumName"></div>
+        <div class="album-info" id="releaseDate"></div>
+        <div class="album-info" id="totalTracks"></div>
+        <div class="album-info" id="songs"></div>
+        <div class="album-info" id="artists"></div>
+    </div>
+
+    <script>
+        window.onload = function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const albumName = urlParams.get('albumName');
+
+            fetch(`http://127.0.0.1:5001/album/get_by_name/${encodeURIComponent(albumName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('API Response:', data);
+
+                    const albumImage = document.getElementById('albumImage');
+                    const albumNameElem = document.getElementById('albumName');
+                    const releaseDate = document.getElementById('releaseDate');
+                    const totalTracks = document.getElementById('totalTracks');
+                    const songsContainer = document.getElementById('songs');
+                    const artistsContainer = document.getElementById('artists');
+
+                    // Access album properties correctly
+                    albumImage.src = data.album.Image;
+                    albumNameElem.textContent = `Album: ${data.album.Name}`;
+                    releaseDate.textContent = `Release Date: ${data.album.ReleaseDate}`;
+                    totalTracks.textContent = `Total Tracks: ${data.album.TotalTracks}`;
+
+                    // Create list items for songs
+                    const songsList = document.createElement('ul');
+                    data.album.Songs.forEach(song => {
+                        const songItem = document.createElement('li');
+                        songItem.textContent = song;
+                        songsList.appendChild(songItem);
+                    });
+                    songsContainer.appendChild(songsList);
+
+                    // Create list items for artists
+                    const artistsList = document.createElement('ul');
+                    data.album.Artists.forEach(artist => {
+                        const artistItem = document.createElement('li');
+                        artistItem.textContent = artist;
+                        artistsList.appendChild(artistItem);
+                    });
+                    artistsContainer.appendChild(artistsList);
+                })
+                .catch(error => console.error('Error fetching album details:', error));
+        };
+    </script>
+
+</body>
+
+</html>

@@ -5,13 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
-    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="assets/fontawesome-free-6.5.1-web/css/all.css">
+
+
 
     <title>Login</title>
     <style>
         
         body {
-            background-image: url('WhatsApp Image 2022-10-14 at 13.22.23.jpeg'); /* Replace with your image file path or URL */
+            background-color: #ffffff;
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed; /* Fixed background for better scrolling experience */
@@ -19,7 +22,7 @@
         
 
         .container {
-            margin-top: 150px;
+            margin-top: 15px;
         }
 
         .card {
@@ -29,7 +32,7 @@
         }
 
         .card-header {
-            background-color: orange; /* Dark purple header background */
+            background-color: #5cbda7; /* Dark purple header background */
             color: #ffffff; /* White text color */
             text-align: center;
             font-weight: bold;
@@ -37,11 +40,11 @@
         }
 
         .card-body {
-            background-color: rgb(183, 174, 159); /* Light purple card background */
+            background-color: #EBEDF1; /* Light purple card background */
         }
 
         .navbar {
-            background-color: orange; /* Dark purple background */
+            background-color: #0F4C8F; /* Dark purple background */
         }
 
         .navbar-brand,
@@ -55,12 +58,12 @@
         }
 
         .btn-primary {
-            background-color: orange; /* Dark purple button background */
+            background-color: #5cbda7; /* Dark purple button background */
             border: none;
         }
 
         .btn-primary:hover {
-            background-color: rgb(143, 96, 10); /* Slightly darker purple on hover */
+            background-color: #318974; /* Slightly darker purple on hover */
         }
 
         .custom-text {
@@ -76,27 +79,83 @@
             color: rgb(0, 0, 0); /* Change link color */
             font-weight: bold; /* Make the link text bold */
         }
+
+        .navbar-bottom {
+            background-color: #0F4C8F;
+            position: fixed;
+            bottom: -20px;
+            width: 100%;
+        }
+
+        .navbar-bottom .navbar-brand {
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .navbar-bottom-toggler-icon {
+            background-color: #ffffff;
+        }
+
+
+
     </style>
+
+<script>
+    function login() {
+        var email = $("#email").val();
+        var password = $("#password").val();
+
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:5001/user/login",
+            contentType: "application/json",
+            data: JSON.stringify({ "username_or_email": email, "password": password }),
+            success: function (data) {
+                console.log(data);
+                document.cookie = "access_token_cookie=" + data.token;
+                window.location.href = "dashboard.html";
+            },
+            error: function (error) {
+                console.error(error);
+                var errorMessage = error.responseJSON ? error.responseJSON.message : "Invalid Credentials";
+                $("#errorMessage").text(errorMessage); // Hata mesajını göster
+            }
+        });
+    }
+</script>
+
+
+
+
+
 </head>
 <body>
+
+    <!-- Bottom Navbar -->
+    <nav class="navbar navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
+        </div>
+    </nav>
+    
     <nav class="navbar navbar-expand-lg"> <!-- Navbar line-->
         <div class="container-fluid">
+            <img src="logo.jpeg" alt="Logo" style="height: 50px; margin-right: 10px;">
             <a class="navbar-brand" href="#">
-                <i class='fas fa-play' style='font-size:24px'></i> SUpotify
-                <i style='font-size:24px' class='fas'>&#xf04b;</i>
+                SUpotify
             </a> 
             <div class="collapse navbar-collapse" id="navbarColor01">
             </div>
         </div>
     </nav>
-
+    <div id="errorMessage" style="color: red;"></div>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">Welcome back!</div>
                     <div class="card-body">
-                        <form>
+                        <form id="loginForm">
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <input type="email" class="form-control" id="email" placeholder="Enter your email">
@@ -105,14 +164,16 @@
                                 <label for="password">Password</label>
                                 <input type="password" class="form-control" id="password" placeholder="Enter your password">
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block">Login</button>
+                            <button type="button" class="btn btn-primary btn-block" onclick="login()">Login</button>
                         </form>
-                        <p class="custom-text"> You can <a href="signup.html"> Sign Up</a> if you don't have an account</p>
+                        <p class="custom-text" id="errorMessage" style="color: red;"></p>
+                        <p class="custom-text"> You can <a href="signup_page.html"> Sign Up</a> if you don't have an account</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 
 </body>
 </html>

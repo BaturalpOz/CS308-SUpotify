@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+    
+    <link rel="stylesheet" href="assets/fontawesome-free-6.5.1-web/css/all.css">
+
+    <title>Song Details</title>
+
+    <style>
+        body {
+            background-color: #ffffff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .navbar {
+            background-color: #0F4C8F;
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff;
+            font-size: 30px;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #ffffff;
+        }
+
+        .card {
+            margin-top: 20px;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        .song-list-item {
+            list-style-type: none;
+            padding: 5px;
+            margin-bottom: 5px;
+        }
+
+        .navbar-bottom {
+            background-color: #0F4C8F;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 999;
+        }
+
+        .download-button {
+            margin-top: 20px;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <!-- Bottom Navbar -->
+    <nav class="navbar navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
+        </div>
+    </nav>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <img src="logo.jpeg" alt="Logo" style="height: 50px; margin-right: 10px;">
+            <a class="navbar-brand" href="dashboard.html">SUpotify</a>
+        </div>
+    </nav>
+
+    <!-- Song Details Section -->
+    <div class="container">
+        <h2>Song Details</h2>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title" id="songTitle">Loading...</h4>
+                <p class="card-text">
+                    <strong>Artist:</strong> <span id="artistName">Loading...</span><br>
+                    <strong>Album:</strong> <span id="albumName">Loading...</span><br>
+                    <strong>Release Date:</strong> <span id="releaseDate">Loading...</span><br>
+                    <strong>Song Length (in ms):</strong> <span id="songLength">Loading...</span><br>
+                    <strong>Danceability (0-1):</strong> <span id="danceability">Loading...</span><br>
+                    <strong>Energy (0-1):</strong> <span id="energy">Loading...</span><br>
+                    <strong>Loudness (dB):</strong> <span id="loudness">Loading...</span><br>
+                    <strong>Tempo (BPM):</strong> <span id="tempo">Loading...</span><br>
+                </p>
+
+                <!-- Rating Section -->
+                <div class="form-group">
+                    <label for="songRating">Rate this song:</label>
+                    <select class="form-control" id="songRating">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <!-- Rating Button -->
+                <button class="btn btn-success" onclick="rateSong()">
+                    <i class="fas fa-star"></i> Rate Song
+                </button>
+
+                <!-- Download Button -->
+                <button class="btn btn-primary download-button" id="downloadButton" onclick="downloadSong()">
+                    <i class="fas fa-download"></i> Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to handle song rating
+        function rateSong() {
+            const songRating = $('#songRating').val();
+
+            // Get the song name from the URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const songName = urlParams.get('songName');
+
+            if (!songName) {
+                alert('No song name provided in the URL.');
+                return;
+            }
+
+            // Retrieve the access token from the cookie
+            const accessToken = getAccessToken();
+
+            if (!accessToken) {
+                console.error('Access token is missing!');
+                alert('Access token is missing!');
+                return;
+            }
+
+            // Log the access token to the console for debugging
+            console.log('Access Token:', accessToken);
+
+            // AJAX request to the Flask backend to rate the song
+            $.ajax({
+                url: `http://127.0.0.1:5001/user/rate-song`,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    song: songName,
+                    rate: parseInt(songRating) // Convert rating to integer before sending
+                }),
+                xhrFields: {
+                    withCredentials: true,
+                },
+                headers: {
+                    'Cookie': document.cookie
+                },
+                success: function (data) {
+                    console.log('Success:', data); // Log the server response
+                    alert(data.message);
+                },
+                error: function (error) {
+                    console.error('Error rating the song:', error);
+                    alert('Error rating the song.');
+
+                        // Log detailed information to the console
+                    console.log('XHR:', xhr);
+                    console.log('Status:', textStatus);
+                    console.log('Error Thrown:', errorThrown);
+                }
+            });
+        }
+
+
+        // Function to get the access token from the cookie (update with the correct cookie name)
+        function getAccessToken() {
+            const cookieName = 'access_token_cookie'; // Update with the correct cookie name
+            const cookies = document.cookie.split(';');
+            for (const cookie of cookies) {
+                const [name, value] = cookie.split('=');
+                if (name.trim() === cookieName) {
+                    return value;
+                }
+            }
+            return null;
+        }
+        $(document).ready(function () {
+            // Get the song name from the URL parameters
+            var urlParams = new URLSearchParams(window.location.search);
+            var songName = urlParams.get('songName');
+
+            if (!songName) {
+                alert('No song name provided in the URL.');
+                return;
+            }
+
+            // AJAX request to the Flask backend to get the song details by name
+            $.get(`http://127.0.0.1:5001/song/get_by_name/${songName}`, function (data) {
+                if (data.song) {
+                    // Populate the song details
+                    $('#songTitle').text(data.song.Name || 'N/A');
+                    $('#artistName').text(data.song.Artists.join(', ') || 'N/A');
+                    $('#albumName').text(data.song.Albums.join(', ') || 'N/A');
+                    $('#releaseDate').text(data.song.ReleaseDate || 'N/A');
+                    $('#songLength').text(data.song.Duration + ' ms' || 'N/A');
+                    $('#danceability').text(data.song.Danceability || 'N/A');
+                    $('#energy').text(data.song.Energy || 'N/A');
+                    $('#loudness').text(data.song.Loudness + ' dB' || 'N/A');
+                    $('#tempo').text(data.song.Tempo + ' BPM' || 'N/A');
+                } else {
+                    alert('Song not found');
+                }
+            }).fail(function () {
+                alert('Error retrieving song details');
+            });
+        });
+    </script>
+</body>
+
+</html>

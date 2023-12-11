@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fontawesome-free-6.5.1-web/css/all.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+    <title>Profile</title>
+    <style>
+        
+        body {
+            background-color: #ffffff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Fixed background for better scrolling experience */
+            padding-bottom: 50px; /* Adjust the value based on the height of your bottom navbar */
+        }
+        .spp{
+            background-color: #318974;
+            padding: 120px;
+            margin-left: 250px;
+            margin-right: 250px;
+            top: 140px;
+            text-align: center;
+            border-radius: 50px; /* Köşeleri yuvarlak yapar */
+            position: relative; 
+        }
+        .daire {
+            position: absolute;
+            top: 40px;
+            left: 15%;
+            width: 150px;
+            height: 150px;
+            background-color: black;
+            border-radius: 50%; /* Border yarı çapını yüzde olarak ayarlar */
+        }
+        .profile-yazi {
+            position: absolute;
+            top: 47px;
+            right: 47px; /* İstenilen konuma ayarlayabilirsiniz */
+            transform: translateY(-50%);
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+            font-family: Calibri;
+        }
+        .daire-yazi {
+            position: absolute;
+            top: 70px;
+            left: 45%;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            font-family: Calibri;
+        }
+        .daire-yazi2 {
+            position: absolute;
+            top: 110px;
+            left: 45%;
+            color: white;
+            font-size: 35px;
+            font-weight: bold;
+            font-family: Calibri;
+        }
+        .add{
+            background-color: #5cbda7;
+            padding: 20px;
+            top: 170px;
+            margin-left: 30%;
+            margin-right: 30%;
+            text-align: left;
+            position: relative; 
+            border-radius: 25px; /* Köşeleri yuvarlak yapar */
+            font-weight: bold;
+            font-family: Calibri;
+            font-size: large;
+        }
+
+
+        .add4{
+            background-color: #5cbda7;
+            padding: 20px;
+            top: 200px;
+            margin-left: 30%;
+            margin-right: 30%;
+            text-align: center;
+            position: relative; 
+            border-radius: 25px; /* Köşeleri yuvarlak yapar */
+            font-weight: bold;
+            font-family: Calibri;
+            font-size: large;
+        }
+        .add5{
+            background-color: #5cbda7;
+            padding: 20px;
+            top: 230px;
+            margin-left: 30%;
+            margin-right: 30%;
+            text-align: center;
+            position: relative; 
+            border-radius: 25px; /* Köşeleri yuvarlak yapar */
+            font-weight: bold;
+            font-family: Calibri;
+            font-size: large;
+        }
+        .add6{
+            background-color: #5cbda7;
+            padding: 20px;
+            top: 260px;
+            margin-left: 30%;
+            margin-right: 30%;
+            text-align: center;
+            position: relative; 
+            border-radius: 25px; /* Köşeleri yuvarlak yapar */
+            font-weight: bold;
+            font-family: Calibri;
+            font-size: large;
+        }
+
+        .add7{
+            background-color: #5cbda7;
+            padding: 20px;
+            top: 290px;
+            margin-left: 30%;
+            margin-right: 30%;
+            text-align: center;
+            position: relative; 
+            border-radius: 25px; /* Köşeleri yuvarlak yapar */
+            font-weight: bold;
+            font-family: Calibri;
+            font-size: large;
+        }
+
+        .navbar {
+            background-color: #0F4C8F; /* Dark purple background */
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff; /* White text color for navigation links */
+            font-size: 30px;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #ffffff; /* White color for the toggler icon */
+        }
+
+        .custom-text {
+            font-size: 16px; 
+            color: #555; 
+            font-weight: bold; 
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .custom-text a {
+            text-decoration: none; /* Remove underline from links */
+            color: rgb(0, 0, 0); /* Change link color */
+            font-weight: bold; /* Make the link text bold */
+        }
+
+        .navbar-bottom {
+            background-color: #0F4C8F;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 999; /* Ensure the bottom navbar appears above other elements */
+        }
+
+        .navbar-bottom .navbar-brand {
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .navbar-bottom-toggler-icon {
+            background-color: #ffffff;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Bottom Navbar -->
+    <nav class="navbar navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
+        </div>
+    </nav>
+
+    <div class="spp">
+        <div class="daire"></div>
+        <div class="daire-yazi" id="user-name">Kullanıcı Adı</div>
+        <div id="user-id" class="daire-yazi2">User ID: </div> <!-- Kullanıcı ID'si için eklenen alan -->
+    </div>
+    <div class="add">Email: <span id="user-email"></span></div>
+    <div class="add4">
+        <a href="reports_page.html" style="text-decoration: none; color: white;">User Reports</a>
+    </div>
+    <div class="add5">
+        <a href="editprofile.html" style="text-decoration: none; color: white;">Edit Profile</a>
+    </div>
+    <div class="add6"><a href="friends.html" style="text-decoration: none; color: white;">Friends</a></div>
+    <!-- Add the new "Rated Songs" button -->
+    <div class="add7">
+        <a href="list_all_songs_saved.html" style="text-decoration: none; color: white;">Rated Songs</a>
+    </div>
+
+
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container-fluid">
+            <img src="logo.jpeg" alt="Logo" style="height: 50px; margin-right: 10px;">
+            <a class="navbar-brand" href="dashboard.html">
+                SUpotify
+            </a> 
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <!-- Add your navbar content here if needed -->
+            </div>
+        </div>
+    </nav>
+    <script>
+        function fetchUserProfile() {    
+            $.ajax({
+                type: "GET",
+                url: "http://127.0.0.1:5001/user/profile",
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function(response) {
+                    $('#user-name').text(response.name);
+                    $('#user-email').text(response.email); // E-posta adresini güncelle
+                    var token = getCookie('access_token_cookie');
+                    var payload = parseJwt(token);
+                    if (payload) {
+                    $('#user-id').text('User ID: ' + payload.user_id);
+                    }
+                },
+                error: function(xhr) {
+                    console.error("Profil bilgileri alınamadı:", xhr.responseText);
+                }
+            });
+        }
+        function parseJwt(token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    }
+
+    function getCookie(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length === 2) return parts.pop().split(";").shift();
+    }
+
+    
+        $(document).ready(function() {
+            fetchUserProfile();
+        });
+    </script>
+    
+    
+
+</body>
+</html>

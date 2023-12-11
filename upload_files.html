@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+
+
+    <title>Upload Page</title>
+    <style>
+        
+        body {
+            background-color: #ffffff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Fixed background for better scrolling experience */
+        }
+
+        .navbar {
+            background-color: #0F4C8F; /* Dark purple background */
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff; /* White text color for navigation links */
+            font-size: 30px;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #ffffff; /* White color for the toggler icon */
+        }
+
+        .custom-text {
+            font-size: 16px; 
+            color: #555; 
+            font-weight: bold; 
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .custom-text a {
+            text-decoration: none; /* Remove underline from links */
+            color: rgb(0, 0, 0); /* Change link color */
+            font-weight: bold; /* Make the link text bold */
+        }
+
+        .navbar-bottom {
+            background-color: #0F4C8F;
+            position: fixed;
+            bottom: -20px;
+            width: 100%;
+        }
+
+        .navbar-bottom .navbar-brand {
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .navbar-bottom-toggler-icon {
+            background-color: #ffffff;
+        }
+
+        .upload-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+        }
+
+        .upload-form {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .btn-submit {
+            background-color: #5cbda7; /* Desired color */
+            color: #ffffff; /* Text color */
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Bottom Navbar -->
+    <nav class="navbar navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
+        </div>
+    </nav>
+    
+    <nav class="navbar navbar-expand-lg"> <!-- Navbar line-->
+        <div class="container-fluid">
+            <img src="logo.jpeg" alt="Logo" style="height: 50px; margin-right: 10px;">
+            <a class="navbar-brand" href="dashboard.html">
+                SUpotify
+            </a> 
+            <div class="collapse navbar-collapse" id="navbarColor01">
+            </div>
+        </div>
+    </nav>
+
+    
+    <div class="upload-container">
+        <h2 class="custom-text">Upload a Song or Album</h2>
+
+        <form class="upload-form" action="upload_handler.php" method="post" enctype="multipart/form-data">
+            <!-- Artist Name -->
+            <div class="form-group">
+                <label for="artistName">Artist Name:</label>
+                <input type="text" class="form-control" id="artistName" name="artistName" required>
+            </div>
+
+            <!-- Album Name -->
+            <div class="form-group">
+                <label for="albumName">Album Name:</label>
+                <input type="text" class="form-control" id="albumName" name="albumName" required>
+            </div>
+
+            <!-- Song Upload -->
+            <div class="form-group">
+                <label for="songFile">Upload Song:</label>
+                <input type="file" class="form-control" id="songFile" name="songFile" accept=".mp3" required>
+            </div>
+
+            <!-- Artist Upload -->
+            <div class="form-group">
+                <label for="artistFile">Upload Artist Image:</label>
+                <input type="file" class="form-control" id="artistFile" name="artistFile" accept="image/*" required>
+            </div>
+
+            <button type="submit" class="btn btn-submit">Submit</button>
+        </form>
+    </div>
+
+
+</body>
+</html>

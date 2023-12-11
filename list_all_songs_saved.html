@@ -1,133 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
-    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
-    <title>Songs</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://bootswatch.com/4/lux/bootstrap.min.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/a076d05399.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>All Songs</title>
     <style>
-        /* Your existing CSS styles here */
-
-        /* Navbar Styles */
-        .navbar {
-            background-color: #0F4C8F; /* Sabancı logosu kodu */
-            padding: 10px;
-            text-align: left;
-        }
-
-        .navbar h1 {
-            margin: 0;
-            padding: 0;
-            color: white;
-            font-size: 24px;
-        }
-
-        /* Songs Header Styles */
-        .songs-header {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #394262; /* MySu mavisi kodu */
-        }
-
-        /* Songs List Styles */
-        .song-list {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .song-list-item {
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #EBEDF1; /* MySu grisi kodu */
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* Add Song Button Styles */
-        .add-song-button {
-            background-color: #394262; /* MySu mavisi kodu */
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-bottom: 10px; /* Added margin-bottom to separate from the song list */
-        }
+      .navbar {
+        background-color: #0f4c8f;
+        padding: 10px;
+        text-align: left;
+      }
+      .navbar h1 {
+        margin: 0;
+        padding: 0;
+        color: white;
+        font-size: 24px;
+      }
+      .songs-header {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #394262;
+      }
+      .song-list {
+        list-style-type: none;
+        padding: 0;
+      }
+      .song-list-item {
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #ebedf1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="navbar">
-        <h1>SUPOTIFY</h1>  
+      <img src="logo.jpeg" alt="Logo" style="height: 50px; margin-right: 10px;">
+      <h1>SUPOTIFY</h1>
     </div>
     <div class="container">
-        <h2 class="songs-header">Songs</h2>
-        <button class="add-song-button"><i class="fas fa-plus"></i> Add Song</button>
-        <ul class="song-list">
-            <!-- Songs and Artists -->
-            <li class="song-list-item">
-                <span>Enerci - Dilan Polat</span>
-                <button><i class="fas fa-trash"></i></button>
-            </li>
-            <li class="song-list-item">
-                <span>Hele Bi (Club Version) - Alişan</span>
-                <button><i class="fas fa-trash"></i></button>
-            </li>
-            <li class="song-list-item">
-                <span>Başıma Belasın - Aleyna Tilki</span>
-                <button><i class="fas fa-trash"></i></button>
-            </li>
-            <li class="song-list-item">
-                <span>Bellydancing - INJI</span>
-                <button><i class="fas fa-trash"></i></button>
-            </li>
-            <li class="song-list-item">
-                <span>Sarışınlar Çat - Mert Kurt</span>
-                <button><i class="fas fa-trash"></i></button>
-            </li>
-            <li class="song-list-item">
-                <span>İki Hece - Berkay</span>
-                <button><i class="fas fa-trash"></i></button>
-            </li>
-            <li class="song-list-item">
-                <span>Tövbe - Derya Bedavacı</span>
-                <button><i class="fas fa-trash"></i></button>
-            </li>
-            <li class="song-list-item">
-                <span>Heated - Beyonce</span>
-                <button><i class="fas fa-trash"></i></button>
-            </li>
-            <li class="song-list-item">
-                <span>Hata - Tan Taşçı</span>
-                <button><i class="fas fa-trash"></i></button>
-            </li>
-            <li class="song-list-item">
-                <span>Biz Burdayız - Hadise</span>
-                <button><i class="fas fa-trash"></i></button>
-            </li>
-            <li class="song-list-item">
-                <span>Uzaktan - Göksel</span>
-                <button><i class="fas fa-trash"></i></button>
-            </li>
-            <li class="song-list-item">
-                <span>Gölge - Demet Akalın</span>
-                <button><i class="fas fa-trash"></i></button>
-            </li>
-            <li class="song-list-item">
-                <span>Bana Anlat - Hande Yener</span>
-                <button><i class="fas fa-trash"></i></button>
-            </li>
-            <li class="song-list-item">
-                <span>Kuzu Kuzu - Tarkan</span>
-                <button><i class="fas fa-trash"></i></button>
-            </li>
-            <!-- Add more songs here -->
-        </ul>
+      <h2 class="songs-header">Rated Songs</h2>
+      <ul class="song-list" id="songList">
+        <!-- Songs will be dynamically loaded here -->
+      </ul>
     </div>
-</body>
+
+    <script>
+      $(document).ready(function () {
+        function loadRatedSongs() {
+          $.ajax({
+            url: "http://127.0.0.1:5001/user/get-rated-songs", // Adjust to match your Flask backend
+            type: "GET",
+            xhrFields: {
+              withCredentials: true,
+            },
+            headers: {
+              cookie: document.cookie,
+            },
+            success: function (response) {
+              $("#songList").empty();
+              response.rated_songs.forEach(function (song) {
+                $("#songList").append(
+                  `<li class="song-list-item">
+                                    <span>${song.title} - ${song.artist}</span>
+                                </li>`
+                );
+              });
+            },
+            error: function () {
+              alert("Error loading rated songs");
+            },
+          });
+        }
+
+        loadRatedSongs();
+      });
+    </script>
+  </body>
 </html>

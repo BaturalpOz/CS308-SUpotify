@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+    <script defer src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+
+    <title>Songs</title>
+    <style>
+        body {
+            background-color: #ffffff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            /* Fixed background for better scrolling experience */
+        }
+
+        .navbar {
+            background-color: #0F4C8F;
+            /* Dark purple background */
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff;
+            /* White text color for navigation links */
+            font-size: 30px;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #ffffff;
+            /* White color for the toggler icon */
+        }
+
+        .song-list {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .song-list-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            /* Border color for each song item */
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            /* Background color for each song item */
+        }
+
+        .song-image {
+            width: 50px;
+            /* Adjust the width of the song image */
+            height: 50px;
+            /* Adjust the height of the song image */
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 10px;
+            /* Add spacing between image and text */
+        }
+
+        .song-image img {
+            width: 100%;
+            height: auto;
+        }
+
+        .song-name {
+            flex-grow: 1;
+            /* Allow the name to grow and take remaining space */
+        }
+
+        .navbar-bottom {
+            background-color: #0F4C8F;
+            position: fixed;
+            bottom: -20px;
+            width: 100%;
+            z-index: 999;
+        }
+
+        .navbar-bottom .navbar-brand {
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .navbar-bottom-toggler-icon {
+            background-color: #ffffff;
+        }
+    </style>
+
+    <script defer>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('http://127.0.0.1:5001/song/all')
+                .then(response => response.json())
+                .then(data => {
+                    const songList = document.querySelector('.song-list ul');
+                    songList.innerHTML = '';
+
+                    data.song_ids.forEach(songId => {
+                        fetch(`http://127.0.0.1:5001/song/${songId}`)
+                            .then(response => response.json())
+                            .then(songData => {
+                                const songListItem = document.createElement('li');
+                                songListItem.classList.add('list-group-item', 'song-list-item');
+
+                                const songLink = document.createElement('a');
+                                songLink.href = `song_details.html?songName=${encodeURIComponent(songData.song.Name)}`;
+                                songLink.textContent = songData.song.Name;
+
+                                songListItem.appendChild(songLink);
+
+                                songList.appendChild(songListItem);
+                            })
+                            .catch(error => console.error('Error fetching song:', error));
+                    });
+                })
+                .catch(error => console.error('Error fetching songs:', error));
+        });
+    </script>
+</head>
+
+<body>
+
+
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <!-- Add Song button -->
+            <img src="logo.jpeg" alt="Logo" style="height: 50px; margin-right: 10px;">
+            <a class="navbar-brand" href="dashboard.html">SUpotify</a>
+            
+            <!-- Add Song button -->
+            <button class="btn btn-primary ml-auto" onclick="location.href='song_record.html'">Add Song</button>
+            
+            <!-- Delete Recording button -->
+            <button class="btn btn-danger" onclick="location.href='delete_song.html'">Delete Recording</button>
+        </div>
+    </nav>
+
+    
+
+    <!-- Song List -->
+    <div class="song-list">
+        <h2>List of all songs</h2>
+        <ul class="list-group">
+            <!-- Songs will be dynamically added here by the JavaScript code -->
+        </ul>
+    </div>
+
+
+    <!-- Bottom Navbar -->
+    <nav class="navbar navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
+        </div>
+    </nav>
+
+</body>
+
+</html>

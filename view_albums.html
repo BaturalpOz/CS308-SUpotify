@@ -94,34 +94,33 @@
 
     <script>
         window.onload = function () {
-            // Fetch and display albums when the page loads
-            fetch('http://127.0.0.1:5000/album/all')
+            fetch('http://127.0.0.1:5001/album/all')
                 .then(response => response.json())
                 .then(data => {
                     const albumList = document.querySelector('.album-list ul');
-                    albumList.innerHTML = ''; // Clear existing list items
+                    albumList.innerHTML = '';
 
                     data.album_ids.forEach(albumId => {
-                        // Fetch each album by id
-                        fetch(`http://127.0.0.1:5000/album/${albumId}`)
+                        fetch(`http://127.0.0.1:5001/album/${albumId}`)
                             .then(response => response.json())
                             .then(albumData => {
                                 const albumListItem = document.createElement('li');
                                 albumListItem.classList.add('list-group-item', 'album-list-item');
 
-                                // Create an image for each album
                                 const albumImageContainer = document.createElement('div');
                                 albumImageContainer.classList.add('album-image');
                                 const albumImage = document.createElement('img');
-                                albumImage.src = albumData.album.Image; // Replace with the actual property from your API
+                                albumImage.src = albumData.album.Image;
                                 albumImageContainer.appendChild(albumImage);
 
-                                // Create a link for each album
                                 const albumLink = document.createElement('a');
-                                albumLink.href = `view_specific_album.html?albumId=${albumData.album.Id}`;
-                                albumLink.textContent = albumData.album.Name; // Display album name
+                                albumLink.href = `view_specific_album.html?albumName=${encodeURIComponent(albumData.album.Name)}`;
+                                albumLink.textContent = albumData.album.Name;
+                                albumLink.addEventListener('click', function (event) {
+                                    event.preventDefault();
+                                    window.location.href = albumLink.href;
+                                });
 
-                                // Append the image and link to the list item
                                 albumListItem.appendChild(albumImageContainer);
                                 albumListItem.appendChild(albumLink);
 
@@ -146,7 +145,8 @@
     <nav class="navbar navbar-expand-lg">
         <!-- Navbar line-->
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
+            <img src="logo.jpeg" alt="Logo" style="height: 50px; margin-right: 10px;">
+            <a class="navbar-brand" href="dashboard.html">
                 SUpotify
             </a>
             <div class="collapse navbar-collapse" id="navbarColor01">

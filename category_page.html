@@ -2,274 +2,171 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="assets/fontawesome-free-6.5.1-web/css/all.css">
+
+
+
+    <title>Discover</title>
     <style>
-        body{
-            background-color: black;
-            color: white;
+        
+        body {
+            background-color: #ffffff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Fixed background for better scrolling experience */
         }
-        .input-yazi {
-            position: absolute;
-            left: 50px; /* İstenilen konuma ayarlayabilirsiniz */
-            top: 50px;
-            transform: translateY(-50%);
-            color: white;
+        
+
+        .container {
+            margin-top: 15px;
+        }
+
+        .navbar {
+            background-color: #0F4C8F; /* Dark purple background */
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff; /* White text color for navigation links */
             font-size: 30px;
-            font-weight: bold;
-            font-family: Calibri;
-            
         }
-        #yazi {
-            position: absolute;
-            top: 100px;
-            left: 50px;
+
+        .navbar-toggler-icon {
+            background-color: #ffffff; /* White color for the toggler icon */
         }
-        .arama-satiri {
-            background-color: orange;
-            padding: 20px;
-            text-align: center;
-            border-radius: 25px; /* Köşeleri yuvarlak yapar */
-        }
-        
-        .arama-kutusu {
-            width: 500px;
-            padding: 15px;
-            border: 1px solid gray;
-            border: 10px;
-            border-radius: 25px; /* Köşeleri yuvarlak yapar */
-        }
-        
-        .arama-dugmesi {
-            background-color: gray;
-            color: white;
+
+        .btn-primary {
+            background-color: #5cbda7; /* Dark purple button background */
             border: none;
-            padding: 15px 20px;
-            cursor: pointer;
-            border-radius: 25px; /* Köşeleri yuvarlak yapar */
-        }
-        .category-label {
-            position: absolute;
-            right: 50%;
-            top: 175px;
-            transform: translate(50%, -50%);
-            font-family: Calibri;
-            font-weight: bold;
-            font-size: 40px;
-            color: white;
-        }
-        .category-label:before,
-        .category-label:after {
-            content: '';
-            display: block;
-            width: 50px;
-            height: 2px; /* İnce çizgi yüksekliği */
-            background-color: white;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
         }
 
-        .category-label:before {
-            left: -60px; /* Solundan çizgi uzaklığı */
+        .btn-primary:hover {
+            background-color: #318974; /* Slightly darker purple on hover */
         }
 
-        .category-label:after {
-            right: -60px; /* Sağından çizgi uzaklığı */
-        }
-        .kose-yuvarlatilmis-kare {
-            width: 175px;
-            height: 175px;
-            background-color: orange; /* Arka planı şeffaf yapar */
-            border: 2px solid orange;
-            border-radius: 15px; /* Köşeleri yuvarlatır */
-            position: absolute;
-            top: 350px; /* İstenilen konuma ayarlayın */
-            right: 50%;
-            transform: translate(50%, -50%);
-        }
-        .kose-yuvarlatilmis-kare-left {
-            width: 175px;
-            height: 175px;
-            background-color: orange;
-            border: 2px solid orange;
-            border-radius: 15px;
-            position: absolute;
-            top: 350px;
-            left: 25%; /* Sol tarafa yerleştirmek için */
-            transform: translate(-50%, -50%);
-        }
-
-        .kose-yuvarlatilmis-kare-right {
-            width: 175px;
-            height: 175px;
-            background-color: orange;
-            border: 2px solid orange;
-            border-radius: 15px;
-            position: absolute;
-            top: 350px;
-            right: 25%; /* Sağ tarafa yerleştirmek için */
-            transform: translate(50%, -50%);
-        }
-        .kose-yuvarlatilmis-kare1 {
-            width: 175px;
-            height: 175px;
-            background-color: orange; /* Arka planı şeffaf yapar */
-            border: 2px solid orange;
-            border-radius: 15px; /* Köşeleri yuvarlatır */
-            position: absolute;
-            top: 600px; /* İstenilen konuma ayarlayın */
-            right: 50%;
-            transform: translate(50%, -50%);
-        }
-        .kose-yuvarlatilmis-kare-left1 {
-            width: 175px;
-            height: 175px;
-            background-color: orange;
-            border: 2px solid orange;
-            border-radius: 15px;
-            position: absolute;
-            top: 600px;
-            left: 25%; /* Sol tarafa yerleştirmek için */
-            transform: translate(-50%, -50%);
-        }
-
-        .kose-yuvarlatilmis-kare-right1 {
-            width: 175px;
-            height: 175px;
-            background-color: orange;
-            border: 2px solid orange;
-            border-radius: 15px;
-            position: absolute;
-            top: 600px;
-            right: 25%; /* Sağ tarafa yerleştirmek için */
-            transform: translate(50%, -50%);
-        }
-        .kose-yuvarlatilmis-kare2 {
-            width: 175px;
-            height: 175px;
-            background-color: orange; /* Arka planı şeffaf yapar */
-            border: 2px solid orange;
-            border-radius: 15px; /* Köşeleri yuvarlatır */
-            position: absolute;
-            top: 850px; /* İstenilen konuma ayarlayın */
-            right: 50%;
-            transform: translate(50%, -50%);
-        }
-        .kose-yuvarlatilmis-kare-left2 {
-            width: 175px;
-            height: 175px;
-            background-color: orange;
-            border: 2px solid orange;
-            border-radius: 15px;
-            position: absolute;
-            top: 850px;
-            left: 25%; /* Sol tarafa yerleştirmek için */
-            transform: translate(-50%, -50%);
-        }
-
-        .kose-yuvarlatilmis-kare-right2 {
-            width: 175px;
-            height: 175px;
-            background-color: orange;
-            border: 2px solid orange;
-            border-radius: 15px;
-            position: absolute;
-            top: 850px;
-            right: 25%; /* Sağ tarafa yerleştirmek için */
-            transform: translate(50%, -50%);
-        }
-        .kose-yuvarlatilmis-kare3 {
-            width: 175px;
-            height: 175px;
-            background-color: orange; /* Arka planı şeffaf yapar */
-            border: 2px solid orange;
-            border-radius: 15px; /* Köşeleri yuvarlatır */
-            position: absolute;
-            top: 1100px; /* İstenilen konuma ayarlayın */
-            right: 50%;
-            transform: translate(50%, -50%);
-        }
-        .kose-yuvarlatilmis-kare-left3 {
-            width: 175px;
-            height: 175px;
-            background-color: orange;
-            border: 2px solid orange;
-            border-radius: 15px;
-            position: absolute;
-            top: 1100px;
-            left: 25%; /* Sol tarafa yerleştirmek için */
-            transform: translate(-50%, -50%);
-        }
-
-        .kose-yuvarlatilmis-kare-right3 {
-            width: 175px;
-            height: 175px;
-            background-color: orange;
-            border: 2px solid orange;
-            border-radius: 15px;
-            position: absolute;
-            top: 1100px;
-            right: 25%; /* Sağ tarafa yerleştirmek için */
-            transform: translate(50%, -50%);
-        }
-        .kare-icerik {
+        .custom-text {
+            font-size: 16px; 
+            color: #555; 
+            font-weight: bold; 
+            margin-top: 10px;
             text-align: center;
-            line-height: 175px;
-            color: white;
-            font-size: 24px;
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: bold;
         }
-      </style>
+
+        .custom-text a {
+            text-decoration: none; /* Remove underline from links */
+            color: rgb(0, 0, 0); /* Change link color */
+            font-weight: bold; /* Make the link text bold */
+        }
+
+        .navbar-bottom {
+            background-color: #0F4C8F;
+            position: fixed;
+            bottom: -20px;
+            width: 100%;
+        }
+
+        .navbar-bottom .navbar-brand {
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .navbar-bottom-toggler-icon {
+            background-color: #ffffff;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 150px);
+            grid-gap: 70px;
+            justify-content: center;
+            padding: 50px;
+        }
+
+        .category-box {
+            width: 150px;
+            height: 150px;
+            background-color: #5cbda7;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            background-size: cover; /* Resmi kaplayacak şekilde ayarla */
+            background-position: center; 
+            padding: 10px;
+        }
+        .category-box img {
+            width: 90%;
+            height: 90%;
+            border-radius: 8px; /* Resimlerin kenarlarını yuvarlak yapmak için */
+        }
+
+        .navbar .form-inline {
+            display: flex;
+        }
+
+        .navbar .form-inline .form-control {
+            margin-right: 10px;
+        }
+
+        .box-1 { background-image: url('rap.png'); }
+        .box-2 { background-image: url('reggea.png'); }
+        .box-3 { background-image: url('pop.png'); }
+        .box-4 { background-image: url('rock.png'); }
+        .box-5 { background-image: url('jazz.png'); }
+        .box-6 { background-image: url('electro.png'); }
+        .box-7 { background-image: url('country.png'); }
+        .box-8 { background-image: url('soul.png'); }
+        .box-9 { background-image: url('blues.png'); }
+        .box-10 { background-image: url('folk.png'); }
+        .box-11 { background-image: url('metal.png'); }
+        .box-12 { background-image: url('classic.png'); }
+
+    </style>
+
 </head>
 <body>
-    <div class="arama-satiri">
-        <input type="text" class="arama-kutusu" placeholder="...">
-        <div class="input-yazi">SUPOTIFY</div>
-        <button class="arama-dugmesi">Search</button>
-        <br>
-        <label class="category-label" style="font-family: Calibri;">Category</label>
-    </div>
-    <div class="kose-yuvarlatilmis-kare">
-        <div class="kare-icerik">Pop</div>
-    </div>
-    <div class="kose-yuvarlatilmis-kare-left">
-        <div class="kare-icerik">Rock</div>
-    </div>
-    <div class="kose-yuvarlatilmis-kare-right">
-        <div class="kare-icerik">Hip-Hop/Rap</div>
-    </div>
 
-    <div class="kose-yuvarlatilmis-kare1">
-        <div class="kare-icerik">Jazz</div>
-    </div>
-    <div class="kose-yuvarlatilmis-kare-left1">
-        <div class="kare-icerik">Classical</div>
-    </div>
-    <div class="kose-yuvarlatilmis-kare-right1">
-        <div class="kare-icerik">Electronic</div>
-    </div>
-
-    <div class="kose-yuvarlatilmis-kare2">
-        <div class="kare-icerik">Country</div>
-    </div>
-    <div class="kose-yuvarlatilmis-kare-left2">
-        <div class="kare-icerik">R&B/Soul</div>
-    </div>
-    <div class="kose-yuvarlatilmis-kare-right2">
-        <div class="kare-icerik">Reggae</div>
-    </div>
-
-    <div class="kose-yuvarlatilmis-kare3">
-        <div class="kare-icerik">Blues</div>
-    </div>
-    <div class="kose-yuvarlatilmis-kare-left3">
-        <div class="kare-icerik">Metal</div>
-    </div>
-    <div class="kose-yuvarlatilmis-kare-right3">
-        <div class="kare-icerik">Folk</div>
+    <!-- Bottom Navbar -->
+    <nav class="navbar navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
+        </div>
+    </nav>
+    
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <img src="logo.jpeg" alt="Logo" style="height: 50px; margin-right: 10px;">
+            <a class="navbar-brand" href="dashboard.html">SUpotify</a> 
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <!-- Arama Çubuğu -->
+                <form class="form-inline ml-auto">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="category-grid">
+            <!-- 12 adet buton -->
+            <button class="category-box box-1"></button>
+            <button class="category-box box-2"></button>
+            <button class="category-box box-3"></button>
+            <button class="category-box box-4"></button>
+            <button class="category-box box-5"></button>
+            <button class="category-box box-6"></button>
+            <button class="category-box box-7"></button>
+            <button class="category-box box-8"></button>
+            <button class="category-box box-9"></button>
+            <button class="category-box box-10"></button>
+            <button class="category-box box-11"></button>
+            <button class="category-box box-12"></button>
+        </div>
     </div>
 </body>
 </html>

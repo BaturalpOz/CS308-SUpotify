@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+   <!-- <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script> -->
+   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <title>Recommended For You</title>
+    <style>
+        body {
+            background-color: #ffffff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .navbar {
+            background-color: #0F4C8F;
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff;
+            font-size: 30px;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #ffffff;
+        }
+
+        .custom-text {
+            font-size: 16px; 
+            color: #555; 
+            font-weight: bold; 
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .custom-text a {
+            text-decoration: none;
+            color: rgb(0, 0, 0);
+            font-weight: bold;
+        }
+
+        .navbar-bottom {
+            background-color: #0F4C8F;
+            position: fixed;
+            bottom: -20px;
+            width: 100%;
+        }
+
+        .navbar-bottom .navbar-brand {
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .navbar-bottom-toggler-icon {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Bottom Navbar -->
+    <nav class="navbar navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
+        </div>
+    </nav>
+    
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                SUpotify
+            </a> 
+            <div class="collapse navbar-collapse" id="navbarColor01">
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Bar -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col">
+                <input id="searchInput" type="text" class="form-control" placeholder="Search for Artists, Songs, Albums, Genres, Playlists...">
+                <button id="searchButton">Search</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recommendations Section -->
+    <div class="container mt-5">
+        <h3>Recommended for You</h3>
+        <div id="recommendations">
+            <!-- Recommendations will be dynamically inserted here -->
+        </div>
+    </div>
+
+
+
+    
+    <script>
+       function get_recommendations() {    
+            $.ajax({
+                type: "GET",
+                url: "http://127.0.0.1:5001/user/recommendations",
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function(response) {
+                    $('#user-name').text(response.name);
+                },
+                error: function(xhr) {
+                    console.error("Olmadı", xhr.responseText);
+                }
+            });
+        }
+    
+        $(document).ready(function() {
+            get_recommendations();
+        });
+    </script>
+    
+
+</body>
+</html>

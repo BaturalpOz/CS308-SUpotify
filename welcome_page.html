@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: 'Calibri', sans-serif;
+            background-color: #0F4C8F;
+            color: white;
+            text-align: center; /* Center align text */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Full height */
+            margin: 0; /* Remove default margin */
+        }
+
+        .logo-container {
+            margin-top: 30px; /* Adjust as needed */
+            background-color: #D7FAFF; /* Set the background color */
+            padding: 5px; /* Create a space around the image */
+            display: inline-block; /* Make the container only as big as necessary */
+            border-radius: 5px;
+        }
+
+        .logo-image {
+            width: 150px; /* Adjust the size as needed */
+            height: auto;
+        }
+
+        .welcome-text {
+            margin: 20px 0; /* Space above and below the text */
+            font-size: 24px; /* Adjust font size as needed */
+            font-weight: bold; /* Make text bold */
+        }
+
+        .button-container a {
+            display: inline-block;
+            margin: 0 10px; /* Space between buttons */
+            background-color: #5cbda7; /* Button background color */
+            color: white; /* Text color */
+            padding: 10px 20px; /* Padding inside the buttons */
+            text-decoration: none; /* Remove underline from links */
+            font-size: 16px; /* Button text size */
+            border: none; /* Remove border */
+            cursor: pointer; /* Cursor as pointer */
+            transition: background-color 0.3s; /* Transition for hover effect */
+            border-radius: 0; /* Square shaped buttons */
+        }
+
+        .button-container a:hover {
+            background-color: #318974; /* Darker color on hover */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo-container">
+        <img src="logo.jpeg" alt="SUpotify Logo" class="logo-image">
+    </div>
+    <div class="welcome-text">
+        Welcome to SUpotify
+    </div>
+    <div class="button-container">
+        <a href="signup_page.html" class="btn btn-primary">Sign Up</a>
+        <a href="login_page.html" class="btn btn-secondary">Login</a>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+
+    <title>Friends</title>
+    <style>
+        
+        body {
+            background-color: #ffffff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Fixed background for better scrolling experience */
+            padding-bottom: 50px; /* Adjust the value based on the height of your bottom navbar */
+        }
+        .arama-kutusu {
+            width: 500px;
+            padding: 15px;
+            border: 1px solid gray;
+            border: 10px;
+            border-radius: 25px; /* Köşeleri yuvarlak yapar */
+        }
+        
+        .arama-dugmesi {
+            background-color: gray;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            cursor: pointer;
+            border-radius: 25px; /* Köşeleri yuvarlak yapar */
+        }
+        .spp{
+            background-color: #318974;
+            padding: 120px;
+            margin-left: 250px;
+            margin-right: 250px;
+            top: 140px;
+            text-align: center;
+            border-radius: 50px; /* Köşeleri yuvarlak yapar */
+            position: relative; 
+        }
+        .daire {
+            position: absolute;
+            top: 40px;
+            left: 15%;
+            width: 150px;
+            height: 150px;
+            background-color: black;
+            border-radius: 50%; /* Border yarı çapını yüzde olarak ayarlar */
+        }
+        .profile-yazi {
+            position: absolute;
+            top: 47px;
+            right: 47px; /* İstenilen konuma ayarlayabilirsiniz */
+            transform: translateY(-50%);
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+            font-family: Calibri;
+        }
+        .daire-yazi {
+            position: absolute;
+            top: 70px;
+            left: 45%;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            font-family: Calibri;
+        }
+        .daire-yazi2 {
+            position: absolute;
+            top: 110px;
+            left: 45%;
+            color: white;
+            font-size: 35px;
+            font-weight: bold;
+            font-family: Calibri;
+        }
+        .arkadas-ekle {
+            background-color: #5cbda7;
+            padding: 20px;
+            top: 170px;
+            margin-left: 30%;
+            margin-right: 30%;
+            text-align: center;
+            position: relative;
+            border-radius: 25px;
+            font-weight: bold;
+            font-family: Calibri;
+            font-size: large;
+            cursor: pointer;
+        }
+        .id {
+            position: absolute;
+            top: 155px;
+            left: 45%;
+            color: black;
+            font-size: 20px;
+            font-weight: bold;
+            font-family: Calibri;
+        }
+        .navbar {
+            background-color: #0F4C8F; /* Dark purple background */
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff; /* White text color for navigation links */
+            font-size: 30px;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #ffffff; /* White color for the toggler icon */
+        }
+
+        .custom-text {
+            font-size: 16px; 
+            color: #555; 
+            font-weight: bold; 
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .custom-text a {
+            text-decoration: none; /* Remove underline from links */
+            color: rgb(0, 0, 0); /* Change link color */
+            font-weight: bold; /* Make the link text bold */
+        }
+
+        .navbar-bottom {
+            background-color: #0F4C8F;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 999; /* Ensure the bottom navbar appears above other elements */
+        }
+
+        .navbar-bottom .navbar-brand {
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .navbar-bottom-toggler-icon {
+            background-color: #ffffff;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Bottom Navbar -->
+    <nav class="navbar navbar-bottom">
+        <div class="container-fluid">
+            
+            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
+        </div>
+    </nav>
+    <div class="spp">
+        <div class="daire"></div>
+        <div class="daire-yazi">Mehmet Emin</div>
+        <div class="daire-yazi2">Er</div>
+        <div class="id">#123456</div>
+    </div>
+    <div class="arkadas-ekle" onclick="arkadasEkle()">Add Friend</div>
+
+    <script>
+        function arkadasEkle() {
+            // Arkadaş ekleme işlemleri buraya gelecek
+    
+            // Örnek: Arkadaş ise uyarı göster
+            alert("You are already friends!");
+        }
+    </script>
+    
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container-fluid">
+            <img src="logo.jpeg" alt="Logo" style="height: 50px; margin-right: 10px;">
+            <a class="navbar-brand" href="dashboard.html">
+                SUpotify
+            </a> 
+            <div class="arama-satiri">
+                <input type="text" class="arama-kutusu" placeholder="...">
+                <button class="arama-dugmesi">Search</button>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <!-- Add your navbar content here if needed -->
+            </div>
+        </div>
+    </nav>
+
+
+
+</body>
+</html>
