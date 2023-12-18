@@ -8,7 +8,7 @@
    <!-- <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script> -->
    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-    <title>Recommended For You</title>
+    <title>view_albums</title>
     <style>
         body {
             background-color: #ffffff;
@@ -93,16 +93,17 @@
     <!-- Recommendations Section -->
     <div class="container mt-5">
         <h3>Recommended for You</h3>
-        <div id="recommendations">
-            <!-- Recommendations will be dynamically inserted here -->
+        <div class="recommendation-box" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
+            <div id="recommendations">
+                <!-- Recommendations will be dynamically inserted here -->
+            </div>
         </div>
     </div>
 
 
-
     
     <script>
-       function get_recommendations() {    
+        function get_recommendations() {    
             $.ajax({
                 type: "GET",
                 url: "http://127.0.0.1:5001/user/recommendations",
@@ -110,14 +111,47 @@
                     withCredentials: true
                 },
                 success: function(response) {
-                    $('#user-name').text(response.name);
-                },
+                    if(response.recommendations) {
+                        display_recommendations(response.recommendations);}
+                   
+              
+                    },
                 error: function(xhr) {
-                    console.error("Olmadı", xhr.responseText);
+                    console.error("Error fetching recommendations", xhr.responseText);
                 }
             });
         }
-    
+
+        function display_recommendations(recommendations) {
+            var container = $('#recommendations');
+            container.empty(); // Clear previous recommendations
+
+            if(recommendations.from_ratings.length > 0) {
+                var ratingsBox = $('<div><h4>Based on Your Ratings</h4></div>');
+                append_songs(ratingsBox, recommendations.from_ratings);
+                container.append(ratingsBox);
+            }
+
+            if(recommendations.from_friends.length > 0) {
+                var friendsBox = $('<div><h4>From Your Friends</h4></div>');
+                recommendations.from_friends.forEach(function(friendRecs) {
+                    if(friendRecs.username) {
+                        friendsBox.append('<h5>' + friendRecs.username + '</h5>');
+                        append_songs(friendsBox, friendRecs.songs);
+                    }
+                });
+                container.append(friendsBox);
+            }
+        }
+
+        function append_songs(box, songs) {
+            var list = $('<ul>');
+            songs.forEach(function(song) {
+                list.append('<li>' + song.title + ' by ' + song.artists.join(', ') + '</li>');
+            });
+            box.append(list);
+        }
+
         $(document).ready(function() {
             get_recommendations();
         });

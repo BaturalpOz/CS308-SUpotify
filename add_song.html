@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="assets/fontawesome-free-6.5.1-web/css/all.css">
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script> 
+
+    <title>Song Record</title>
+    <style>
+        body {
+            background-color: #ffffff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .navbar {
+            background-color: #0F4C8F;
+        }
+        .navbar-brand, .navbar-nav .nav-link {
+            color: #ffffff;
+            font-size: 30px;
+        }
+        .navbar-toggler-icon {
+            background-color: #ffffff;
+        }
+        .custom-text {
+            font-size: 16px; 
+            color: #555; 
+            font-weight: bold; 
+            margin-top: 10px;
+            text-align: center;
+        }
+        .custom-text a {
+            text-decoration: none;
+            color: rgb(0, 0, 0);
+            font-weight: bold;
+        }
+        .navbar-bottom {
+            background-color: #0F4C8F;
+            position: fixed;
+            bottom: -20px;
+            width: 100%;
+        }
+        .navbar-bottom .navbar-brand {
+            color: #ffffff;
+            font-size: 20px;
+        }
+        .navbar-bottom-toggler-icon {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+   
+
+    <!-- Song Record Section -->
+    <div class="container mt-4">
+        <h2>Song Record</h2>
+        <form id="songRecordForm">
+            <div class="form-group">
+                <label for="songTitle">Song Title</label>
+                <input type="text" class="form-control" id="songTitle" placeholder="Enter song title">
+            </div>
+            <div class="form-group">
+                <label for="artistName">Artist Name</label>
+                <input type="text" class="form-control" id="artistName" placeholder="Enter artist name">
+            </div>
+            <div class="form-group">
+                <label for="albumName">Album Name</label>
+                <input type="text" class="form-control" id="albumName" placeholder="Enter album name">
+            </div>
+            <div class="form-group">
+                <label for="releaseDate">Release Date</label>
+                <input type="date" class="form-control" id="releaseDate">
+            </div>
+            <div class="form-group">
+                <label for="songLength">Song Length (in ms)</label>
+                <input type="number" class="form-control" id="songLength" placeholder="Enter song length in milliseconds">
+            </div>
+            <div class="form-group">
+                <label for="danceability">Danceability (0-1)</label>
+                <input type="number" step="0.01" class="form-control" id="danceability" placeholder="Enter danceability score">
+            </div>
+            <div class="form-group">
+                <label for="energy">Energy (0-1)</label>
+                <input type="number" step="0.01" class="form-control" id="energy" placeholder="Enter energy score">
+            </div>
+            <div class="form-group">
+                <label for="loudness">Loudness (dB)</label>
+                <input type="number" class="form-control" id="loudness" placeholder="Enter loudness in decibels">
+            </div>
+            <div class="form-group">
+                <label for="tempo">Tempo (BPM)</label>
+                <input type="number" class="form-control" id="tempo" placeholder="Enter tempo in BPM">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="add_song()">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        function add_song(){
+            var songData = {
+                Name: $('#songTitle').val(),
+                Artists: [$('#artistName').val()],
+                Albums: [$('#albumName').val()],
+                //ReleaseDate: $('#releaseDate').val(),
+                Duration: parseInt($('#songLength').val()),
+                Danceability: parseFloat($('#danceability').val()),
+                Energy: parseFloat($('#energy').val()),
+                Loudness: parseFloat($('#loudness').val()),
+                Tempo: parseFloat($('#tempo').val())
+            };
+
+            $.ajax({
+                url: 'http://127.0.0.1:5001/song/songs',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(songData),
+                success: function(response) {
+                    console.log('Success:', response);
+                    alert('Song added successfully!');
+                    $('#songRecordForm').trigger("reset");
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('Failed to add the song');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
