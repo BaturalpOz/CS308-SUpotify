@@ -385,6 +385,72 @@ def get_statistics_user(user_id):
     )
 
 
+@user_blueprint.route("/add-playlist", methods=["POST"])
+@token_required
+def add_playlist(user_id):
+    data = request.get_json()
+    if not data or not "playlist_name" in data or not "song_names" in data:
+        raise BadRequest("Missing playlist_name or song_names in the request body")
+    playlist_name = data["playlist_name"]
+    song_names = data["song_names"]
+    user_service.add_playlist(user_id, playlist_name, song_names)
+    return jsonify({"message": "Playlist added!"}), 201
+
+
+@user_blueprint.route("/delete-playlist", methods=["DELETE"])
+@token_required
+def delete_playlist(user_id):
+    data = request.get_json()
+    if not data or not "playlist_name" in data:
+        raise BadRequest("Missing playlist_name in the request body")
+    playlist_name = data["playlist_name"]
+    user_service.delete_playlist(user_id, playlist_name)
+    return jsonify({"message": "Playlist deleted!"}), 200
+
+
+@user_blueprint.route("/add-song-to-playlist", methods=["POST"])
+@token_required
+def add_song_to_playlist(user_id):
+    data = request.get_json()
+    if not data or not all(key in data for key in ("playlist_name", "song_name")):
+        raise BadRequest("Missing playlist_name or song_name in the request body")
+    playlist_name = data["playlist_name"]
+    song_name = data["song_name"]
+    user_service.add_song_to_playlist(user_id, playlist_name, song_name)
+    return jsonify({"message": "Song added to playlist!"}), 201
+
+
+@user_blueprint.route("/delete-song-from-playlist", methods=["DELETE"])
+@token_required
+def delete_song_from_playlist(user_id):
+    data = request.get_json()
+    if not data or not all(k in data for k in ("playlist_name", "song_name")):
+        raise BadRequest("Missing playlist_name or song_name in the request body")
+    playlist_name = data["playlist_name"]
+    song_name = data["song_name"]
+    user_service.delete_song_from_playlist(user_id, playlist_name, song_name)
+    return jsonify({"message": "Song deleted from playlist!"}), 200
+
+
+@user_blueprint.route("/get-all-playlists", methods=["GET"])
+@token_required
+def get_all_playlists(user_id):
+    playlists = user_service.get_all_playlists(user_id)
+    return jsonify({"playlists": playlists}), 200
+
+@user_blueprint.route("/get-playlist-by-name", methods=["GET"])
+@token_required
+def get_playlist_by_name(user_id):
+    data = request.get_json()
+    if not data or not "playlist_name" in data:
+        raise BadRequest("Missing playlist_name in the request body")
+    playlist_name = data["playlist_name"]
+    playlist = user_service.get_playlist_by_name(user_id, playlist_name)
+    if playlist:
+        return jsonify({"playlist": playlist}), 200
+    else:
+        return jsonify({"message": "Playlist not found"}), 404
+
 @user_blueprint.errorhandler(BadRequest)
 def handle_bad_request(e):
     return jsonify(error=str(e.description)), 400
