@@ -1,6 +1,6 @@
 import bcrypt
 from datetime import datetime
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Union
 
 
 class User:
@@ -17,6 +17,7 @@ class User:
         rated_songs: Optional[List[Dict[str, str]]] = None,
         rated_artists: Optional[List[str]] = None,
         rated_albums: Optional[List[str]] = None,
+        playlists: Optional[List[Dict[str, Union[str, List[str]]]]] = None
     ):
         """
         Creates a new user object.
@@ -34,6 +35,7 @@ class User:
         self.rated_songs = rated_songs if rated_songs else []
         self.rated_artists = rated_artists if rated_artists else []
         self.rated_albums = rated_albums if rated_albums else []
+        self.playlists = playlists if playlists else[]
 
     @staticmethod
     def hash_password(raw_password: str) -> bytes:
@@ -72,6 +74,7 @@ class User:
             "rated_songs": self.rated_songs if self.rated_songs else [],
             "rated_artists": self.rated_artists if self.rated_artists else [],
             "rated_albums": self.rated_albums if self.rated_albums else [],
+            "playlists": self.playlists if self.playlists else[]
         }
 
     @staticmethod
@@ -101,6 +104,7 @@ class User:
         rated_songs = source.get("rated_songs", [])
         rated_artists = source.get("rated_artists", [])
         rated_albums = source.get("rated_albums", [])
+        playlists = source.get("playlists", [])
 
         user = User(
             username=username,
@@ -114,6 +118,7 @@ class User:
             rated_songs=rated_songs,
             rated_artists=rated_artists,
             rated_albums=rated_albums,
+            playlists=playlists,
         )
         user.password = password.encode("utf-8")  # Ensure the password is in bytes
         return user
