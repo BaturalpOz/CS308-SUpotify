@@ -3,6 +3,7 @@ from app.utils.firebase_song_service import FirebaseSongService
 from app.models.User import User
 import random
 from datetime import datetime
+from typing import List, Any, Dict, Optional, Union
 
 
 class UserService:
@@ -314,6 +315,68 @@ class UserService:
                 to_ret.append({"artist":artist, "date":datetime.strptime(artist["date"], "%Y-%m-%d %H:%M:%S")})
 
             return sorted(to_ret, key=lambda x: x["artist"]["date"], reverse=True)[:10]
+
+    def add_playlist(self, user_id: str, playlist_name: str, song_names: List[str]) -> List[
+        Dict[str, Union[str, List[str]]]]:
+        user = self.get_user_by_id(user_id)
+        playlist_songs = []
+        for song_name in song_names:
+            song = self.firebase_song_service.get_song_by_name(song_name)
+            if song:
+                playlist_songs.append({"name": song["Name"]})
+        new_playlist = {"name": playlist_name, "songs": playlist_songs}
+        user.playlists.append(new_playlist)
+        self.update_user(user_id, {"playlists": user.playlists})
+
+        return user.playlists
+
+    def add_song_to_playlist(self, user_id: str, playlist_name: str, song_name: str) -> List[
+        Dict[str, Union[str, List[str]]]]:
+        user = self.get_user_by_id(user_id)
+        song = self.firebase_song_service.get_song_by_name(song_name)
+        if song:
+            playlist_to_update = next((p for p in user.playlists if p["name"] == playlist_name), None)
+            if playlist_to_update:
+                playlist_to_update["songs"].append({"name": song["Name"]})
+                self.update_user(user_id, {"playlists": user.playlists})
+        return user.playlists
+
+    def delete_playlist(self, user_id: str, playlist_name: str) -> List[Dict[str, Union[str, List[str]]]]:
+        user = self.get_user_by_id(user_id)
+        playlist_index = None
+        for i, playlist in enumerate(user.playlists):
+            if playlist.get("name") == playlist_name:
+                playlist_index = i
+                break
+        if playlist_index is not None:
+            del user.playlists[playlist_index]
+            self.update_user(user_id, {"playlists": user.playlists})
+        return user.playlists
+
+    def delete_song_from_playlist(self, user_id: str, playlist_name: str, song_name: str) -> List[Dict[str, Union[str, List[str]]]]:
+        user = self.get_user_by_id(user_id)
+        playlist_index = None
+        for i, playlist in enumerate(user.playlists):
+            if playlist.get("name") == playlist_name:
+                playlist_index = i
+                break
+        if playlist_index is not None:
+            updated_songs = [
+                {"name": song["name"]} for song in user.playlists[playlist_index]["songs"]
+                if song["name"] != song_name
+            ]
+            user.playlists[playlist_index]["songs"] = updated_songs
+            self.update_user(user_id, {"playlists": user.playlists})
+        return user.playlists
+
+    def get_all_playlists(self, user_id: str):
+        user = self.get_user_by_id(user_id)
+        return user.playlists
+
+    def get_playlist_by_name(self, user_id: str, playlist_name: str) -> Optional[dict]:
+        user = self.get_user_by_id(user_id)
+        playlist = next((p for p in user.playlists if p["name"] == playlist_name), None)
+        return playlist
         
 
 
