@@ -23,6 +23,8 @@ recommendation_service = RecommendationService()
 
 # Authentication decorator
 def token_required(f):
+    """Decorator for token required"""
+
     @wraps(f)
     def decorated(*args, **kwargs):
         token = request.headers.get("Cookie")
@@ -50,6 +52,16 @@ def token_required(f):
 
 @user_blueprint.route("/signup", methods=["POST"])
 def signup_user():
+    """
+    Signup user
+    params:
+        username: username of user
+        email: email of user
+        password: password of user
+    return:
+        message: message of success
+        user_id: id of user
+    """
     data = request.get_json()
     if not data or not all(k in data for k in ("username", "email", "password")):
         raise BadRequest("Missing username, email, or password.")
@@ -65,6 +77,15 @@ def signup_user():
 
 @user_blueprint.route("/login", methods=["POST"])
 def login_user():
+    """
+    Login user
+    params:
+        username_or_email: username or email of user
+        password: password of user
+    return:
+        token: token of user
+        message: message of success
+    """
     data = request.get_json()
     if not data or not all(k in data for k in ("username_or_email", "password")):
         raise BadRequest("Missing username/email or password.")
@@ -98,6 +119,11 @@ def login_user():
 
 @user_blueprint.route("/logout", methods=["POST"])
 def logout_user():
+    """
+    Logout user
+    return:
+        message: message of success
+    """
     response = make_response(jsonify({"message": "User logged out!"}), 200)
     response.delete_cookie("access_token_cookie")
     return response
@@ -106,6 +132,13 @@ def logout_user():
 @user_blueprint.route("/<userid>", methods=["GET"])
 @token_required
 def get_user(user_id, userid):
+    """
+    Get user by id
+    params:
+        userid: id of user
+    return:
+        user: user object
+    """
     user = user_service.get_user_by_id(userid)
     if user is None:
         raise NotFound("User not found.")
@@ -115,6 +148,13 @@ def get_user(user_id, userid):
 @user_blueprint.route("/<userid>", methods=["PUT"])
 @token_required
 def update_user(user_id, userid):
+    """
+    Update user
+    params:
+        userid: id of user
+    return:
+        message: message of success
+    """
     data = request.get_json()
     if not data:
         raise BadRequest("No data provided for update.")
@@ -125,6 +165,13 @@ def update_user(user_id, userid):
 @user_blueprint.route("/<userid>", methods=["DELETE"])
 @token_required
 def delete_user(user_id, userid):
+    """
+    Delete user
+    params:
+        userid: id of user
+    return:
+        message: message of success
+    """
     user_service.delete_user(userid)
     return jsonify({"message": "User deleted!"}), 200
 
@@ -139,6 +186,13 @@ def delete_user(user_id, userid):
 @user_blueprint.route("/upload", methods=["POST"])
 @token_required
 def file_upload(user_id):
+    """
+    Upload file
+    params:
+        user_id: id of user
+    return:
+        message: message of success
+    """
     file = request.files["file"]
     if not file:
         raise BadRequest("No file provided.")
@@ -164,6 +218,14 @@ def file_upload(user_id):
 @user_blueprint.route("/profile", methods=["GET"])
 @token_required
 def get_user_profile(user_id):
+    """
+    Get user profile
+    params:
+        user_id: id of user
+    return:
+        name: name of user
+        email: email of user
+    """
     user = user_service.get_user_by_id(user_id)
     if user is None:
         raise NotFound("User not found.")
@@ -173,6 +235,13 @@ def get_user_profile(user_id):
 @user_blueprint.route("/add-friend", methods=["POST"])
 @token_required
 def add_friend(user_id):
+    """
+    Add friend
+    params:
+        friend_username: username of friend
+    return:
+        message: message of success
+    """
     data = request.get_json()
     if not data or not "friend_username" in data:
         raise BadRequest("Missing username")
@@ -185,6 +254,13 @@ def add_friend(user_id):
 @user_blueprint.route("/remove-friend", methods=["POST"])
 @token_required
 def remove_friend(user_id):
+    """
+    Remove friend
+    params:
+        friend_username: username of friend
+    return:
+        message: message of success
+    """
     data = request.get_json()
     if not data or not "friend_username" in data:
         raise BadRequest("Missing username")
@@ -195,6 +271,13 @@ def remove_friend(user_id):
 @user_blueprint.route("/friends", methods=["GET"])
 @token_required
 def get_friends(user_id):
+    """
+    Get friends for user
+    params:
+        user_id: id of user
+    return:
+        friends: list of friends
+    """
     friends = user_service.get_friends(user_id)
     return jsonify({"message": "Friends retrieved!", "friends": friends}), 200
 
@@ -202,6 +285,13 @@ def get_friends(user_id):
 @user_blueprint.route("/recommendations", methods=["GET"])
 @token_required
 def get_recommendations(user_id):
+    """
+    Get recommendations for user
+    params:
+        user_id: id of user
+    return:
+        recommendations: list of recommendations
+    """
     try:
         recommendations = recommendation_service.generate_recommendations(user_id)
         return (
@@ -220,6 +310,14 @@ def get_recommendations(user_id):
 @user_blueprint.route("/rate-song", methods=["POST"])
 @token_required
 def rate_song(user_id):
+    """
+    Rate song
+    params:
+        song: name of song
+        rate: rating of song
+    return:
+        message: message of success
+    """
     data = request.get_json()
     if not data or not "song" in data or not "rate" in data:
         raise BadRequest("Missing song or rate")
@@ -230,6 +328,13 @@ def rate_song(user_id):
 @user_blueprint.route("/unrate-song", methods=["POST"])
 @token_required
 def unrate_song(user_id):
+    """
+    Unrate song
+    params:
+        song: name of song
+    return:
+        message: message of success
+    """
     data = request.get_json()
     if not data or not "song" in data:
         raise BadRequest("Missing song")
@@ -240,6 +345,13 @@ def unrate_song(user_id):
 @user_blueprint.route("/get-rated-songs", methods=["GET"])
 @token_required
 def get_rated_songs(user_id):
+    """
+    Get rated songs
+    params:
+        user_id: id of user
+    return:
+        rated_songs: list of rated songs
+    """
     rated_songs = user_service.get_rated_songs(user_id)
     return (
         jsonify({"message": "Rated songs retrieved!", "rated_songs": rated_songs}),
@@ -250,6 +362,14 @@ def get_rated_songs(user_id):
 @user_blueprint.route("/rate-album", methods=["POST"])
 @token_required
 def rate_album(user_id):
+    """
+    Rate album
+    params:
+        album: name of album
+        rate: rating of album
+    return:
+        message: message of success
+    """
     data = request.get_json()
     if not data or not "album" in data or not "rate" in data:
         raise BadRequest("Missing album or rate")
@@ -260,6 +380,13 @@ def rate_album(user_id):
 @user_blueprint.route("/unrate-album", methods=["POST"])
 @token_required
 def unrate_album(user_id):
+    """
+    Unrate album
+    params:
+        album: name of album
+    return:
+        message: message of success
+    """
     data = request.get_json()
     if not data or not "album" in data:
         raise BadRequest("Missing album")
@@ -270,6 +397,13 @@ def unrate_album(user_id):
 @user_blueprint.route("/get-rated-albums", methods=["GET"])
 @token_required
 def get_rated_albums(user_id):
+    """
+    Get rated albums
+    params:
+        user_id: id of user
+    return:
+        rated_albums: list of rated albums
+    """
     rated_albums = user_service.get_rated_albums(user_id)
     return (
         jsonify({"message": "Rated albums retrieved!", "rated_albums": rated_albums}),
@@ -280,6 +414,14 @@ def get_rated_albums(user_id):
 @user_blueprint.route("/rate-artist", methods=["POST"])
 @token_required
 def rate_artist(user_id):
+    """
+    Rate artist
+    params:
+        artist: name of artist
+        rate: rating of artist
+    return:
+        message: message of success
+    """
     data = request.get_json()
     if not data or not "artist" in data or not "rate" in data:
         raise BadRequest("Missing artist or rate")
@@ -290,6 +432,13 @@ def rate_artist(user_id):
 @user_blueprint.route("/unrate-artist", methods=["POST"])
 @token_required
 def unrate_artist(user_id):
+    """
+    Unrate artist
+    params:
+        artist: name of artist
+    return:
+        message: message of success
+    """
     data = request.get_json()
     if not data or not "artist" in data:
         raise BadRequest("Missing artist")
@@ -300,6 +449,13 @@ def unrate_artist(user_id):
 @user_blueprint.route("/get-rated-artists", methods=["GET"])
 @token_required
 def get_rated_artists(user_id):
+    """
+    Get rated artists
+    params:
+        user_id: id of user
+    return:
+        rated_artists: list of rated artists
+    """
     rated_artists = user_service.get_rated_artists(user_id)
     return (
         jsonify(
@@ -312,6 +468,18 @@ def get_rated_artists(user_id):
 @user_blueprint.route("/statistics", methods=["POST"])
 @token_required
 def get_statistics(user_id):
+    """
+    Get statistics for user
+    params:
+        user_id: id of user
+        start_date: start date of statistics
+        end_date: end date of statistics
+        filter_type: type of filter
+    return:
+        rated_songs: list of rated songs
+        rated_albums: list of rated albums
+        rated_artists: list of rated artists
+    """
     data = request.get_json()
     """
     {
@@ -370,6 +538,15 @@ def get_statistics(user_id):
 @user_blueprint.route("/statistics-user", methods=["POST"])
 @token_required
 def get_statistics_user(user_id):
+    """
+    Get statistics for user
+    params:
+        user_id: id of user
+    return:
+        rated_songs: list of rated songs
+        rated_albums: list of rated albums
+        rated_artists: list of rated artists
+    """
     data = request.get_json()
     # all songs and artists and albums rated by user sorted by date
     return (
@@ -388,6 +565,14 @@ def get_statistics_user(user_id):
 @user_blueprint.route("/add-playlist", methods=["POST"])
 @token_required
 def add_playlist(user_id):
+    """
+    Add playlist
+    params:
+        playlist_name: name of playlist
+        song_names: list of song names
+    return:
+        message: message of success
+    """
     data = request.get_json()
     if not data or not "playlist_name" in data or not "song_names" in data:
         raise BadRequest("Missing playlist_name or song_names in the request body")
@@ -400,6 +585,13 @@ def add_playlist(user_id):
 @user_blueprint.route("/delete-playlist", methods=["DELETE"])
 @token_required
 def delete_playlist(user_id):
+    """
+    Delete playlist
+    params:
+        playlist_name: name of playlist
+    return:
+        message: message of success
+    """
     data = request.get_json()
     if not data or not "playlist_name" in data:
         raise BadRequest("Missing playlist_name in the request body")
@@ -411,6 +603,14 @@ def delete_playlist(user_id):
 @user_blueprint.route("/add-song-to-playlist", methods=["POST"])
 @token_required
 def add_song_to_playlist(user_id):
+    """
+    Add song to playlist
+    params:
+        playlist_name: name of playlist
+        song_name: name of song
+    return:
+        message: message of success
+    """
     data = request.get_json()
     if not data or not all(key in data for key in ("playlist_name", "song_name")):
         raise BadRequest("Missing playlist_name or song_name in the request body")
@@ -423,6 +623,14 @@ def add_song_to_playlist(user_id):
 @user_blueprint.route("/delete-song-from-playlist", methods=["DELETE"])
 @token_required
 def delete_song_from_playlist(user_id):
+    """
+    Delete song from playlist
+    params:
+        playlist_name: name of playlist
+        song_name: name of song
+    return:
+        message: message of success
+    """
     data = request.get_json()
     if not data or not all(k in data for k in ("playlist_name", "song_name")):
         raise BadRequest("Missing playlist_name or song_name in the request body")
@@ -435,12 +643,27 @@ def delete_song_from_playlist(user_id):
 @user_blueprint.route("/get-all-playlists", methods=["GET"])
 @token_required
 def get_all_playlists(user_id):
+    """
+    Get all playlists
+    params:
+        user_id: id of user
+    return:
+        playlists: list of playlist objects
+    """
     playlists = user_service.get_all_playlists(user_id)
     return jsonify({"playlists": playlists}), 200
+
 
 @user_blueprint.route("/get-playlist-by-name", methods=["GET"])
 @token_required
 def get_playlist_by_name(user_id):
+    """
+    Get playlist by name
+    params:
+        playlist_name: name of playlist
+    return:
+        playlist: playlist object
+    """
     data = request.get_json()
     if not data or not "playlist_name" in data:
         raise BadRequest("Missing playlist_name in the request body")
@@ -451,11 +674,14 @@ def get_playlist_by_name(user_id):
     else:
         return jsonify({"message": "Playlist not found"}), 404
 
+
 @user_blueprint.errorhandler(BadRequest)
 def handle_bad_request(e):
+    """Handle bad request"""
     return jsonify(error=str(e.description)), 400
 
 
 @user_blueprint.errorhandler(NotFound)
 def handle_not_found(e):
+    """Handle not found"""
     return jsonify(error=str(e.description)), 404
