@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ALL PODCASTS"
+        android:textSize="25sp"
+        android:textColor="@color/mysublue"
+        android:textStyle="bold"
+        android:padding="16dp"
+        android:gravity="center"/>
+
+    <!-- Add Podcast Button -->
+    <Button
+        android:id="@+id/btnAddPodcast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Podcast"
+        android:layout_below="@id/titleTextView"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="80dp"
+        android:background="@android:color/black"
+        android:textColor="@android:color/white"
+        android:onClick="onAddPodcastClick" />
+
+    <!-- Delete Podcast Button -->
+    <Button
+        android:id="@+id/btnDeletePodcast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Podcast"
+        android:layout_below="@id/titleTextView"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="80dp"
+        android:background="@android:color/holo_red_light"
+        android:textColor="@android:color/white"
+        android:onClick="onDeletePodcastClick" />
+
+    <!-- Podcast List -->
+    <ListView
+        android:id="@+id/podcastListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/btnDeletePodcast"
+        android:layout_weight="1"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"
+        android:padding="16dp" />
+
+</RelativeLayout>
