@@ -47,7 +47,7 @@ class UserService:
         else:
             user = self.firebase_user_service.get_user_by_username(username_or_email)
 
-        if user and User.check_password(user, password):
+        if user and user.check_password(password):
             return user
         else:
             return None
@@ -377,8 +377,17 @@ class UserService:
         user = self.get_user_by_id(user_id)
         playlist = next((p for p in user.playlists if p["name"] == playlist_name), None)
         return playlist
+    def subscribe_to_artist(self,user_id:str,artists_id:str):
+        user = self.get_user_by_id(user_id)
+        dict_user = user.to_dict()
+        #if dict_user.get("subscribed_artists") is not None:
+        dict_user["subscribed_artists"].append(artists_id)
+        #else:
+            #return False
+        self.update_user(user_id,dict_user)
+       
         
-
+        return {"user_id":user_id,"subscribed_artists":dict_user["subscribed_artists"]}
 
 
     

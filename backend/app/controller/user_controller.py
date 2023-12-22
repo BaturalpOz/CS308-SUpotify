@@ -445,6 +445,17 @@ def unrate_artist(user_id):
     rated_artists = user_service.unrate_artist(user_id, data["artist"])
     return jsonify({"message": "Artist unrated!", "rated_artists": rated_artists}), 200
 
+@user_blueprint.route("/subscribe/<artist_id>",methods = ["POST"])
+@token_required
+def subscribe_to_artist(user_id,artist_id):
+    user_id = request.json.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Missing user_id in request body"}), 400
+
+    response = user_service.subscribe_to_artist(user_id,artist_id)
+    
+    return jsonify(response)
+
 
 @user_blueprint.route("/get-rated-artists", methods=["GET"])
 @token_required
