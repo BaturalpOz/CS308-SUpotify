@@ -86,8 +86,8 @@ def create_songs(artist_data):
 def create_everything(spotify_data):
     for artist_id in spotify_data:
         artist_data = spotify_data[artist_id]
-        #create_albums(artist_data)
-        #create_artists(artist_data)
+        create_albums(artist_data)
+        create_artists(artist_data)
         create_songs(artist_data)
 
 create_everything(spotify_data)
