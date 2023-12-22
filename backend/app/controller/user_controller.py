@@ -445,7 +445,7 @@ def unrate_artist(user_id):
     rated_artists = user_service.unrate_artist(user_id, data["artist"])
     return jsonify({"message": "Artist unrated!", "rated_artists": rated_artists}), 200
 
-@user_blueprint.route("/subscribe/<artist_id>",methods = ["POST"])
+@user_blueprint.route("/subscriptions/add/<artist_id>",methods = ["POST"])
 @token_required
 def subscribe_to_artist(user_id,artist_id):
     user_id = request.json.get("user_id")
@@ -455,7 +455,23 @@ def subscribe_to_artist(user_id,artist_id):
     response = user_service.subscribe_to_artist(user_id,artist_id)
     
     return jsonify(response)
+@user_blueprint.route("/subscriptions/delete/<artist_id>",methods=["DELETE"])
+@token_required
+def delete_subcription(user_id,artist_id):
+    user_id = request.json.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Missing user_id in request body"}), 400
+    deleted = user_service.delete_subcription(user_id,artist_id)
+    return jsonify({artist_id:"Delete was successful"},204) if deleted else jsonify({artist_id:"There was an error in deletion"},500) 
 
+@user_blueprint.route("/subscriptions/getAll",methods=["GET"])
+@token_required
+def get_subscription_list(user_id):
+    user_id = request.json.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Missing user_id in request body"}), 400
+    subscription_list = user_service.get_subscriptions(user_id)
+    return jsonify(subscription_list) if subscription_list else jsonify({"error":"NotFound"},400)
 
 @user_blueprint.route("/get-rated-artists", methods=["GET"])
 @token_required

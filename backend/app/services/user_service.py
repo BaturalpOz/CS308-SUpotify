@@ -377,17 +377,36 @@ class UserService:
         user = self.get_user_by_id(user_id)
         playlist = next((p for p in user.playlists if p["name"] == playlist_name), None)
         return playlist
+    
     def subscribe_to_artist(self,user_id:str,artists_id:str):
+        '''
+        TO-DO: Modify the get methods so that they return the whole artist object instead of just id
+               Give the subscriptions an effect such as subscribed artists appear more on recommendation or
+               when they drop a new song recommend it to all subscribers 
+        '''
         user = self.get_user_by_id(user_id)
         dict_user = user.to_dict()
         #if dict_user.get("subscribed_artists") is not None:
         dict_user["subscribed_artists"].append(artists_id)
         #else:
             #return False
-        self.update_user(user_id,dict_user)
-       
-        
+        update_dict = {"subscribed_artists":dict_user["subscribed_artists"]}
+        self.update_user(user_id,update_dict)     
         return {"user_id":user_id,"subscribed_artists":dict_user["subscribed_artists"]}
 
-
+    def get_subscriptions(self,user_id):
+        user = self.get_user_by_id(user_id)
+        dict_user = user.to_dict()
+        subscriptions = dict_user.get("subscribed_artists")
+        return subscriptions if subscriptions else None
     
+    def delete_subcription(self,user_id,artist_id):
+        user = self.get_user_by_id(user_id)
+        dict_user = user.to_dict()
+        subscription_list = dict_user.get("subscribed_artists")
+        if subscription_list:
+            subscription_list.remove(artist_id)
+            update_data = {"subscribed_artists":subscription_list}
+            self.update_user(user_id,update_data)
+            return subscription_list
+        return None
