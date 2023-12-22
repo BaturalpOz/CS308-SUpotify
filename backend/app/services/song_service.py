@@ -35,12 +35,20 @@ class SongService:
         """
         Retrieves a song by its unique song ID.
         """
-        return self.firebase_song_service.get_song_by_id(song_id)
+        if not song_id:
+            raise ValueError("song ID cannot be empty.")
+        elif not self.firebase_song_service.get_song(song_id):
+            raise ValueError("song does not exist.")
+        return self.firebase_song_service.get_song(song_id)
 
     def get_song_by_name(self, name: str):
         """
-        Retrieves a song by its name.
+        Retrieves a song by its unique name.
         """
+        if not name:
+            raise ValueError("Name cannot be empty.")
+        elif not self.firebase_song_service.get_song_by_name(name):
+            raise ValueError("Album does not exist.")
         return self.firebase_song_service.get_song_by_name(name)
 
     def update_song(self, song_id: str, update_data: dict):
@@ -60,3 +68,9 @@ class SongService:
 
         if not success:
             raise Exception("Failed to delete the song.")
+
+    def get_all_song_ids(self):
+        """
+        Retrieves all song IDs from Firebase.
+        """
+        return self.firebase_song_service.get_all_song_ids()
