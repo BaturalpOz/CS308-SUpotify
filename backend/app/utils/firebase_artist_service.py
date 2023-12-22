@@ -19,12 +19,12 @@ class FirebaseArtistService:
         """
         Adds a new artist document to the Artists collection.
         """
-        # Convert the Artist object to a dict suitable for Firestore
+      
         artist_dict = artist.to_dict()
         try:
-            # Create a new document in the 'Artists' collection with a unique ID
+            
             _, doc_ref = self.db.collection(u'Artists').add(artist_dict)
-            return doc_ref.id  # Return the generated document ID
+            return doc_ref.id  
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
@@ -34,7 +34,6 @@ class FirebaseArtistService:
         Retrieves an artist document from the Artists collection by name.
         """
         try:
-            
             artists_ref = self.db.collection(u'Artists')
             query = artists_ref.where(u'Name', u'==', name)
             results = query.get()
@@ -53,7 +52,9 @@ class FirebaseArtistService:
             artist_ref = self.db.collection(u'Artists').document(artist_id).get()
             
             if artist_ref.exists:
-                artist_doc = artist_ref.to_dict()               
+                artist_doc = artist_ref.to_dict()
+               
+            
                 return Artist.from_dict(artist_doc)
             else:
                 return None
