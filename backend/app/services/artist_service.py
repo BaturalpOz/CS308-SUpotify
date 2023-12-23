@@ -1,12 +1,16 @@
 from app.utils.firebase_artist_service import FirebaseArtistService
 from app.models.Artist import Artist
 from typing import List
+from app.services.album_service import AlbumService
+
+from app.utils.firebase_album_service import FirebaseAlbumService
 
 
 class ArtistService:
     def __init__(self):
         self.firebase_artist_service = FirebaseArtistService()
-
+        self.firebase_album_service = FirebaseAlbumService()
+        self.album_service = AlbumService()
     def create_artist(self, name: str, genres: List[str], image_url: str, popularity: int, albums: List[str]):
         """
         Handles the business logic for creating a new artist.
@@ -65,3 +69,34 @@ class ArtistService:
         Retrieves all artist IDs from Firebase.
         """
         return self.firebase_artist_service.get_all_artist_ids()
+
+    def get_artists_from_ids(self,subscription_list:List[str]):
+        '''
+        Returns the list of artist objects instead of their ids for more usability
+        '''
+        artist_dict = {}
+        artist_list = []
+        for sub in subscription_list:
+            artist = self.firebase_artist_service.get_artist(sub)
+            dict_artist = artist.to_dict()
+            artist_list.append(dict_artist)
+        artist_dict.update({"subscribed_artists":artist_list})
+        return artist_dict
+    
+    def get_artist_albums(self,artist_id:str):
+        album_list = []
+        artist = self.get_artist_by_id(artist_id)
+        albums = artist.albums
+        for album in albums:
+            album_list.append(self.album_service.get_album_by_name(album))
+        return album_list
+    
+    def get_artist_songs(self,artist_id):
+        song_list = []
+        albums = self.get_artist_albums(artist_id)
+        for album in albums:
+            dict_album = album.to_dict()
+            songs = self.album_service.get_songs_by_names(dict_album["Songs"])
+            for song in songs:
+                song_list.append(song)
+        return song_list

@@ -7,12 +7,15 @@ from app.utils.firebase_song_service import FirebaseSongService
 from app.utils.firebase_user_service import FirebaseUserService
 from app.services.user_service import UserService
 from app.services.artist_service import ArtistService
+from app.models.User import User
+from app.services.song_service import SongService
 
 
 class RecommendationService:
     def __init__(self):
         self.user_service = UserService()
         self.artist_service = ArtistService()
+        self.song_service = SongService()
         self.firebase_user_service = FirebaseUserService()
         self.firebase_song_service = FirebaseSongService()
         self.firebase_artist_service = FirebaseArtistService()
@@ -25,6 +28,7 @@ class RecommendationService:
         recommendations = {
             "from_ratings": self._recommend_from_ratings(user.rated_songs),
             "from_friends": self._recommend_from_friends(user.friends),
+            # "from_subscriptions": self._recommend_from_subscriptions(user)
         }
 
         # Delete songs that are recomended and are in user.rated_songs
@@ -101,6 +105,59 @@ class RecommendationService:
         recommended_songs = list(set(recommended_songs))
         return recommended_songs
 
+    def _recommend_from_subscriptions(self,user:User) -> List[Song]:
+        """
+        Recommend songs based on subscribed artists' activities.
+        """
+        subscriptions = user.subscribed_artists
+        recommended_songs = []
+        
+        user_rated_songs = user.rated_songs
+        
+        for artist_id in subscriptions:
+            
+            artist_songs = self.artist_service.get_artist_songs(artist_id)
+            artist = self.artist_service.get_artist_by_id(artist_id)
+
+            # Recommend songs from subscribed artist that user hasn't rated yet
+            
+            for song in artist_songs:
+                if song.name not in user_rated_songs:
+                    recommended_songs.append(song)
+            # Recommend songs similar to subscribed artists
+                danceability, energy, loudness, tempo = (
+                    song.danceability,
+                    song.energy,
+                    song.loudness,
+                    song.tempo,
+                    )
+                genres = artist.genres
+                similar_songs = self._find_similar_songs(
+                genres, danceability, energy, loudness, tempo
+                )
+                recommended_songs.extend(similar_songs)
+            
+       
+
+        recommended_songs = list(set(recommended_songs))
+        return recommended_songs
+
+    def _get_new_songs_by_artist(
+        self, artist_name: str, subscription_date: datetime
+    ) -> List[Song]:
+        """
+        Get new songs added by the subscribed artist since the subscription date.
+        """
+        new_songs = []
+        subscribed_artist = self.artist_service.get_artist_by_name(artist_name)
+
+        for song in subscribed_artist.songs:
+            # Replace 'release_date' with the actual attribute in your Song class
+            if song.release_date > subscription_date:
+                new_songs.append(song)
+
+        return new_songs
+
     def _find_similar_songs(
         self,
         genres: List[str],
@@ -112,7 +169,7 @@ class RecommendationService:
         """
         Find songs that are similar to the provided song characteristics.
         """
-        all_songs = self.firebase_song_service.get_all_songs()
+        all_songs = self.song_service.get_all_songs()
 
         similar_songs = []
         for song in all_songs:
@@ -162,3 +219,4 @@ class RecommendationService:
         ) / 4
 
         return combined_score
+    

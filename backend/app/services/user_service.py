@@ -5,12 +5,16 @@ import random
 from datetime import datetime
 from typing import List, Any, Dict, Optional, Union
 
+from app.utils.firebase_artist_service import FirebaseArtistService
+from app.services.artist_service import ArtistService
+
 
 class UserService:
     def __init__(self):
         self.firebase_user_service = FirebaseUserService()
         self.firebase_song_service = FirebaseSongService()
-
+        self.firebase_artist_service = FirebaseArtistService()
+        self.artist_service = ArtistService()
     def create_user(self, username: str, email: str, password: str):
         """
         Handles the business logic for creating a new user.
@@ -379,11 +383,7 @@ class UserService:
         return playlist
     
     def subscribe_to_artist(self,user_id:str,artists_id:str):
-        '''
-        TO-DO: Modify the get methods so that they return the whole artist object instead of just id
-               Give the subscriptions an effect such as subscribed artists appear more on recommendation or
-               when they drop a new song recommend it to all subscribers 
-        '''
+        
         user = self.get_user_by_id(user_id)
         dict_user = user.to_dict()
         #if dict_user.get("subscribed_artists") is not None:
@@ -392,13 +392,17 @@ class UserService:
             #return False
         update_dict = {"subscribed_artists":dict_user["subscribed_artists"]}
         self.update_user(user_id,update_dict)     
-        return {"user_id":user_id,"subscribed_artists":dict_user["subscribed_artists"]}
+        subscribed_artists = self.artist_service.get_artists_from_ids(dict_user["subscribed_artists"])
+        return subscribed_artists
 
     def get_subscriptions(self,user_id):
         user = self.get_user_by_id(user_id)
         dict_user = user.to_dict()
         subscriptions = dict_user.get("subscribed_artists")
-        return subscriptions if subscriptions else None
+        if subscriptions:
+            subscribed_artists = self.artist_service.get_artists_from_ids(subscriptions) 
+            return subscribed_artists
+        return None
     
     def delete_subcription(self,user_id,artist_id):
         user = self.get_user_by_id(user_id)
@@ -408,5 +412,5 @@ class UserService:
             subscription_list.remove(artist_id)
             update_data = {"subscribed_artists":subscription_list}
             self.update_user(user_id,update_data)
-            return subscription_list
+            return artist_id
         return None

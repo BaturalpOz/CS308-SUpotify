@@ -113,6 +113,23 @@ def get_all_artists():
     artist_ids = artist_service.get_all_artist_ids()
     return jsonify({"artist_ids": artist_ids}), 200
 
+@artist_blueprint.route("/<artist_id>/albums",methods = ["GET"])
+def get_artist_albums(artist_id):
+    albums = artist_service.get_artist_albums(artist_id)
+    album_dict = {}
+    for album in albums:
+        dict_album = album.to_dict()
+        album_dict.update({album.name:dict_album})
+    return jsonify({"artist_albums":album_dict})
+
+@artist_blueprint.route("/<artist_id>/songs",methods = ["GET"])
+def get_artist_songs(artist_id):
+    songs = artist_service.get_artist_songs(artist_id)
+    song_dicts = {}
+    for song in songs:
+        song_dict = song.to_dict()
+        song_dicts.update({song.name:song_dict})
+    return jsonify({"artist_songs":song_dicts})
 
 @artist_blueprint.errorhandler(BadRequest)
 def handle_bad_request(e):

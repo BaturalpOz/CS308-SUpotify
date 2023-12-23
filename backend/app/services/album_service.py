@@ -2,11 +2,14 @@ from datetime import datetime
 from app.utils.firebase_album_service import FirebaseAlbumService
 from app.models.Album import Album
 from typing import List
+from app.models.Song import Song
+
+from app.services.song_service import SongService
 
 class AlbumService:
     def __init__(self):
         self.firebase_album_service = FirebaseAlbumService()
-
+        self.song_service = SongService()
     def create_album(self, name: str, imageURL: str, release_date: datetime, total_tracks: int, songs: List[str], artists: List[str]):
         """
         Handles the business logic for creating a new album.
@@ -68,4 +71,17 @@ class AlbumService:
         """
         self.firebase_album_service.delete_album(album_id)
 
-
+    def get_songs_by_ids(self,album_id:str):
+        song_list = []
+        album = self.get_album_by_id(album_id)
+        songs = album.songs
+        for song in songs:
+            song_list.append(self.song_service.get_song_by_id(song))
+        return song_list
+    
+    def get_songs_by_names(self,names:List[str]):
+        song_list = []
+        for name in names:
+            song = self.song_service.get_song_by_name(name)
+            song_list.append(song)
+        return song_list
