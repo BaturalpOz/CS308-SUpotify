@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
-    <script defer src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
-
     <title>Playlists</title>
     <style>
         body {
@@ -14,135 +12,52 @@
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;
-            /* Fixed background for better scrolling experience */
         }
-
         .navbar {
             background-color: #0F4C8F;
-            /* Dark purple background */
         }
-
-        .navbar-brand,
-        .navbar-nav .nav-link {
+        .navbar-brand, .navbar-nav .nav-link {
             color: #ffffff;
-            /* White text color for navigation links */
             font-size: 30px;
         }
-
         .navbar-toggler-icon {
             background-color: #ffffff;
-            /* White color for the toggler icon */
         }
-
         .playlist-list {
             padding: 20px;
             text-align: center;
         }
-
         .playlist-list-item {
             display: flex;
             align-items: center;
             margin-bottom: 10px;
             padding: 10px;
             border: 1px solid #ddd;
-            /* Border color for each song item */
             border-radius: 5px;
             background-color: #f9f9f9;
-            /* Background color for each song item */
         }
-
-        .playlist-image {
-            width: 50px;
-            /* Adjust the width of the song image */
-            height: 50px;
-            /* Adjust the height of the song image */
-            border-radius: 50%;
-            overflow: hidden;
-            margin-right: 10px;
-            /* Add spacing between image and text */
-        }
-
-        .playlist-image img {
-            width: 100%;
-            height: auto;
-        }
-
         .playlist-name {
             flex-grow: 1;
-            /* Allow the name to grow and take remaining space */
         }
-
         .navbar-bottom {
             background-color: #0F4C8F;
             position: fixed;
-            bottom: -20px;
+            bottom: 0;
             width: 100%;
             z-index: 999;
         }
-
         .navbar-bottom .navbar-brand {
             color: #ffffff;
             font-size: 20px;
         }
-
-        .navbar-bottom-toggler-icon {
-            background-color: #ffffff;
-        }
     </style>
-
-    <script>
-        window.onload = function () {
-            fetch('http://127.0.0.1:5001/playlist/all')
-                .then(response => response.json())
-                .then(data => {
-                    const playlistList = document.querySelector('.playlist-list ul');
-                    playlistList.innerHTML = '';
-
-                    data.playlist_ids.forEach(playlistId => {
-                        // Fetch playlist data first
-                        fetch(`http://127.0.0.1:5001/playlist/${playlistId}`)
-                            .then(response => response.json())
-                            .then(playlistData => {
-                                if (playlistData && playlistData.playlist && playlistData.playlist.Id !== undefined) {
-                                    const playlistListItem = document.createElement('li');
-                                    playlistListItem.classList.add('list-group-item', 'playlist-list-item');
-
-                                    const playlistLink = document.createElement('a');
-                                    playlistLink.href = `playlist_details.html?playlistId=${playlistId}`; // Use playlistId here
-                                    playlistLink.textContent = playlistData.playlist.Name;
-
-                                    playlistListItem.appendChild(playlistLink);
-
-                                    playlistList.appendChild(playlistListItem);
-                                } else {
-                                    console.error('Invalid playlist data for playlistId:', playlistId);
-                                }
-                            })
-                            .catch(error => console.error('Error fetching playlist:', error));
-                    });
-                })
-                .catch(error => console.error('Error fetching playlists:', error));
-        };
-    </script>
 </head>
 <body>
-    <!-- Bottom Navbar -->
-    <nav class="navbar navbar-bottom">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
-        </div>
-    </nav>
-
     <!-- Top Navbar -->
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <!-- Update navigation elements for Playlists -->
             <a class="navbar-brand" href="playlists.html">SUpotify Playlists</a>
-            
-            <!-- Add Playlist button -->
             <button class="btn btn-primary ml-auto" onclick="location.href='playlist_create.html'">Add Playlist</button>
-            
-            <!-- Delete Playlist button -->
             <button class="btn btn-danger" onclick="location.href='delete_playlist.html'">Delete Playlist</button>
         </div>
     </nav>
@@ -150,9 +65,90 @@
     <!-- Playlist List -->
     <div class="playlist-list">
         <h2>List of all playlists</h2>
-        <ul class="list-group">
-            <!-- Playlists will be dynamically added here by the JavaScript code -->
+        <ul id="playlist-list" class="list-group">
+            <!-- Playlists will be dynamically added here -->
         </ul>
     </div>
+
+    <!-- Bottom Navbar -->
+    <nav class="navbar navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
+        </div>
+    </nav>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            loadPlaylists();
+        });
+    
+        function loadPlaylists() {
+            var userId = getUserIDFromToken(); // Retrieve user ID from token
+    
+            $.ajax({
+                type: 'GET',
+                url: `http://127.0.0.1:5001/user/get-all-playlists`,
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function(response) {
+            console.log(response); // Log the server response
+            var playlists = response.playlists;
+            $('#playlist-list').empty(); // Ensure the correct ID is used
+            // Iterate over the response object
+            for (var playlistName in playlists) {
+                // Check if the property is an actual playlist and not an inherited one
+                if (playlists.hasOwnProperty(playlistName)) {
+                    // Create a list item for each playlist
+                    var listItem = '<li>' + playlistName + 
+                                   ' <ul>';
+                    // Iterate over the songs in each playlist
+                    playlists[playlistName].forEach(function(song) {
+                        listItem += '<li>' + song + '</li>';
+                    });
+                    listItem += '</ul></li>';
+                    // Append the list item to the playlist list
+                    $('#playlist-list').append(listItem);
+                }
+            }
+        },
+                error: function(xhr, status, error) {
+                    console.log('Error loading playlists:', xhr.responseText, status, error);
+                }
+            });
+        }
+    
+        function getUserIDFromToken() {
+            var token = getCookie('access_token_cookie');
+            if (!token) {
+                console.log("Token not found");
+                return null;
+            }
+        
+            var payload = parseJwt(token);
+            return payload ? payload.user_id : null;
+        }
+    
+        function getCookie(name) {
+            var value = "; " + document.cookie;
+            var parts = value.split("; " + name + "=");
+            if (parts.length === 2) {
+                return parts.pop().split(";").shift();
+            }
+            return null;
+        }
+    
+        function parseJwt(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+    
+            return JSON.parse(jsonPayload);
+        }
+    </script>
+    
 </body>
 </html>
