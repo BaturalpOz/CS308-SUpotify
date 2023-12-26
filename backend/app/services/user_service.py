@@ -384,12 +384,13 @@ class UserService:
     
     def subscribe_to_artist(self,user_id:str,artists_id:str):
         
+        
         user = self.get_user_by_id(user_id)
         dict_user = user.to_dict()
-        #if dict_user.get("subscribed_artists") is not None:
+        if artists_id in dict_user["subscribed_artists"]:
+            return None
         dict_user["subscribed_artists"].append(artists_id)
-        #else:
-            #return False
+       
         update_dict = {"subscribed_artists":dict_user["subscribed_artists"]}
         self.update_user(user_id,update_dict)     
         subscribed_artists = self.artist_service.get_artists_from_ids(dict_user["subscribed_artists"])

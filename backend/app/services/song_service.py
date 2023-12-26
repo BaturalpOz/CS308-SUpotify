@@ -82,5 +82,9 @@ class SongService:
         for song_id in song_ids:
             songs.append(self.get_song_by_id(song_id))
         return songs
+    
+    def get_song_count(self):
+        return self.firebase_song_service.get_song_count()
+
 
 

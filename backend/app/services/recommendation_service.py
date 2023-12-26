@@ -26,8 +26,8 @@ class RecommendationService:
         """
         user = self.firebase_user_service.get_user(user_id)
         recommendations = {
-            "from_ratings": self._recommend_from_ratings(user.rated_songs),
-            "from_friends": self._recommend_from_friends(user.friends),
+           "from_ratings": self._recommend_from_ratings(user.rated_songs),
+           "from_friends": self._recommend_from_friends(user.friends),
             # "from_subscriptions": self._recommend_from_subscriptions(user)
         }
 
@@ -77,7 +77,7 @@ class RecommendationService:
                     song.tempo,
                 )
 
-                similar_songs = self._find_similar_songs(
+                similar_songs = self._find_all_similar_songs(
                     genres, danceability, energy, loudness, tempo
                 )
                 recommended_songs.extend(similar_songs)
@@ -111,52 +111,54 @@ class RecommendationService:
         """
         subscriptions = user.subscribed_artists
         recommended_songs = []
-        
+        all_songs = self.firebase_song_service.get_all_song_ids()
         user_rated_songs = user.rated_songs
         
         for artist_id in subscriptions:
             
-            artist_songs = self.artist_service.get_artist_songs(artist_id)
+            artist_songs = self.artist_service.get_artist_song_ids(artist_id)
             artist = self.artist_service.get_artist_by_id(artist_id)
 
-            # Recommend songs from subscribed artist that user hasn't rated yet
-            
-            for song in artist_songs:
+           
+            danceability_sum = 0
+            energy_sum = 0
+            loudness_sum = 0
+            tempo_sum = 0
+            counter = 0
+            for song_id in artist_songs:  # Recommend songs from subscribed artist that user hasn't rated yet
+                song = self.song_service.get_song_by_id(song_id)
                 if song.name not in user_rated_songs:
                     recommended_songs.append(song)
+                danceability_sum += song.danceability
+                energy_sum += song.energy
+                loudness_sum += song.loudness
+                tempo_sum += song.tempo
+                counter += 1
+            # Take the average of each song of the artist, recommend based on that
+            # This is efficent assuming an artist's songs are similar to eachother
+            # Thus, eliminating reduntant calculation that stems from repeatedly calculating the same songs
+            danceability = danceability_sum/counter
+            energy = energy_sum/counter
+            loudness = loudness_sum/counter
+            tempo = tempo_sum/counter
+
+            genres = artist.genres
+            search_set = self._remove_shared_songs(all_songs,artist_songs)
             # Recommend songs similar to subscribed artists
-                danceability, energy, loudness, tempo = (
-                    song.danceability,
-                    song.energy,
-                    song.loudness,
-                    song.tempo,
-                    )
-                genres = artist.genres
-                similar_songs = self._find_similar_songs(
-                genres, danceability, energy, loudness, tempo
-                )
-                recommended_songs.extend(similar_songs)
+            similar_songs = self._find_similar_songs(
+            genres, danceability, energy, loudness, tempo,search_set
+            )
+            recommended_songs.extend(similar_songs)
             
        
 
         recommended_songs = list(set(recommended_songs))
         return recommended_songs
 
-    def _get_new_songs_by_artist(
-        self, artist_name: str, subscription_date: datetime
-    ) -> List[Song]:
-        """
-        Get new songs added by the subscribed artist since the subscription date.
-        """
-        new_songs = []
-        subscribed_artist = self.artist_service.get_artist_by_name(artist_name)
-
-        for song in subscribed_artist.songs:
-            # Replace 'release_date' with the actual attribute in your Song class
-            if song.release_date > subscription_date:
-                new_songs.append(song)
-
-        return new_songs
+    def _remove_shared_songs(self,list1, list2):
+        #Removes songs from list1 that occurs in both list1 and list2
+        return_list = [song for song in list1 if song not in list2]
+        return return_list
 
     def _find_similar_songs(
         self,
@@ -165,18 +167,18 @@ class RecommendationService:
         energy: float,
         loudness: float,
         tempo: float,
-    ) -> List[Song]:
-        """
-        Find songs that are similar to the provided song characteristics.
-        """
-        all_songs = self.song_service.get_all_songs()
-
+        all_songs: List[str]
+    )-> List[Song]:
+        '''Finds similar songs in a given set of songs'''
         similar_songs = []
-        for song in all_songs:
+        for song_id in all_songs:
+            song = self.firebase_song_service.get_song(song_id)
             artists = song.artists
             song_genres = []
-            for artist in artists:
-                artist_obj = self.artist_service.get_artist_by_name(artist)
+            # for artist in artists:
+            artist = artists[0]
+            artist_obj = self.artist_service.get_artist_by_name(artist)
+            if(artist_obj):
                 song_genres.extend(artist_obj.genres)
 
             similarity_score = self._compute_similarity_score(
@@ -187,6 +189,24 @@ class RecommendationService:
 
         return similar_songs
 
+
+    def _find_all_similar_songs(
+        self,
+        genres: List[str],
+        danceability: float,
+        energy: float,
+        loudness: float,
+        tempo: float,
+    ) -> List[Song]:
+        """
+        Find all songs that exist in the database, that are similar to the provided song characteristics.
+        """
+        all_songs = self.firebase_song_service.get_all_song_ids()
+        return self._find_similar_songs(genres,danceability,energy,loudness,tempo,all_songs)
+
+       
+
+    
     def _is_genre_match(self, song_genres: List[str], target_genres: List[str]) -> bool:
         """
         Check if the song's genres match any of the target genres.

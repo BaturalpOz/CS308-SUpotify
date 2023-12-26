@@ -292,20 +292,20 @@ def get_recommendations(user_id):
     return:
         recommendations: list of recommendations
     """
-    #try:
-    user_id = request.json.get("user_id")
-    recommendations = recommendation_service.generate_recommendations(user_id)
-    return (
-        jsonify(
-            {
-                "message": "Recommendations fetched successfully",
-                "recommendations": recommendations,
-            }
-        ),
-        200,
-        )
-    #except Exception as e:
-        #raise BadRequest(str(e))
+    try:
+        user_id = request.json.get("user_id")
+        recommendations = recommendation_service.generate_recommendations(user_id)
+        return (
+            jsonify(
+                {
+                    "message": "Recommendations fetched successfully",
+                    "recommendations": recommendations,
+                }
+            ),
+            200,
+            )
+    except Exception as e:
+        raise BadRequest(str(e))
 
 
 @user_blueprint.route("/rate-song", methods=["POST"])
@@ -678,7 +678,7 @@ def get_playlist_by_name(user_id):
 def subscribe_to_artist(user_id,artist_id):
     '''
     TO-Do: a user should be able to subscribe to an artist only once.
-            fix recommendations
+            fix recommendations.
     '''
     user_id = request.json.get("user_id")
     if not user_id:
@@ -686,7 +686,8 @@ def subscribe_to_artist(user_id,artist_id):
 
     response = user_service.subscribe_to_artist(user_id,artist_id)
     
-    return jsonify(response)
+    return jsonify(response) if response else jsonify({"Bad Request":"Already subscribed to artist"},400)
+
 @user_blueprint.route("/subscriptions/delete/<artist_id>",methods=["DELETE"])
 @token_required
 def delete_subcription(user_id,artist_id):

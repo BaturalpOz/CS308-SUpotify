@@ -140,6 +140,10 @@ def get_all_song_ids():
     song_ids = song_service.get_all_song_ids()
     return jsonify({"song_ids": song_ids}), 200
 
+@song_blueprint.route("/count",methods=["GET"])
+def get_song_count():
+    return jsonify({"Number of songs":song_service.get_song_count()})
+
 
 @song_blueprint.errorhandler(BadRequest)
 def handle_bad_request(e):

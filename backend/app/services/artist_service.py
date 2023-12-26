@@ -4,12 +4,14 @@ from typing import List
 from app.services.album_service import AlbumService
 
 from app.utils.firebase_album_service import FirebaseAlbumService
+from app.utils.firebase_song_service import FirebaseSongService
 
 
 class ArtistService:
     def __init__(self):
         self.firebase_artist_service = FirebaseArtistService()
         self.firebase_album_service = FirebaseAlbumService()
+        self.firebase_song_service = FirebaseSongService()
         self.album_service = AlbumService()
     def create_artist(self, name: str, genres: List[str], image_url: str, popularity: int, albums: List[str]):
         """
@@ -44,9 +46,9 @@ class ArtistService:
         """
         if not name:
             raise ValueError("Name cannot be empty.")
-        elif not self.firebase_artist_service.get_artist_by_name(name):
-            raise ValueError("Artist does not exist.")
-        return self.firebase_artist_service.get_artist_by_name(name)
+        artist = self.firebase_artist_service.get_artist_by_name(name)     
+        return artist if artist else None
+        
 
     def update_artist(self, artist_id: str, update_data: dict):
         """
@@ -84,6 +86,7 @@ class ArtistService:
         return artist_dict
     
     def get_artist_albums(self,artist_id:str):
+        '''Gets all album objects belonging to an artist'''
         album_list = []
         artist = self.get_artist_by_id(artist_id)
         albums = artist.albums
@@ -92,6 +95,7 @@ class ArtistService:
         return album_list
     
     def get_artist_songs(self,artist_id):
+        '''Gets all song objects belonging to an artist'''
         song_list = []
         albums = self.get_artist_albums(artist_id)
         for album in albums:
@@ -100,3 +104,14 @@ class ArtistService:
             for song in songs:
                 song_list.append(song)
         return song_list
+    
+    def get_artist_song_ids(self,artist_id:str):
+        '''Gets the ids of the songs belonging to an artist'''
+        song_ids = []
+        artist = self.get_artist_by_id(artist_id)
+        for album_name in artist.albums:
+            album = self.album_service.get_album_by_name(album_name)
+            for song in album.songs:
+                song_ids.append(self.firebase_song_service.get_song_id_by_name(song))
+
+        return song_ids
