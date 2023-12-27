@@ -676,6 +676,19 @@ def get_playlist_by_name(user_id):
     else:
         return jsonify({"message": "Playlist not found"}), 404
 
+# search song by name, its artist and album 
+@user_blueprint.route('/search', methods=['GET'])
+@token_required
+def search(user_id):
+    query = request.args.get('query')
+    if not query:
+        return jsonify({"error": "Query is required"}), 400
+    try:
+        songs = song_service.search_songs(query)
+        return jsonify(songs), 200
+    except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 500
 
 @user_blueprint.errorhandler(BadRequest)
 def handle_bad_request(e):
@@ -687,17 +700,3 @@ def handle_bad_request(e):
 def handle_not_found(e):
     """Handle not found"""
     return jsonify(error=str(e.description)), 404
-
-# search song by name, its artist and album 
-@user_blueprint.route('/search_songs', methods=['GET'])
-@token_required
-def search_songs(user_id):
-    query = request.args.get('query')
-    if not query:
-        return jsonify({"error": "Query is required"}), 400
-    try:
-        songs = song_service.search_songs(query)
-        return jsonify(songs), 200
-    except Exception as e:
-        print(e)
-        return jsonify({"error": str(e)}), 500
