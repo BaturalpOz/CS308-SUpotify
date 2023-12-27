@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="assets/fontawesome-free-6.5.1-web/css/all.css">
+
+
+
+    <title>Login</title>
+    <style>
+        
+        body {
+            background-color: #ffffff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Fixed background for better scrolling experience */
+        }
+        
+
+        .container {
+            margin-top: 15px;
+        }
+
+        .navbar {
+            background-color: #0F4C8F; /* Dark purple background */
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff; /* White text color for navigation links */
+            font-size: 30px;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #ffffff; /* White color for the toggler icon */
+        }
+
+        .btn-primary {
+            background-color: #5cbda7; /* Dark purple button background */
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #318974; /* Slightly darker purple on hover */
+        }
+
+        .custom-text {
+            font-size: 16px; 
+            color: #555; 
+            font-weight: bold; 
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .custom-text a {
+            text-decoration: none; /* Remove underline from links */
+            color: rgb(0, 0, 0); /* Change link color */
+            font-weight: bold; /* Make the link text bold */
+        }
+
+        .navbar-bottom {
+            background-color: #0F4C8F;
+            position: fixed;
+            bottom: -20px;
+            width: 100%;
+        }
+
+        .navbar-bottom .navbar-brand {
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .navbar-bottom-toggler-icon {
+            background-color: #ffffff;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 150px);
+            grid-gap: 70px;
+            justify-content: center;
+            padding: 50px;
+        }
+
+        .category-box {
+            width: 150px;
+            height: 150px;
+            background-color: #5cbda7;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            background-size: cover; /* Resmi kaplayacak şekilde ayarla */
+            background-position: center; 
+            padding: 10px;
+        }
+        .category-box img {
+            width: 90%;
+            height: 90%;
+            border-radius: 8px; /* Resimlerin kenarlarını yuvarlak yapmak için */
+        }
+
+        .navbar .form-inline {
+            display: flex;
+        }
+
+        .navbar .form-inline .form-control {
+            margin-right: 10px;
+        }
+
+        .box-1 { background-image: url('rap.png'); }
+        .box-2 { background-image: url('reggea.png'); }
+        .box-3 { background-image: url('pop.png'); }
+        .box-4 { background-image: url('rock.png'); }
+        .box-5 { background-image: url('jazz.png'); }
+        .box-6 { background-image: url('electro.png'); }
+        .box-7 { background-image: url('country.png'); }
+        .box-8 { background-image: url('soul.png'); }
+        .box-9 { background-image: url('blues.png'); }
+        .box-10 { background-image: url('folk.png'); }
+        .box-11 { background-image: url('metal.png'); }
+        .box-12 { background-image: url('classic.png'); }
+
+    </style>
+
+</head>
+<body>
+
+    <!-- Bottom Navbar -->
+    <nav class="navbar navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
+        </div>
+    </nav>
+    
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">SUpotify</a> 
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <!-- Arama Çubuğu -->
+                <form class="form-inline ml-auto">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="category-grid">
+            <!-- 12 adet buton -->
+            <button class="category-box box-1">rap</button>
+            <button class="category-box box-2">raggea</button>
+            <button class="category-box box-3">pop</button>
+            <button class="category-box box-4">rock</button>
+            <button class="category-box box-5">jazz</button>
+            <button class="category-box box-6">electro</button>
+            <button class="category-box box-7">country</button>
+            <button class="category-box box-8">soul</button>
+            <button class="category-box box-9">blues</button>
+            <button class="category-box box-10">folk</button>
+            <button class="category-box box-11">metal</button>
+            <button class="category-box box-12">classic</button>
+        </div>
+    </div>
+</body>
+</html>
