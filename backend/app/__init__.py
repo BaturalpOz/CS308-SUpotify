@@ -9,6 +9,7 @@ from .controller.user_controller import user_blueprint
 from .controller.artist_controller import artist_blueprint
 from .controller.album_controller import album_blueprint
 from .controller.song_controller import song_blueprint
+from .controller.comment_controller import comment_blueprint
 
 load_dotenv()
 
@@ -29,4 +30,5 @@ def create_app():
     app.register_blueprint(artist_blueprint, url_prefix='/artist')
     app.register_blueprint(album_blueprint, url_prefix='/album')
     app.register_blueprint(song_blueprint, url_prefix='/song')
+    app.register_blueprint(comment_blueprint, url_prefix='/comment')
     return app
