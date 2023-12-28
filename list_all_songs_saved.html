@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://bootswatch.com/4/lux/bootstrap.min.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/a076d05399.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>All Songs</title>
+    <style>
+      .navbar {
+        background-color: #0f4c8f;
+        padding: 10px;
+        text-align: left;
+      }
+      .navbar h1 {
+        margin: 0;
+        padding: 0;
+        color: white;
+        font-size: 24px;
+      }
+      .songs-header {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #394262;
+      }
+      .song-list {
+        list-style-type: none;
+        padding: 0;
+      }
+      .song-list-item {
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #ebedf1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <h1>SUPOTIFY</h1>
+    </div>
+    <div class="container">
+      <h2 class="songs-header">Rated Songs</h2>
+      <ul class="song-list" id="songList">
+        <!-- Songs will be dynamically loaded here -->
+      </ul>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        function loadRatedSongs() {
+          $.ajax({
+            url: "http://127.0.0.1:5001/user/get-rated-songs", // Adjust to match your Flask backend
+            type: "GET",
+            xhrFields: {
+              withCredentials: true,
+            },
+            headers: {
+              cookie: document.cookie,
+            },
+            success: function (response) {
+              $("#songList").empty();
+              response.rated_songs.forEach(function (song) {
+                $("#songList").append(
+                  `<li class="song-list-item">
+                                    <span>${song.title} - ${song.artist}</span>
+                                </li>`
+                );
+              });
+            },
+            error: function () {
+              alert("Error loading rated songs");
+            },
+          });
+        }
+
+        loadRatedSongs();
+      });
+    </script>
+  </body>
+</html>
