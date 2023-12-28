@@ -18,7 +18,7 @@ class CommentService:
         new_comment = Comment(
             commenter_name=commenter_name,
             comment_content=comment_content,
-            commented_at=commented_at
+            commented_at=commented_at  # Convert to timestamp
         )
 
         comment_id = self.firebase_comment_service.send_comment(new_comment)
