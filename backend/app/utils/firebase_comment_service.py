@@ -20,19 +20,22 @@ class FirebaseCommentService:
         """
         Adds a new comment document to the Comments collection.
         """
-        # Convert the Comment object to a dict suitable for Firestore
-        comment_dict = comment.to_dict()
         try:
+            # Convert the Comment object to a dict suitable for Firestore
+            comment_dict = comment.to_dict()
+
             # Create a new document in the 'Comments' collection with a unique ID
             _, doc_ref = self.db.collection(u'Comments').add(comment_dict)
+
+            print(f"Comment added successfully with ID: {doc_ref.id}")
             return doc_ref.id  # Return the generated document ID
         except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
-
-    def get_comment(self, comment_id: str) -> Optional[Comment]:
+            print(f"An error occurred while adding comment: {e}")
+            print(f"Comment details: {comment.to_dict()}")
+            raise  # Reraise the exception for better debugging
+    def get_comment(self, comment_id: str):
         """
-        Retrieves a comment document from the Comments collection by comment ID.
+        Retrieves a song document from the Songs collection by song ID.
         """
         try:
             comment_ref = self.db.collection(u'Comments').document(comment_id)

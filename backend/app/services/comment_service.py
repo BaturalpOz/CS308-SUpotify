@@ -28,18 +28,20 @@ class CommentService:
         else:
             raise ValueError("Failed to add a new comment in Firebase.")
 
-    def get_comment(self, comment_id: str) -> Optional[Comment]:
+    def get_comment(self, comment_id: str):
         """
         Retrieves a comment by its unique comment ID.
         """
         if not comment_id:
-            raise ValueError("Comment ID cannot be empty.")
+            raise ValueError("comment ID cannot be empty.")
 
         comment = self.firebase_comment_service.get_comment(comment_id)
 
         if not comment:
-            raise ValueError("Comment does not exist.")
+            print(f"Comment with ID {comment_id} does not exist.")
+            raise ValueError("comment does not exist.")
 
+        print(f"Retrieved comment: {comment.to_dict()}")
         return comment
 
     def get_all_comment_ids(self) -> Optional[List[str]]:
