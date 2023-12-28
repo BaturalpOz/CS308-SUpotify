@@ -32,7 +32,7 @@ class FirebaseCommentService:
 
     def get_comment(self, comment_id: str):
         """
-        Retrieves a song document from the Songs collection by song ID.
+        Retrieves a comment document from the Comments collection by comment ID.
         """
         try:
             comment_ref = self.db.collection(u'Comments').document(comment_id)
@@ -47,7 +47,7 @@ class FirebaseCommentService:
 
     def get_all_comment_ids(self):
         """
-        Retrieves all comment IDs from the Songs collection.
+        Retrieves all comment IDs from the Comments collection.
         """
         try:
             comment_ids = []
