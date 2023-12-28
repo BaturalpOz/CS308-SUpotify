@@ -83,3 +83,8 @@ class SongService:
 
 
 
+    def search_songs(self, query: str):
+        """
+        Search for songs based on the provided query.
+        """
+        return self.firebase_song_service.search_songs(query)

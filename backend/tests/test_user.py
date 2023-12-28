@@ -5,8 +5,8 @@ import sys
 sys.path.append("..")
 from app import create_app
 
-test_token = None
-test_user_id = None
+test_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNE45WWQ2cE8zckE2d1VYa3lISFgiLCJleHAiOjE3MDM2MTU1NjR9.DfToqVXbwexrXpYvHCV0jd5d5OmCdt97Rd8SJypiFNc"
+test_user_id = "user15"
 class UserBlueprintTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app()
@@ -90,6 +90,45 @@ class UserBlueprintTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data.decode())
         self.assertIn("User deleted!", data["message"])
+
+    def test6_search_song(self):
+        if not test_token or not test_user_id:
+            self.fail("No token or user ID available for test.")
+        response = self.client.get(
+            "/song/search",
+            headers={"Cookie": test_token},
+            query_string={"q": "SUC"},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data.decode())
+        self.assertTrue("songs" in data)
+
+    def test7_search_artist(self):
+        if not test_token or not test_user_id:
+            self.fail("No token or user ID available for test.")
+        response = self.client.get(
+            "/artist/search",
+            headers={"Cookie": test_token},
+            query_string={"q": "Pad"},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data.decode())
+        self.assertTrue("artists" in data)
+
+    def test8_search_album(self):
+        if not test_token or not test_user_id:
+            self.fail("No token or user ID available for test.")
+        response = self.client.get(
+            "/album/search",
+            headers={"Cookie": test_token},
+            query_string={"q": "Rus"},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data.decode())
+        self.assertTrue("albums" in data)
 
 if __name__ == "__main__":
     unittest.main()

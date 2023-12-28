@@ -8,6 +8,7 @@ from functools import wraps
 import json
 
 from app.services.user_service import UserService
+from app.services.song_service import SongService
 from app.services.recommendation_service import RecommendationService
 
 
@@ -18,6 +19,7 @@ SECRET_KEY_JWT = os.getenv("SECRET_KEY_JWT")
 # Blueprint setup
 user_blueprint = Blueprint("user", __name__)
 user_service = UserService()
+song_service = SongService()
 recommendation_service = RecommendationService()
 
 
@@ -673,6 +675,19 @@ def get_playlist_by_name(user_id):
     else:
         return jsonify({"message": "Playlist not found"}), 404
 
+# search song by name, its artist and album 
+@user_blueprint.route('/search', methods=['GET'])
+@token_required
+def search(user_id):
+    query = request.args.get('query')
+    if not query:
+        return jsonify({"error": "Query is required"}), 400
+    try:
+        songs = song_service.search_songs(query)
+        return jsonify(songs), 200
+    except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 500
 @user_blueprint.route("/subscriptions/add/<artist_id>",methods = ["POST"])
 @token_required
 def subscribe_to_artist(user_id,artist_id):

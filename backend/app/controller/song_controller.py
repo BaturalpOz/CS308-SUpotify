@@ -160,3 +160,4 @@ def handle_bad_request(e):
 def handle_not_found(e):
     """Handle not found"""
     return jsonify(error=str(e.description)), 404
+
