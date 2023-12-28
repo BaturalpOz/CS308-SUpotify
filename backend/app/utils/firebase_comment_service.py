@@ -1,8 +1,8 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
-from app.models.Comment import Comment
+from app.models.Comment import Comment  # Adjust the import statement based on your folder structure
 import os
-from typing import Dict
+from typing import Dict, Optional
 
 
 class FirebaseCommentService:
@@ -30,7 +30,7 @@ class FirebaseCommentService:
             print(f"An error occurred: {e}")
             return None
 
-    def get_comment(self, comment_id: str):
+    def get_comment(self, comment_id: str) -> Optional[Comment]:
         """
         Retrieves a comment document from the Comments collection by comment ID.
         """
