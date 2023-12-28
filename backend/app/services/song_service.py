@@ -74,14 +74,9 @@ class SongService:
         Retrieves all song IDs from Firebase.
         """
         return self.firebase_song_service.get_all_song_ids()
-    
-    def get_all_songs(self):
-        '''Retrieves all song objects'''
-        song_ids = self.get_all_song_ids()
-        songs = []
-        for song_id in song_ids:
-            songs.append(self.get_song_by_id(song_id))
-        return songs
+      
+    def get_all_songs_with_ids(self):
+        return self.firebase_song_service.get_all_songs()
     
     def get_song_count(self):
         return self.firebase_song_service.get_song_count()

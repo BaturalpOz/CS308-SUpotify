@@ -101,8 +101,8 @@ def delete_artist(artist_id):
     return jsonify({"message": "Artist deleted!"}), 200
 
 
-@artist_blueprint.route("/all", methods=["GET"])
-def get_all_artists():
+@artist_blueprint.route("/all/ids", methods=["GET"])
+def get_all_artist_ids():
     """
     Get all artist ids
     params:
@@ -112,6 +112,12 @@ def get_all_artists():
     """
     artist_ids = artist_service.get_all_artist_ids()
     return jsonify({"artist_ids": artist_ids}), 200
+
+@artist_blueprint.route("/all", methods=["GET"])
+def get_all_artists():
+    artists = artist_service.get_all_artists()
+    return jsonify({"artists":artists})
+
 
 @artist_blueprint.route("/<artist_id>/albums",methods = ["GET"])
 def get_artist_albums(artist_id):

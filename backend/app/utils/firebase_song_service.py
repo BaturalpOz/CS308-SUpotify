@@ -117,6 +117,20 @@ class FirebaseSongService:
             print(f"An error occurred: {e}")
             return None
         
+    def get_all_songs(self):
+        try:
+            song_list = []
+            song_docs = self.db.collection(u'Songs').stream()
+            for doc in song_docs:
+                dict_song = doc.to_dict()
+                #song = Song.from_dict(dict_song)
+                dict_song["Id"] = doc.id
+                song_list.append(dict_song)
+            return song_list
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return []
+
     def get_song_count(self):
         songs_ref = self.db.collection(u'Songs')
         snapshot = songs_ref.count().get()

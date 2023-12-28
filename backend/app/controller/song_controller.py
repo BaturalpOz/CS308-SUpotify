@@ -128,7 +128,7 @@ def delete_song(song_id):
         return jsonify({"message": "Could not delete song.", "error": str(e)}), 500
 
 
-@song_blueprint.route("/all", methods=["GET"])
+@song_blueprint.route("/all/ids", methods=["GET"])
 def get_all_song_ids():
     """
     Get all song ids
@@ -139,6 +139,11 @@ def get_all_song_ids():
     """
     song_ids = song_service.get_all_song_ids()
     return jsonify({"song_ids": song_ids}), 200
+
+@song_blueprint.route("/all", methods=["GET"])
+def get_all_songs():
+    songs = song_service.get_all_songs_with_ids()
+    return jsonify({"Songs":songs},200)
 
 @song_blueprint.route("/count",methods=["GET"])
 def get_song_count():

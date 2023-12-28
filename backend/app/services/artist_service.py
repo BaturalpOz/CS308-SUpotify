@@ -49,7 +49,10 @@ class ArtistService:
         artist = self.firebase_artist_service.get_artist_by_name(name)     
         return artist if artist else None
         
-
+    def get_all_artists(self):
+        return self.firebase_artist_service.get_all_artists()
+    
+    
     def update_artist(self, artist_id: str, update_data: dict):
         """
         Updates artist information given the artist ID and the new data.
@@ -81,6 +84,7 @@ class ArtistService:
         for sub in subscription_list:
             artist = self.firebase_artist_service.get_artist(sub)
             dict_artist = artist.to_dict()
+            dict_artist["Id"] = sub
             artist_list.append(dict_artist)
         artist_dict.update({"subscribed_artists":artist_list})
         return artist_dict
