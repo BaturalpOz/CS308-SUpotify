@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+  <!--  <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script> -->
+    <link rel="stylesheet" href="assets/fontawesome-free-6.5.1-web/css/all.css">
+
+    <title>Playlist Details</title>
+
+    <style>
+        body {
+            background-color: #ffffff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .navbar {
+            background-color: #0F4C8F;
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff;
+            font-size: 30px;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #ffffff;
+        }
+
+        .card {
+            margin-top: 20px;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        .song-list-item {
+            list-style-type: none;
+            padding: 5px;
+            margin-bottom: 5px;
+        }
+
+        .navbar-bottom {
+            background-color: #0F4C8F;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 999;
+        }
+
+        .download-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Bottom Navbar -->
+    <nav class="navbar navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
+        </div>
+    </nav>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+          <!--  <img src="logo.jpeg" alt="Logo" style="height: 50px; margin-right: 10px;"> -->
+            <a class="navbar-brand" href="dashboard.html">SUpotify</a>
+        </div>
+    </nav>
+
+    <!-- Playlist Details Section -->
+    <div class="container">
+        <h2>Playlist Details</h2>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title" id="playlistTitle">Loading...</h4>
+                <p class="card-text">
+                    <strong>Created by:</strong> <span id="playlistCreator">Loading...</span><br>
+                    <strong>Songs in Playlist:</strong>
+                    <ul id="songsList">
+                        <!-- Songs will be listed here -->
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function getQueryStringParameter(param) {
+            var result = null,
+                tmp = [];
+            location.search
+                .substr(1)
+                .split("&")
+                .forEach(function (item) {
+                    tmp = item.split("=");
+                    if (tmp[0] === param) result = decodeURIComponent(tmp[1]);
+                });
+            return result;
+        }
+        $(document).ready(function() {
+    var playlistName = getQueryStringParameter('playlistName');
+    if (playlistName) {
+        loadPlaylistDetails(playlistName);
+    } else {
+        console.error('Playlist name is missing in the URL');
+    }
+});
+
+function loadPlaylistDetails(playlistName) {
+    $.ajax({
+        type: 'GET',
+        url: `http://127.0.0.1:5001/user/get-playlist-by-name?playlist_name=${encodeURIComponent(playlistName)}`,
+        success: function(response) {
+            console.log("Playlist Details:", response);
+            // Update your page content with playlist details
+        },
+        error: function(xhr) {
+            console.error('Error loading playlist details:', xhr.responseText);
+        }
+    });
+}
+
+function getQueryStringParameter(param) {
+    var urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
+
+    
+        function getUserIDFromToken() {
+            var token = getCookie('access_token_cookie');
+            if (!token) {
+                console.log("Token not found");
+                return null;
+            }
+        
+            var payload = parseJwt(token);
+            return payload ? payload.user_id : null;
+        }
+        
+        function getCookie(name) {
+            var value = "; " + document.cookie;
+            var parts = value.split("; " + name + "=");
+            if (parts.length === 2) {
+                return parts.pop().split(";").shift();
+            }
+            return null;
+        }
+        
+        function parseJwt(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+        
+            return JSON.parse(jsonPayload);
+        }
+    </script>
+    
+</body>
+
+</html>
