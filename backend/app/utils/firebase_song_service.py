@@ -1,3 +1,4 @@
+from ast import List
 import firebase_admin
 from firebase_admin import credentials, firestore
 from app.models.Song import Song
@@ -45,6 +46,23 @@ class FirebaseSongService:
             print(f"An error occurred: {e}")
             return None
 
+    def get_song_id_by_name(self,name:str):
+        """
+        Retrieves a song document from the Songs collection by name.
+        """
+        try:
+            
+            song_ref = self.db.collection(u'Songs')
+            query = song_ref.where(u'Name', u'==', name)
+            song_id = query.get()[0].id
+           
+
+            return song_id
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
+        
     def get_song_by_name(self, name: str):
         """
         Retrieves a song document from the Songs collection by name.
@@ -98,4 +116,24 @@ class FirebaseSongService:
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
+        
+    def get_all_songs(self):
+        try:
+            song_list = []
+            song_docs = self.db.collection(u'Songs').stream()
+            for doc in song_docs:
+                dict_song = doc.to_dict()
+                #song = Song.from_dict(dict_song)
+                dict_song["Id"] = doc.id
+                song_list.append(dict_song)
+            return song_list
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return []
+
+    def get_song_count(self):
+        songs_ref = self.db.collection(u'Songs')
+        snapshot = songs_ref.count().get()
+        count = snapshot[0][0].value
+        return count
             
