@@ -14,8 +14,8 @@ class Comment:
         """
         return {
             "Commenter": self.commenter_name,
-            "Send_Time": self.commented_at.isoformat() if self.commented_at else None,
-            "Comment": self.comment_content
+            "Commented_At": self.commented_at.isoformat() if self.commented_at else None,
+            "Comment_Content": self.comment_content
         }
 
     @staticmethod
@@ -24,9 +24,10 @@ class Comment:
         Creates a Comment instance from a dictionary.
         """
         commenter_name = source['Commenter']
-        commented_at_str = source['Send_Time']
-        comment_content = source['Comment']
+        commented_at = source['Commented_At']
+        comment_content = source['Comment_Content']
 
-        commented_at = datetime.fromisoformat(commented_at_str) if commented_at_str else None
+        commented_at = datetime.fromisoformat(commented_at) if commented_at else None
 
         return Comment(commenter_name=commenter_name, commented_at=commented_at, comment_content=comment_content)
+
