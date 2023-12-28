@@ -24,10 +24,14 @@ class Comment:
         Creates a Comment instance from a dictionary.
         """
         commenter_name = source['Commenter']
-        commented_at = source['Commented_At']
-        comment_content = source['Comment_Content']
+        commented_at = source.get('Commented_At')
 
-        commented_at = datetime.fromisoformat(commented_at) if commented_at else None
+        if commented_at is not None:
+            if isinstance(commented_at, (int, float)):
+                # Assuming commented_at is a Unix timestamp
+                commented_at = datetime.utcfromtimestamp(commented_at).replace(tzinfo=timezone.utc)
+
+        comment_content = source['Comment_Content']
 
         return Comment(commenter_name=commenter_name, commented_at=commented_at, comment_content=comment_content)
 
