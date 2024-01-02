@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <title>Forum</title>
+    <style>
+        body {
+            background-color: #ffffff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Fixed background for better scrolling experience */
+        }
+
+        .navbar {
+            background-color: #0F4C8F; /* Dark purple background */
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff; /* White text color for navigation links */
+            font-size: 30px;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #ffffff; /* White color for the toggler icon */
+        }
+
+        .custom-text {
+            font-size: 16px;
+            color: #555;
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .custom-text a {
+            text-decoration: none; /* Remove underline from links */
+            color: rgb(0, 0, 0); /* Change link color */
+            font-weight: bold; /* Make the link text bold */
+        }
+
+        .navbar-bottom {
+            background-color: #0F4C8F;
+            position: fixed;
+            bottom: -20px;
+            width: 100%;
+        }
+
+        .navbar-bottom .navbar-brand {
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .navbar-bottom-toggler-icon {
+            background-color: #ffffff;
+        }
+
+        /* Added styles for user comments and forum */
+        .comments-section {
+            padding: 20px;
+            background-color: #f8f9fa; /* Light gray background for comments section */
+        }
+
+        .comment {
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        .comment .user {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .comment .timestamp {
+            color: #777;
+            font-size: 12px;
+        }
+
+        .comment textarea {
+            width: 100%;
+            margin-top: 10px;
+            resize: none;
+        }
+
+        .comment-btn {
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <!-- Bottom Navbar -->
+    <nav class="navbar navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
+        </div>
+    </nav>
+
+    <nav class="navbar navbar-expand-lg">
+        <!-- Navbar line-->
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                SUpotify
+            </a>
+            <div class="collapse navbar-collapse" id="navbarColor01">
+            </div>
+        </div>
+    </nav>
+
+    <!-- User Comments and Forum Section -->
+    <div class="container comments-section">
+        <h2>User Comments</h2>
+
+
+        <!-- Add Comment Form -->
+        <div class="comment">
+
+            <textarea id="comment-textarea" placeholder="Add your comment..."></textarea>
+            <button class="btn btn-primary comment-btn">Post Comment</button>
+        </div>
+
+        <div id="comments-container"></div>
+
+    </div>
+
+    <script>
+        function postComment() {
+            // Fetch the user's profile directly
+            $.ajax({
+                type: "GET",
+                url: "http://127.0.0.1:5001/user/profile",
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (profile) {
+                    var commenter = profile.name;
+                    var commentText = $("#comment-textarea").val();
+
+                    // Check if the comment is not empty
+                    if (!commentText || !commentText.trim()) {
+                        alert("Please enter a comment.");
+                        return;
+                    }
+
+                    var sendTime = new Date().toISOString(); // Current timestamp
+
+                    // Send the comment to the backend
+                    $.ajax({
+                        type: "POST",
+                        url: "http://127.0.0.1:5001/comment/send",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            "Commenter": commenter,
+                            "Send_Time": sendTime,
+                            "Comment_Content": commentText
+                        }),
+                        success: function (data) {
+                            console.log(data);
+                            // Clear the textarea after posting the comment
+                            $("#comment-textarea").val("");
+                            // Refresh the comments section
+                            loadComments();
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert("Error posting comment. Please try again.");
+                        }
+                    });
+                },
+                error: function (xhr) {
+                    console.error("Error fetching user profile:", xhr.responseText);
+                }
+            });
+        }
+    
+        // Function to load existing comments
+        function loadComments() {
+            // Get the comments from the backend
+            $.ajax({
+                type: "GET",
+                url: "http://127.0.0.1:5001/comment/all",
+                success: function (data) {
+                    console.log(data);
+                    displayComments(data.comment_ids);
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert("Error loading comments. Please try again.");
+                }
+            });
+        }
+    
+        // Function to display comments
+        function displayComments(commentIds) {
+            var commentsContainer = $("#comments-container");
+            commentsContainer.empty(); // Clear existing comments
+
+            // Iterate through comment IDs and fetch each comment
+            commentIds.forEach(function (commentId) {
+                $.ajax({
+                    type: "GET",
+                    url: "http://127.0.0.1:5001/comment/" + commentId,
+                    success: function (commentData) {
+                        console.log(commentData);
+                        var comment = commentData.comment;
+
+                        // Format the timestamp to show only the date part
+                        var sendTime = new Date(comment.Commented_At);
+                        var formattedDate = sendTime.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit'
+                        });
+
+                        // Append the comment to the comments container
+                        commentsContainer.append(
+                            '<div class="comment">' +
+                            '<div class="user">' + comment.Commenter + '</div>' +
+                            '<div class="timestamp">Posted on ' + formattedDate + '</div>' +
+                            '<p>' + comment.Comment_Content + '</p>' +
+                            '</div>'
+                        );
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert("Error loading a comment. Please try again.");
+                    }
+                });
+            });
+        }
+
+
+    
+        $(document).ready(function () {
+            // Fetch and set the user's name from the hidden input field
+            var userName = $("#user-name-input").val();
+            
+            // Check if the user name is not empty before setting it
+            if (userName && userName.trim()) {
+                $(".user").text(userName);
+            }
+
+            // Attach the postComment function to the click event of the button
+            $(".comment-btn").on("click", postComment);
+
+            // Load initial comments
+            loadComments();
+        });
+
+    </script>
+
+</body>
+
+</html>
