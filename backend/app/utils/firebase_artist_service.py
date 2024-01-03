@@ -98,4 +98,17 @@ class FirebaseArtistService:
         except Exception as e:
             print(f"An error occurred: {e}")
             return []
+    def  get_all_artists(self):
+        try:
+            artist_list = []
+            artists_docs = self.db.collection(u'Artists').stream()
+            for doc in artists_docs:
+                dict_artist = doc.to_dict()
+                #artist = Artist.from_dict(dict_artist)
+                dict_artist["Id"] = doc.id
+                artist_list.append(dict_artist)
+            return artist_list
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return []
             

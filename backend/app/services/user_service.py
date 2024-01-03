@@ -5,12 +5,16 @@ import random
 from datetime import datetime
 from typing import List, Any, Dict, Optional, Union
 
+from app.utils.firebase_artist_service import FirebaseArtistService
+from app.services.artist_service import ArtistService
+
 
 class UserService:
     def __init__(self):
         self.firebase_user_service = FirebaseUserService()
         self.firebase_song_service = FirebaseSongService()
-
+        self.firebase_artist_service = FirebaseArtistService()
+        self.artist_service = ArtistService()
     def create_user(self, username: str, email: str, password: str):
         """
         Handles the business logic for creating a new user.
@@ -47,7 +51,7 @@ class UserService:
         else:
             user = self.firebase_user_service.get_user_by_username(username_or_email)
 
-        if user and User.check_password(user, password):
+        if user and user.check_password(password):
             return user
         else:
             return None
@@ -377,8 +381,37 @@ class UserService:
         user = self.get_user_by_id(user_id)
         playlist = next((p for p in user.playlists if p["name"] == playlist_name), None)
         return playlist
-        
-
-
-
     
+    def subscribe_to_artist(self,user_id:str,artists_id:str):
+        
+        
+        user = self.get_user_by_id(user_id)
+        dict_user = user.to_dict()
+        if artists_id in dict_user["subscribed_artists"]:
+            return None
+        dict_user["subscribed_artists"].append(artists_id)
+       
+        update_dict = {"subscribed_artists":dict_user["subscribed_artists"]}
+        self.update_user(user_id,update_dict)     
+        subscribed_artists = self.artist_service.get_artists_from_ids(dict_user["subscribed_artists"])
+        return subscribed_artists
+
+    def get_subscriptions(self,user_id):
+        user = self.get_user_by_id(user_id)
+        dict_user = user.to_dict()
+        subscriptions = dict_user.get("subscribed_artists")
+        if subscriptions:
+            subscribed_artists = self.artist_service.get_artists_from_ids(subscriptions) 
+            return subscribed_artists
+        return None
+    
+    def delete_subcription(self,user_id,artist_id):
+        user = self.get_user_by_id(user_id)
+        dict_user = user.to_dict()
+        subscription_list = dict_user.get("subscribed_artists")
+        if subscription_list:
+            subscription_list.remove(artist_id)
+            update_data = {"subscribed_artists":subscription_list}
+            self.update_user(user_id,update_data)
+            return artist_id
+        return None

@@ -1,8 +1,10 @@
+from ast import List
 import firebase_admin
 from firebase_admin import credentials, firestore
 from app.models.Song import Song
 import os
 from typing import Dict
+import Levenshtein
 
 
 class FirebaseSongService:
@@ -45,6 +47,23 @@ class FirebaseSongService:
             print(f"An error occurred: {e}")
             return None
 
+    def get_song_id_by_name(self,name:str):
+        """
+        Retrieves a song document from the Songs collection by name.
+        """
+        try:
+            
+            song_ref = self.db.collection(u'Songs')
+            query = song_ref.where(u'Name', u'==', name)
+            song_id = query.get()[0].id
+           
+
+            return song_id
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
+        
     def get_song_by_name(self, name: str):
         """
         Retrieves a song document from the Songs collection by name.
@@ -98,4 +117,67 @@ class FirebaseSongService:
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
+        
+    def get_all_songs(self):
+        try:
+            song_list = []
+            song_docs = self.db.collection(u'Songs').stream()
+            for doc in song_docs:
+                dict_song = doc.to_dict()
+                #song = Song.from_dict(dict_song)
+                dict_song["Id"] = doc.id
+                song_list.append(dict_song)
+            return song_list
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return []
+
+    def get_song_count(self):
+        songs_ref = self.db.collection(u'Songs')
+        snapshot = songs_ref.count().get()
+        count = snapshot[0][0].value
+        return count
             
+    def search_songs(self, query: str, max_distance: int = 2):
+        """
+        Search for songs based on Levenshtein distance to the query in name, albums, or artists.
+        """
+        try:
+            songs_ref = self.db.collection(u'Songs').stream()
+            all_songs = [song for song in songs_ref]
+            
+            matching_songs = []
+
+            for song in all_songs:
+                song = song.to_dict()
+                distance = Levenshtein.distance(song.get('Name', '').lower(), query.lower())
+                if (distance<= max_distance):
+                    matching_songs.append({"song":song, "_similarity": distance})
+            matching_songs.sort(key=lambda x: x["_similarity"])
+            albums_ref = self.db.collection(u'Albums').stream()
+            all_albums = [album for album in albums_ref]
+
+            matching_albums = []
+            for album in all_albums:
+                album = album.to_dict()
+                distance = Levenshtein.distance(album.get('Name', '').lower(), query.lower())
+                if (distance<= max_distance):
+                    matching_albums.append({"album":album, "_similarity": distance})
+            matching_albums.sort(key=lambda x: x["_similarity"])
+            artists_ref = self.db.collection(u'Artists').stream()
+            all_artists = [artist for artist in artists_ref]
+
+            matching_artists = []
+
+            for artist in all_artists:
+                artist = artist.to_dict()
+                distance = Levenshtein.distance(artist.get('Name', '').lower(), query.lower())
+                if (distance <= max_distance):
+                    matching_artists.append({"artist":artist, "_similarity": distance})
+            matching_songs.sort(key=lambda x: x["_similarity"])
+
+            return {"songs": matching_songs[:5], "albums": matching_albums[:2], "artists": matching_artists[:2]}
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return []

@@ -8,6 +8,7 @@ from functools import wraps
 import json
 
 from app.services.user_service import UserService
+from app.services.song_service import SongService
 from app.services.recommendation_service import RecommendationService
 
 
@@ -18,6 +19,7 @@ SECRET_KEY_JWT = os.getenv("SECRET_KEY_JWT")
 # Blueprint setup
 user_blueprint = Blueprint("user", __name__)
 user_service = UserService()
+song_service = SongService()
 recommendation_service = RecommendationService()
 
 
@@ -293,6 +295,7 @@ def get_recommendations(user_id):
         recommendations: list of recommendations
     """
     try:
+        user_id = request.json.get("user_id")
         recommendations = recommendation_service.generate_recommendations(user_id)
         return (
             jsonify(
@@ -302,7 +305,7 @@ def get_recommendations(user_id):
                 }
             ),
             200,
-        )
+            )
     except Exception as e:
         raise BadRequest(str(e))
 
@@ -428,7 +431,6 @@ def rate_artist(user_id):
     rated_artists = user_service.rate_artist(user_id, data["artist"], data["rate"])
     return jsonify({"message": "Artist rated!", "rated_artists": rated_artists}), 200
 
-
 @user_blueprint.route("/unrate-artist", methods=["POST"])
 @token_required
 def unrate_artist(user_id):
@@ -444,6 +446,7 @@ def unrate_artist(user_id):
         raise BadRequest("Missing artist")
     rated_artists = user_service.unrate_artist(user_id, data["artist"])
     return jsonify({"message": "Artist unrated!", "rated_artists": rated_artists}), 200
+
 
 
 @user_blueprint.route("/get-rated-artists", methods=["GET"])
@@ -639,7 +642,6 @@ def delete_song_from_playlist(user_id):
     user_service.delete_song_from_playlist(user_id, playlist_name, song_name)
     return jsonify({"message": "Song deleted from playlist!"}), 200
 
-
 @user_blueprint.route("/get-all-playlists", methods=["GET"])
 @token_required
 def get_all_playlists(user_id):
@@ -652,7 +654,6 @@ def get_all_playlists(user_id):
     """
     playlists = user_service.get_all_playlists(user_id)
     return jsonify({"playlists": playlists}), 200
-
 
 @user_blueprint.route("/get-playlist-by-name", methods=["GET"])
 @token_required
@@ -674,6 +675,51 @@ def get_playlist_by_name(user_id):
     else:
         return jsonify({"message": "Playlist not found"}), 404
 
+# search song by name, its artist and album 
+@user_blueprint.route('/search', methods=['GET'])
+@token_required
+def search(user_id):
+    query = request.args.get('query')
+    if not query:
+        return jsonify({"error": "Query is required"}), 400
+    try:
+        songs = song_service.search_songs(query)
+        return jsonify(songs), 200
+    except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 500
+@user_blueprint.route("/subscriptions/add/<artist_id>",methods = ["POST"])
+@token_required
+def subscribe_to_artist(user_id,artist_id):
+    '''
+    TO-Do: a user should be able to subscribe to an artist only once.
+            fix recommendations.
+    '''
+    user_id = request.json.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Missing user_id in request body"}), 400
+
+    response = user_service.subscribe_to_artist(user_id,artist_id)
+    
+    return jsonify(response) if response else jsonify({"Bad Request":"Already subscribed to artist"},400)
+
+@user_blueprint.route("/subscriptions/delete/<artist_id>",methods=["DELETE"])
+@token_required
+def delete_subcription(user_id,artist_id):
+    user_id = request.json.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Missing user_id in request body"}), 400
+    deleted = user_service.delete_subcription(user_id,artist_id)
+    return jsonify({artist_id:"Delete was successful"},204) if deleted else jsonify({artist_id:"There was an error in deletion"},500) 
+
+@user_blueprint.route("/subscriptions/getAll",methods=["GET"])
+@token_required
+def get_subscription_list(user_id):
+    user_id = request.json.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Missing user_id in request body"}), 400
+    subscription_list = user_service.get_subscriptions(user_id)
+    return jsonify(subscription_list) if subscription_list else jsonify({"error":"NotFound"},400)
 
 @user_blueprint.errorhandler(BadRequest)
 def handle_bad_request(e):

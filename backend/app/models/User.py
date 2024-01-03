@@ -17,7 +17,8 @@ class User:
         rated_songs: Optional[List[Dict[str, str]]] = None,
         rated_artists: Optional[List[str]] = None,
         rated_albums: Optional[List[str]] = None,
-        playlists: Optional[List[Dict[str, Union[str, List[str]]]]] = None
+        playlists: Optional[List[Dict[str, Union[str, List[str]]]]] = None,
+        subscribed_artists: Optional[List[str]] = None
     ):
         """
         Creates a new user object.
@@ -36,7 +37,7 @@ class User:
         self.rated_artists = rated_artists if rated_artists else []
         self.rated_albums = rated_albums if rated_albums else []
         self.playlists = playlists if playlists else[]
-
+        self.subscribed_artists = subscribed_artists if subscribed_artists else[]
     @staticmethod
     def hash_password(raw_password: str) -> bytes:
         """
@@ -74,7 +75,8 @@ class User:
             "rated_songs": self.rated_songs if self.rated_songs else [],
             "rated_artists": self.rated_artists if self.rated_artists else [],
             "rated_albums": self.rated_albums if self.rated_albums else [],
-            "playlists": self.playlists if self.playlists else[]
+            "playlists": self.playlists if self.playlists else[],
+            "subscribed_artists":self.subscribed_artists if self.subscribed_artists else[]
         }
 
     @staticmethod
@@ -105,7 +107,7 @@ class User:
         rated_artists = source.get("rated_artists", [])
         rated_albums = source.get("rated_albums", [])
         playlists = source.get("playlists", [])
-
+        subscribed_artists = source.get("subscribed_artists",[])
         user = User(
             username=username,
             email=email,
@@ -119,6 +121,7 @@ class User:
             rated_artists=rated_artists,
             rated_albums=rated_albums,
             playlists=playlists,
+            subscribed_artists=subscribed_artists
         )
         user.password = password.encode("utf-8")  # Ensure the password is in bytes
         return user
