@@ -176,7 +176,16 @@ class FirebaseSongService:
                     matching_artists.append({"artist":artist, "_similarity": distance})
             matching_songs.sort(key=lambda x: x["_similarity"])
 
-            return {"songs": matching_songs[:5], "albums": matching_albums[:2], "artists": matching_artists[:2]}
+            podcast_ref = self.db.collection(u'Podcasts').stream()
+            all_podcasts = [podcast for podcast in podcast_ref]
+            matching_podcasts = []
+            for podcast in all_podcasts:
+                podcast = podcast.to_dict()
+                distance = Levenshtein.distance(podcast.get('Name', '').lower(), query.lower())
+                if (distance <= max_distance):
+                    matching_podcasts.append({"podcast":podcast, "_similarity": distance})
+
+            return {"songs": matching_songs[:5], "albums": matching_albums[:2], "artists": matching_artists[:2], "podcasts": matching_podcasts[:2]}
 
         except Exception as e:
             print(f"An error occurred: {e}")
