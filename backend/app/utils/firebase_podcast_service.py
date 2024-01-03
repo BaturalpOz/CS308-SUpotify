@@ -34,11 +34,10 @@ class FirebasePodcastService:
         """
         episode_dict = episode.to_dict()
         podcast_id = self.get_podcast_by_name(podcast_name)
-        print(podcast_id)
         try:
-            episodes_ref = self.db.collection(u'Podcasts').document(podcast_id).collection(u'Episodes')
-            _, doc_ref = episodes_ref.add(episode_dict)
-            return doc_ref.id
+            podcast_ref = self.db.collection(u'Podcasts').document(podcast_id)
+            podcast_ref.update({u'Episodes': firestore.ArrayUnion([episode_dict])})
+            
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
@@ -62,8 +61,10 @@ class FirebasePodcastService:
         Returns a dictionary representing a podcast document.
         """
         try:
-            docs = self.db.collection(u'Podcasts').where(u'name', u'==', podcast_name).stream()
-            return {doc.id: doc.to_dict() for doc in docs}
+            docs = self.db.collection(u'Podcasts').where(u'Name', u'==', podcast_name)
+
+            results = docs.get()
+            return results[0].id
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
@@ -74,8 +75,11 @@ class FirebasePodcastService:
         """
         try:
             podcast_id = self.get_podcast_by_name(podcast_name)
-            docs = self.db.collection(u'Podcasts').document(podcast_id).collection(u'Episodes').where(u'name', u'==', episode_name).stream()
-            return {doc.id: doc.to_dict() for doc in docs}
+            docs = self.db.collection(u'Podcasts').document(podcast_id)
+            # get episode from episode array in podcast document
+            for episode in docs.get().to_dict()['Episodes']:
+                if episode['Name'] == episode_name:
+                    return episode
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
@@ -92,17 +96,6 @@ class FirebasePodcastService:
             print(f"An error occurred: {e}")
             return False
 
-    def update_episode(self, podcast_id: str, episode_id: str, episode: Episode) -> bool:
-        """
-        Updates an existing episode document.
-        """
-        try:
-            doc_ref = self.db.collection(u'Podcasts').document(podcast_id).collection(u'Episodes').document(episode_id)
-            doc_ref.update(episode.to_dict())
-            return True
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return False
 
     def delete_podcast(self, podcast_id: str) -> bool:
         """
@@ -116,17 +109,6 @@ class FirebasePodcastService:
             print(f"An error occurred: {e}")
             return False
         
-    def delete_episode(self, podcast_id: str, episode_id: str) -> bool:
-        """
-        Deletes an episode document.
-        """
-        try:
-            doc_ref = self.db.collection(u'Podcasts').document(podcast_id).collection(u'Episodes').document(episode_id)
-            doc_ref.delete()
-            return True
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return False
         
     def get_podcasts(self) -> Dict:
         """
@@ -144,8 +126,8 @@ class FirebasePodcastService:
         Returns a dictionary representing all episode documents for a podcast.
         """
         try:
-            docs = self.db.collection(u'Podcasts').document(podcast_id).collection(u'Episodes').stream()
-            return {doc.id: doc.to_dict() for doc in docs}
+            docs = self.db.collection(u'Podcasts').document(podcast_id)
+            return docs.get().to_dict()['Episodes']
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
@@ -155,8 +137,8 @@ class FirebasePodcastService:
         Returns a dictionary representing all episode documents for a podcast.
         """
         try:
-            docs = self.db.collection(u'Podcasts').document(podcast_id).collection(u'Episodes').stream()
-            return {doc.id: doc.to_dict() for doc in docs}
+            docs = self.db.collection(u'Podcasts').document(podcast_id)
+            return docs.get().to_dict()['Episodes']
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
