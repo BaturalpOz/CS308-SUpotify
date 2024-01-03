@@ -18,7 +18,7 @@ class PodcastService:
         new_podcast = Podcast(name=name, episodes=episodes)
 
         # Add the new album to Firebase, which returns the album_id if successful
-        podcast_id = self.firebase_podcast_service.create_podcast(new_podcast)
+        podcast_id = self.firebase_podcast_service.add_podcast(new_podcast)
 
         if podcast_id:
             return podcast_id
@@ -37,9 +37,9 @@ class PodcastService:
     def delete_podcast(self, podcast_id: str) -> None:
         return self.firebase_podcast_service.delete_podcast(podcast_id)
     
-    def create_episode(self, podcast_name: str, episode_name: str, episode_duration: int) -> Episode:
-        episode = Episode(name=episode_name, duration=episode_duration)
-        episode_id = self.firebase_podcast_service.create_episode(podcast_name, episode)
+    def create_episode(self, podcast_name: str, episode_name: str, episode_duration: int, episode_description: str) -> Episode:
+        episode = Episode(name=episode_name, duration_ms=episode_duration, description=episode_description)
+        episode_id = self.firebase_podcast_service.add_episode(podcast_name, episode)
         if episode_id:
             return episode
         else:

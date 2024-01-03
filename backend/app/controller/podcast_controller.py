@@ -39,5 +39,7 @@ def add_episode():
         raise BadRequest("Duration is required")
     if "podcast_name" not in data:
         raise BadRequest("Podcast name is required")
-    episode = podcast_service.create_episode(data["podcast_name"], data["episode_name"], data["duration"])
-    return jsonify(episode)
+    if "description" not in data:
+        raise BadRequest("Description is required")
+    episode = podcast_service.create_episode(data["podcast_name"], data["episode_name"], data["duration"], data["description"])
+    return jsonify(episode.to_dict())

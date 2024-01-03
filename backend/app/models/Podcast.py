@@ -2,9 +2,10 @@ from datetime import datetime, timezone, timedelta
 from typing import List, Dict, Optional
 
 class Episode:
-    def __init__(self, name: str, duration_ms: int):
+    def __init__(self, name: str, duration_ms: int, description: str):
         self.name = name
         self.duration_ms = duration_ms
+        self.description = description
     
     def to_dict(self) -> Dict[str, str]:
         """
@@ -12,7 +13,8 @@ class Episode:
         """
         return {
             "Name": self.name,
-            "Duration": self.duration_ms
+            "Duration": self.duration_ms,
+            "Description": self.description
         }
     
     @staticmethod
@@ -22,8 +24,9 @@ class Episode:
         """
         name = source['Name']
         duration_ms = source['Duration']
+        description = source['Description']
 
-        return Episode(name=name, duration_ms=duration_ms)
+        return Episode(name=name, duration_ms=duration_ms, description=description)
 
 class Podcast:
     def __init__(self, name: str, episodes: List[Episode] ):
