@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fontawesome-free-6.5.1-web/css/all.css">
+
+    <title>Add Playlist</title>
+
+    <style>
+        body {
+            background-color: #ffffff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .navbar {
+            background-color: #0F4C8F;
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff;
+            font-size: 30px;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #ffffff;
+        }
+
+        .card {
+            margin-top: 20px;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+   
+
+        .song-input {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Bottom Navbar -->
+    <nav class="navbar navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
+        </div>
+    </nav>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="dashboard.html">SUpotify</a>
+        </div>
+    </nav>
+
+    <!-- Add Playlist Section -->
+    <div class="container">
+        <h2>Add New Playlist</h2>
+        <div class="card">
+            <div class="card-body">
+                <form id="addPlaylistForm">
+                    <div class="form-group">
+                        <label for="playlistName">Playlist Name</label>
+                        <input type="text" class="form-control" id="playlistName" placeholder="Enter playlist name">
+                    </div>
+
+                   <!-- Song input fields -->
+                            <div id="songInputs">
+                                <h5>Songs:</h5>
+                                <!-- We create 10 input fields for songs -->
+                                <!-- Repeat this block for each song input you need -->
+                                <div class="form-group song-input">
+                                    <label for="songName1">Song #1</label>
+                                    <input type="text" class="form-control" id="songName1" placeholder="Enter song name">
+                                </div>
+                                <div class="form-group song-input">
+                                    <label for="songName1">Song #2</label>
+                                    <input type="text" class="form-control" id="songName1" placeholder="Enter song name">
+                                </div>
+                                <div class="form-group song-input">
+                                    <label for="songName1">Song #3</label>
+                                    <input type="text" class="form-control" id="songName1" placeholder="Enter song name">
+                                </div>
+                                <div class="form-group song-input">
+                                    <label for="songName1">Song #4</label>
+                                    <input type="text" class="form-control" id="songName1" placeholder="Enter song name">
+                                </div>
+                                <div class="form-group song-input">
+                                    <label for="songName1">Song #5</label>
+                                    <input type="text" class="form-control" id="songName1" placeholder="Enter song name">
+                                </div>
+                                <div class="form-group song-input">
+                                    <label for="songName1">Song #6</label>
+                                    <input type="text" class="form-control" id="songName1" placeholder="Enter song name">
+                                </div>
+                                <div class="form-group song-input">
+                                    <label for="songName1">Song #7</label>
+                                    <input type="text" class="form-control" id="songName1" placeholder="Enter song name">
+                                </div>
+                                <div class="form-group song-input">
+                                    <label for="songName1">Song #8</label>
+                                    <input type="text" class="form-control" id="songName1" placeholder="Enter song name">
+                                </div>
+                                <div class="form-group song-input">
+                                    <label for="songName1">Song #9</label>
+                                    <input type="text" class="form-control" id="songName1" placeholder="Enter song name">
+                                </div>
+                                <div class="form-group song-input">
+                                    <label for="songName10">Song #10</label>
+                                    <input type="text" class="form-control" id="songName10" placeholder="Enter song name">
+                                </div>
+                            </div>
+
+
+                    <button type="submit" class="btn btn-primary">Add Playlist</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include other necessary scripts and logic here -->
+    <script>
+            $(document).ready(function() {
+    $('#addPlaylistForm').submit(function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        var playlistName = $('#playlistName').val().trim();
+        var songs = [];
+        for (var i = 1; i <= 10; i++) {
+            var songName = $('#songName' + i).val().trim();
+            if (songName) { // Only add songs that have a name entered
+                songs.push(songName); // Assuming the backend expects an array of song names
+            }
+        }
+        
+                var token = getCookie('access_token_cookie'); // Retrieve the token from the cookie
+                if (!token) {
+                    alert('You must be logged in to add a playlist.');
+                    return;
+                }
+        
+                $.ajax({
+                    type: 'POST',
+                    url: 'http://127.0.0.1:5001/user/add-playlist', // The URL to your backend endpoint
+                    contentType: 'application/json',
+                    data: JSON.stringify({ name: playlistName, songs: songs }), // Convert the playlist data into a JSON string
+                    headers: { 'Authorization': 'Bearer ' + token },
+                    success: function(response) {
+                        console.log('Playlist added successfully:', response);
+                        alert('Playlist added successfully.');
+                        window.location.href = 'dashboard.html'; // Redirect to the dashboard after successful addition
+                    },
+                    error: function(xhr) {
+                        console.error('Error adding playlist:', xhr.responseText);
+                        alert('Error adding playlist: ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+        
+        function getCookie(name) {
+            var value = "; " + document.cookie;
+            var parts = value.split("; " + name + "=");
+            if (parts.length === 2) {
+                return parts.pop().split(";").shift();
+            }
+            return null;
+        }
+        </script>
+        
+</body>
+</html>
+
