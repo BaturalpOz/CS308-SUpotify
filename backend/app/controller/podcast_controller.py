@@ -8,7 +8,7 @@ podcast_service = PodcastService()
 
 @podcast_blueprint.route("/get-podcasts", methods=["GET"])
 def get_all_podcasts():
-    return jsonify(podcast_service.get_all_podcasts())
+    return jsonify(podcast_service.get_podcasts())
 
 @podcast_blueprint.route("/get-podcast", methods=["POST"])
 def get_podcast_by_id():
