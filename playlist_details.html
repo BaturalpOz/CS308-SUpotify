@@ -80,7 +80,7 @@
             <div class="card-body">
                 <h4 class="card-title" id="playlistTitle">Loading...</h4>
                 <p class="card-text">
-                    <strong>Created by:</strong> <span id="playlistCreator">Loading...</span><br>
+                    <!--<strong>Created by:</strong> <span id="playlistCreator">Loading...</span><br> -->
                     <strong>Songs in Playlist:</strong>
                     <ul id="songsList">
                         <!-- Songs will be listed here -->
@@ -93,12 +93,19 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
-            loadPlaylistDetails();
-        });
+    loadPlaylistDetails();
+});
 
-        function loadPlaylistDetails() {
-        var playlistName = getQueryStringParameter('playlist_name');
-        var token = getCookie('access_token_cookie'); // Retrieve the token from the cookie
+function loadPlaylistDetails() {
+    var playlistName = getQueryStringParameter('playlist_name');
+    var token = getCookie('access_token_cookie'); // Retrieve the token from the cookie
+
+    if (playlistName) {
+        $('#playlistTitle').text(playlistName);
+        document.title = playlistName + " - Playlist Details"; // Update the document title
+    } else {
+        $('#playlistTitle').text('Unknown Playlist');
+    }
 
     if (!playlistName || !token) {
         console.error('Playlist name or token is missing');
@@ -111,9 +118,13 @@
     $.ajax({
         type: 'GET',
         url: `http://127.0.0.1:5001/user/get-playlist-by-name?playlist_name=${encodeURIComponent(playlistName)}`,
+        xhrFields: {
+            withCredentials: true
+        },
         success: function(response) {
             console.log("Playlist Details:", response);
-            updatePlaylistDetails(response.playlist);
+            updatePlaylistDetails(response);
+            
         },
         error: function(xhr) {
             console.error('Error loading playlist details:', xhr.responseText);
@@ -124,18 +135,38 @@
 
 
 
-        function updatePlaylistDetails(playlist) {
-            document.getElementById('playlistTitle').innerText = playlist.name;
-            var songsListElement = document.getElementById('songsList');
-            songsListElement.innerHTML = ''; // Clear the list before adding new items
 
-            playlist.songs.forEach(function(song) {
-                var listItem = document.createElement('li');
-                listItem.className = 'song-list-item';
-                listItem.innerText = song.name + ' by ' + song.artist;
-                songsListElement.appendChild(listItem);
-            });
-        }
+
+function updatePlaylistDetails(response) {
+    // Clear existing playlist details
+    $('#songsList').empty();
+
+    // Check if the response contains a playlist object with 'name' and 'songs' properties
+    if (response.playlist && response.playlist.name && Array.isArray(response.playlist.songs)) {
+        // Set the playlist title
+        $('#playlistTitle').text(response.playlist.name);
+        document.title = response.playlist.name + " - Playlist Details"; // Update the document title
+
+        // Iterate over the songs in the playlist
+        response.playlist.songs.forEach(function(song) {
+            // Append each song to the songs list
+            $('#songsList').append($('<li>').addClass('song-list-item').text(song));
+        });
+    } else {
+        // If the playlist data is not in the expected format, display an error message
+        $('#playlistTitle').text('Unknown Playlist');
+        $('#songsList').append($('<li>').text('Playlist data is not available or in the wrong format.'));
+    }
+}
+
+
+
+
+
+
+
+
+
 
         function getQueryStringParameter(param) {
             var urlParams = new URLSearchParams(window.location.search);
