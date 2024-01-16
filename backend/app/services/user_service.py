@@ -377,10 +377,14 @@ class UserService:
         user = self.get_user_by_id(user_id)
         return user.playlists
 
-    def get_playlist_by_name(self, user_id: str, playlist_name: str) -> Optional[dict]:
+    def get_playlist_by_name(self, user_id: str, playlist_name: str) -> Optional[Dict[str, Union[str, List[str]]]]:
         user = self.get_user_by_id(user_id)
         playlist = next((p for p in user.playlists if p["name"] == playlist_name), None)
-        return playlist
+
+        if playlist:
+            return {'name': playlist['name'], 'songs': playlist['songs']}
+        else:
+            return None
     
     def subscribe_to_artist(self,user_id:str,artists_id:str):
         
