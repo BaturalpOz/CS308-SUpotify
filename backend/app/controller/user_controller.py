@@ -688,6 +688,7 @@ def search(user_id):
     except Exception as e:
         print(e)
         return jsonify({"error": str(e)}), 500
+        
 @user_blueprint.route("/subscriptions/add/<artist_id>",methods = ["POST"])
 @token_required
 def subscribe_to_artist(user_id,artist_id):

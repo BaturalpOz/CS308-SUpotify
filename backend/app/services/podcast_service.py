@@ -39,11 +39,9 @@ class PodcastService:
     
     def create_episode(self, podcast_name: str, episode_name: str, episode_duration: int, episode_description: str) -> Episode:
         episode = Episode(name=episode_name, duration_ms=episode_duration, description=episode_description)
-        episode_id = self.firebase_podcast_service.add_episode(podcast_name, episode)
-        if episode_id:
-            return episode
-        else:
-            raise Exception("Failed to create a new episode in Firebase.")
+        self.firebase_podcast_service.add_episode(podcast_name, episode)
+
+        return episode
 
     def get_episode(self, podcast_id: str, episode_id: str) -> Episode:
         return self.firebase_podcast_service.get_episode(podcast_id, episode_id)
