@@ -9,11 +9,8 @@ from .controller.user_controller import user_blueprint
 from .controller.artist_controller import artist_blueprint
 from .controller.album_controller import album_blueprint
 from .controller.song_controller import song_blueprint
-<<<<<<< HEAD
 from .controller.podcast_controller import podcast_blueprint
-=======
 from .controller.comment_controller import comment_blueprint
->>>>>>> 24330f4fe8f19fccdb30562b78579a19f510d885
 
 load_dotenv()
 
