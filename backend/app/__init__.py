@@ -12,7 +12,6 @@ from .controller.song_controller import song_blueprint
 from .controller.podcast_controller import podcast_blueprint
 from .controller.comment_controller import comment_blueprint
 
-
 load_dotenv()
 
 def create_app():
