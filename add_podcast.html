@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fontawesome-free-6.5.1-web/css/all.css">
+    <title>Add Podcast</title>
+    <style>
+        body {
+            background-color: #ffffff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .navbar {
+            background-color: #0F4C8F;
+        }
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff;
+            font-size: 30px;
+        }
+        .navbar-toggler-icon {
+            background-color: #ffffff;
+        }
+        .card {
+            margin-top: 20px;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .form-input {
+            margin-bottom: 10px;
+        }
+        .navbar-bottom {
+            background-color: #0F4C8F;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 999;
+        }
+        .btn-submit {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+ 
+
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="dashboard.html">SUpotify</a>
+        </div>
+    </nav>
+
+    <!-- Add Podcast Section -->
+    <div class="container">
+        <h2>Add Podcast</h2>
+        <div class="card">
+            <div class="card-body">
+                <form id="addPodcastForm">
+                    <div class="form-group form-input">
+                        <label for="podcastName">Podcast Name</label>
+                        <input type="text" class="form-control" id="podcastName" placeholder="Enter podcast name" required>
+                    </div>
+                    <div id="episodesContainer">
+                        <!-- Placeholder for episodes -->
+                    </div>
+                    <div class="form-row">
+                    <button type="button" class="btn btn-secondary" id="addEpisodeBtn">Add Episode</button>
+                    <button type="submit" class="btn btn-primary btn-submit">Submit Podcast</button>
+                </div>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var episodeCount = 0;
+
+            function addEpisodeForm() {
+                episodeCount++;
+                var episodeForm = `
+                    <div class="episode" id="episode${episodeCount}">
+                        <div class="form-group form-input">
+                            <label for="episodeName${episodeCount}">Episode Name</label>
+                            <input type="text" class="form-control" id="episodeName${episodeCount}" placeholder="Enter episode name" required>
+                        </div>
+                        <div class="form-group form-input">
+                            <label for="episodeDescription${episodeCount}">Description</label>
+                            <textarea class="form-control" id="episodeDescription${episodeCount}" rows="3" placeholder="Enter episode description"></textarea>
+                        </div>
+                        <div class="form-group form-input">
+                            <label for="episodeDuration${episodeCount}">Duration (seconds)</label>
+                            <input type="number" class="form-control" id="episodeDuration${episodeCount}" placeholder="Enter episode duration in seconds" required>
+                        </div>
+                        <button type="button" class="btn btn-danger removeEpisodeBtn" data-id="${episodeCount}">Remove Episode</button>
+                    </div>
+                `;
+                $('#episodesContainer').append(episodeForm);
+            }
+
+            $('#addEpisodeBtn').click(function() {
+                addEpisodeForm();
+            });
+
+            $(document).on('click', '.removeEpisodeBtn', function() {
+                var id = $(this).data('id');
+                $('#episode' + id).remove();
+            });
+
+            $('#addPodcastForm').on('submit', function(e) {
+                e.preventDefault();
+                var podcastData = {
+                    name: $('#podcastName').val(),
+                    episodes: []
+                };
+                
+                $('.episode').each(function() {
+                    var id = $(this).attr('id').replace('episode', '');
+                    podcastData.episodes.push({
+                        name: $('#episodeName' + id).val(),
+                        description: $('#episodeDescription' + id).val(),
+                        duration: $('#episodeDuration' + id).val()
+                    });
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: `http://127.0.0.1:5001/podcast/add-podcast`,
+                    data: JSON.stringify(podcastData),
+                    contentType: 'application/json',
+                    success: function(response) {
+                        console.log('Podcast added:', response);
+                        // Reset form or redirect as needed
+                    },
+                    error: function(error) {
+                        console.log('Error adding podcast:', error);
+                    }
+                });
+            });
+
+            // Initialize with one episode form
+            addEpisodeForm();
+        });
+    </script>
+</body>
+</html>
