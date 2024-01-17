@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fontawesome-free-6.5.1-web/css/all.css">
+    <title>Delete Podcast</title>
+    <style>
+        body {
+            background-color: #ffffff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .navbar {
+            background-color: #0F4C8F;
+        }
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff;
+            font-size: 30px;
+        }
+        .navbar-toggler-icon {
+            background-color: #ffffff;
+        }
+        .card {
+            margin-top: 20px;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .form-input {
+            margin-bottom: 10px;
+        }
+        .navbar-bottom {
+            background-color: #0F4C8F;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 999;
+        }
+        .btn-submit {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Bottom Navbar -->
+    <nav class="navbar navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
+        </div>
+    </nav>
+
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="dashboard.html">SUpotify</a>
+        </div>
+    </nav>
+
+    <!-- Delete Podcast Section -->
+    <div class="container">
+        <h2>Delete Podcast</h2>
+        <div class="card">
+            <div class="card-body">
+                <form id="deletePodcastForm">
+                    <div class="form-group form-input">
+                        <label for="podcastId">Podcast ID</label>
+                        <input type="text" class="form-control" id="podcastId" placeholder="Enter podcast ID to delete" required>
+                    </div>
+                    <button type="submit" class="btn btn-danger btn-submit">Delete Podcast</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#deletePodcastForm').on('submit', function(e) {
+                e.preventDefault();
+                var podcastId = $('#podcastId').val();
+                if (podcastId) {
+                    $.ajax({
+                        type: 'POST',
+                        url: `http://127.0.0.1:5001/podcast/delete-podcast`,
+                        data: JSON.stringify({ id: podcastId }),
+                        contentType: 'application/json',
+                        success: function(response) {
+                            console.log('Podcast deleted:', response);
+                            alert('Podcast deleted successfully');
+                        },
+                        error: function(error) {
+                            console.log('Error deleting podcast:', error);
+                            alert('Error deleting podcast.');
+                        }
+                    });
+                } else {
+                    alert('Podcast ID is required.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
