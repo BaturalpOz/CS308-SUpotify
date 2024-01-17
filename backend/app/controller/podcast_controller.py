@@ -10,7 +10,8 @@ podcast_service = PodcastService()
 def get_all_podcasts():
     return jsonify(podcast_service.get_podcasts()), 200
 
-@podcast_blueprint.route("/get-podcast", methods=["POST"])
+"""
+@podcast_blueprint.route("/get-podcast", methods=["GET"])
 def get_podcast_by_name():
     data = request.get_json()
     if "podcast_name" not in data:
@@ -19,6 +20,18 @@ def get_podcast_by_name():
     if podcast is None:
         raise NotFound("Podcast not found")
     return jsonify(podcast), 200
+"""
+
+@podcast_blueprint.route("/get-podcast", methods=["GET"])
+def get_podcast_by_name():
+    podcast_name = request.args.get('podcast_name')
+    if not podcast_name:
+        return jsonify({"error": "Podcast Name is required"}), 400
+    podcast = podcast_service.get_podcast(podcast_name)
+    if podcast is None:
+        return jsonify({"error": "Podcast not found"}), 404
+    return jsonify(podcast), 200
+
 
 # add a new podcast, name
 @podcast_blueprint.route("/add-podcast", methods=["POST"])
