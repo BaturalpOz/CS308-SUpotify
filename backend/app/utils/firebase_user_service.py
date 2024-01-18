@@ -110,4 +110,21 @@ class FirebaseUserService:
         except Exception as e:
             print(f"An error occurred: {e}")
             return False
+    
+    def get_user_by_google_id(self, google_id: str):
+        """
+        Retrieves a user document from the Users collection by Google ID.
+        """
+        try:
+            users_ref = self.db.collection(u'Users')
+            query = users_ref.where(u'google_id', u'==', google_id)
+            results = query.stream()
+            for doc in results:
+                user = User.from_dict(doc.to_dict())
+                user.user_id = doc.id
+                return user
+            return None
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
         

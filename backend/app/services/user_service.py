@@ -1,7 +1,8 @@
 from app.utils.firebase_user_service import FirebaseUserService
 from app.utils.firebase_song_service import FirebaseSongService
 from app.models.User import User
-import random
+from google.auth.transport import requests
+from google.oauth2 import id_token
 from datetime import datetime
 from typing import List, Any, Dict, Optional, Union
 
@@ -415,3 +416,35 @@ class UserService:
             self.update_user(user_id,update_data)
             return artist_id
         return None
+    
+    def get_or_create_google_user(self, google_id_token: str):
+        """
+        Get or create a user based on the Google ID token.
+        """
+        try:
+            # Verify the Google ID token
+            id_info = id_token.verify_oauth2_token(google_id_token, requests.Request())
+
+            # Check if a user with this Google ID already exists
+            user = self.firebase_user_service.get_user_by_google_id(id_info['sub'])
+            if user:
+                return user.to_dict()
+
+            # If no user exists, create a new one
+            new_user = User(
+                username=id_info.get('name', ''),
+                email=id_info.get('email', ''),
+                google_id=id_info['sub']
+            
+            )
+
+            # Add the new user to Firebase
+            user_id = self.firebase_user_service.add_user(new_user)
+
+            if user_id:
+                return new_user.to_dict()
+            else:
+                raise Exception("Failed to create a new user in Firebase.")
+
+        except ValueError as e:
+            raise ValueError(f"Error verifying Google ID token: {str(e)}")

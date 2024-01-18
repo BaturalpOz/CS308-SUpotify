@@ -13,8 +13,8 @@ class UserBlueprintTestCase(unittest.TestCase):
         self.client = self.app.test_client()
 
         self.test_user_data = {
-            "username": "testuser",
-            "email": "testuser@example.com",
+            "username": "testuser2",
+            "email": "testuser2@example.com",
             "password": "A7strongpassword",
         }
 
@@ -130,5 +130,45 @@ class UserBlueprintTestCase(unittest.TestCase):
         data = json.loads(response.data.decode())
         self.assertTrue("albums" in data)
 
+    def test9_subscribe_to_artist(self):
+        if not test_token or not test_user_id:
+            self.fail("No token or user ID available for test.")
+
+        response = self.client.post(
+            "/user/subscriptions/subscribe",
+            headers={"Cookie": test_token},
+            data=json.dumps({"artist_id": "sample_artist_id"}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data.decode())
+        self.assertIn("Subscribed to artist!", data["message"])
+
+    def test10_get_subscriptions(self):
+        if not test_token or not test_user_id:
+            self.fail("No token or user ID available for test.")
+
+        response = self.client.get(
+            "/user/subscriptions",
+            headers={"Cookie": test_token},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data.decode())
+        self.assertTrue("subscribed_artists" in data)
+
+    def test11_unsubscribe_from_artist(self):
+        if not test_token or not test_user_id:
+            self.fail("No token or user ID available for test.")
+
+        response = self.client.delete(
+            "/user/subscriptions/unsubscribe",
+            headers={"Cookie": test_token},
+            data=json.dumps({"artist_id": "sample_artist_id"}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data.decode())
+        self.assertIn("Unsubscribed from artist!", data["message"])
 if __name__ == "__main__":
     unittest.main()

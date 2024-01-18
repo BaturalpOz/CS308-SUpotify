@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify, make_response, render_template
+from flask import current_app
 from werkzeug.exceptions import NotFound, BadRequest
 import jwt
 import datetime
@@ -6,7 +7,8 @@ import os
 from dotenv import load_dotenv
 from functools import wraps
 import json
-
+from google.oauth2 import id_token
+from google.auth.transport import requests
 from app.services.user_service import UserService
 from app.services.song_service import SongService
 from app.services.recommendation_service import RecommendationService
@@ -720,6 +722,64 @@ def get_subscription_list(user_id):
         return jsonify({"error": "Missing user_id in request body"}), 400
     subscription_list = user_service.get_subscriptions(user_id)
     return jsonify(subscription_list) if subscription_list else jsonify({"error":"NotFound"},400)
+
+@user_blueprint.route("/google-signin", methods=["POST"])
+def google_signin():
+    """
+    Google Sign-In
+    params:
+        id_token: Google ID token obtained from the frontend
+    return:
+        token: JWT token for the authenticated user
+        message: message of success
+    """
+    data = request.get_json()
+    if not data or not "id_token" in data:
+        raise BadRequest("Missing Google ID token.")
+
+    google_id_token = data["id_token"]
+
+    try:
+        # Verify the Google ID token
+        google_info = id_token.verify_oauth2_token(
+            google_id_token,
+            requests.Request(),
+            current_app.config["GOOGLE_CLIENT_ID"], 
+        )
+
+        # Check if the user exists in database, or create a new user
+        user = user_service.get_or_create_google_user(google_info)
+
+        # Generate a JWT token
+        token = jwt.encode(
+            {
+                "user_id": user.user_id,
+                "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1),
+            },
+            SECRET_KEY_JWT,
+            algorithm="HS256",
+        )
+
+        # Set the token as a cookie
+        response = make_response(
+            jsonify({"token": token, "message": "User logged in!"}), 200
+        )
+        response.set_cookie(
+            "access_token_cookie",
+            value=token,
+            domain="localhost",
+            httponly=True,
+            samesite="None",
+            secure=False,
+            path="/",
+        )
+
+        return response
+
+    except ValueError as e:
+        # Token verification failed
+        print(f"Google Sign-In failed: {e}")
+        return jsonify({"error": "Invalid Google Sign-In token"}), 401
 
 @user_blueprint.errorhandler(BadRequest)
 def handle_bad_request(e):
