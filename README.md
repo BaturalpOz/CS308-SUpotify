@@ -8,7 +8,7 @@ This online system provides in-depth analysis of users' music preferences by agg
 
 ### Data Format
 
-The platform collects various data, including song title, artist, album and user ratings. Special attention is paid to different versions of the same song and multiple artist entries..
+The platform collects various data, including song title, artist, album and user ratings. Special attention is paid to different versions of the same song and multiple artist entries.
 
 ### Data Collection
    
