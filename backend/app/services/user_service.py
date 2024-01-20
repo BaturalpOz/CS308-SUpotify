@@ -7,6 +7,7 @@ from typing import List, Any, Dict, Optional, Union
 
 from app.utils.firebase_artist_service import FirebaseArtistService
 from app.services.artist_service import ArtistService
+from app.utils.firebase_album_service import FirebaseAlbumService
 
 
 class UserService:
@@ -14,6 +15,7 @@ class UserService:
         self.firebase_user_service = FirebaseUserService()
         self.firebase_song_service = FirebaseSongService()
         self.firebase_artist_service = FirebaseArtistService()
+        self.firebase_album_service = FirebaseAlbumService()
         self.artist_service = ArtistService()
     def create_user(self, username: str, email: str, password: str):
         """
@@ -152,7 +154,7 @@ class UserService:
 
     def rate_song(self, user_id: str, song_name: str, rating: int):
         user = self.get_user_by_id(user_id)
-        song = self.firebase_song_service.get_song_by_name(song_name)
+        song = self.firebase_song_service.get_song_by_name(song_name).to_dict()
         rated_song = {
             "artists": song["Artists"],
             "albums": song["Albums"],
@@ -166,11 +168,11 @@ class UserService:
 
     def unrate_song(self, user_id: str, song_name: str):
         user = self.get_user_by_id(user_id)
-        song = self.firebase_song_service.get_song_by_name(song_name)
+        song = self.firebase_song_service.get_song_by_name(song_name).to_dict()
         user.rated_songs = [
             song_iter
             for song_iter in user.rated_songs
-            if song["song"] != song_iter["song"]
+            if song["Name"] != song_iter["song"]
         ]
         self.update_user(user_id, {"rated_songs": user.rated_songs})
         return user.rated_songs
@@ -193,11 +195,12 @@ class UserService:
     
     def unrate_artist(self, user_id: str, artist_name: str):
         user = self.get_user_by_id(user_id)
-        artist = self.firebase_artist_service.get_artist_by_name(artist_name)
+        artist = self.firebase_artist_service.get_artist_by_name(artist_name).to_dict()
+        print(artist)
         user.rated_artists = [
             artist_iter
             for artist_iter in user.rated_artists
-            if artist["artist"] != artist_iter["artist"]
+            if artist["Name"] != artist_iter["artist"]
         ]
         self.update_user(user_id, {"rated_artists": user.rated_artists})
         return user.rated_artists
@@ -208,7 +211,7 @@ class UserService:
     
     def rate_album(self, user_id: str, album_name: str, rating: int):
         user = self.get_user_by_id(user_id)
-        album = self.firebase_album_service.get_album_by_name(album_name)
+        album = self.firebase_album_service.get_album_by_name(album_name).to_dict()
         rated_album = {
             "album": album_name,
             "rating": rating,
@@ -220,11 +223,11 @@ class UserService:
     
     def unrate_album(self, user_id: str, album_name: str):
         user = self.get_user_by_id(user_id)
-        album = self.firebase_album_service.get_album_by_name(album_name)
+        album = self.firebase_album_service.get_album_by_name(album_name).to_dict()
         user.rated_albums = [
             album_iter
             for album_iter in user.rated_albums
-            if album["album"] != album_iter["album"]
+            if album["Name"] != album_iter["album"]
         ]
         self.update_user(user_id, {"rated_albums": user.rated_albums})
         return user.rated_albums
