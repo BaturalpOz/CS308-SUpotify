@@ -141,6 +141,7 @@ def get_user(user_id, userid):
     return:
         user: user object
     """
+    
     user = user_service.get_user_by_id(userid)
     if user is None:
         raise NotFound("User not found.")
@@ -696,7 +697,6 @@ def subscribe_to_artist(user_id,artist_id):
     TO-Do: a user should be able to subscribe to an artist only once.
             fix recommendations.
     '''
-    user_id = request.json.get("user_id")
     if not user_id:
         return jsonify({"error": "Missing user_id in request body"}), 400
 
@@ -707,7 +707,6 @@ def subscribe_to_artist(user_id,artist_id):
 @user_blueprint.route("/subscriptions/delete/<artist_id>",methods=["DELETE"])
 @token_required
 def delete_subcription(user_id,artist_id):
-    user_id = request.json.get("user_id")
     if not user_id:
         return jsonify({"error": "Missing user_id in request body"}), 400
     deleted = user_service.delete_subcription(user_id,artist_id)
@@ -716,7 +715,6 @@ def delete_subcription(user_id,artist_id):
 @user_blueprint.route("/subscriptions/getAll",methods=["GET"])
 @token_required
 def get_subscription_list(user_id):
-    user_id = request.json.get("user_id")
     if not user_id:
         return jsonify({"error": "Missing user_id in request body"}), 400
     subscription_list = user_service.get_subscriptions(user_id)

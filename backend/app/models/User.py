@@ -66,7 +66,7 @@ class User:
                 {
                     "friendUsername": friend["friendUsername"],
                     "friendUserID": friend["friendUserID"],
-                    "includeInRecommendation": friend["includeInRecommendations"],
+                    "includeInRecommendation": friend["includeInRecommendation"],
                 }
                 for friend in self.friends
             ]
