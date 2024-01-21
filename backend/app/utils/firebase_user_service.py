@@ -74,8 +74,6 @@ class FirebaseUserService:
         try:
             user_ref = self.db.collection(u'Users').document(user_id)
             user_doc = user_ref.get()
-            #print firebase document id
-            print(u'Document data: {}'.format(user_doc.id))
             if user_doc.exists:
                 # Convert the document to a User object
                 user = User.from_dict(user_doc.to_dict())
