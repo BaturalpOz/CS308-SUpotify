@@ -60,7 +60,6 @@ class UserBlueprintTestCase(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data.decode())
-        print(data)
         self.assertTrue("user" in data)
 
     def test13_update_user(self):

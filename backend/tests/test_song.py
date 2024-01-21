@@ -1,25 +1,27 @@
 import unittest
 import json
+import sys 
+sys.path.append("..")
 from app import create_app
 from datetime import datetime
 
 
+song_id = None
 class SongBlueprintTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app()
         self.client = self.app.test_client()
-        self.song_id = "None"  # Store the song ID for later use
 
-    def test1_add_song(self):
+    def test10_add_song(self):
         song_data = {
-            "title": "Song Titleee",
-            "duration": 240,
-            "genre": "Electronic",
-            "language": "English",
-            "release_country": "India",
-            "release_date": "2023-11-15T12:00:00Z",
-            "albums": ["album13"],
-            "artists": ["artist14", "artist15"],
+            "Name": "New Song",
+            "Duration": 210000,
+            "Danceability": 0.75,
+            "Energy": 0.8,
+            "Loudness": -5.5,
+            "Tempo": 120,
+            "Albums": ["Album1"],
+            "Artists": ["Artist1"]
         }
         response = self.client.post(
             "/song/songs",
@@ -29,62 +31,74 @@ class SongBlueprintTestCase(unittest.TestCase):
         data = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 201)
         self.assertIn("New song created!", data["message"])
-        self.assertTrue("song_id" in data)
-        self.song_id = data["song_id"]  # Store the song ID
+        global song_id
+        song_id = data.get("song_id")
 
-def test2_get_song(self):
-    if not self.song_id:
-        self.fail("No song ID available for test.")
-    response = self.client.get(f"/song/songs/{self.song_id}")
-    data = json.loads(response.data.decode())
-    if response.status_code == 200:
-        self.assertTrue("song" in data)
-    elif response.status_code == 404:
-        self.assertIn("Song not found", data["message"])
+    def test11_get_song(self):
+        if not song_id:
+            self.fail("No song ID available for test.")
+        response = self.client.get(f"/song/{song_id}")
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data.decode())
+        self.assertIn("song", data)
 
-def test3_get_all_songs(self):
-    if not self.song_id:
-        self.fail("No song ID available for test.")
-    response = self.client.get("/song/all")
-    self.assertEqual(response.status_code, 200)
-    data = json.loads(response.data.decode())
-    self.assertTrue("song_ids" in data)
+    def test12_get_all_songs(self):
+        response = self.client.get("/song/all")
+        self.assertEqual(response.status_code, 200)
 
-def test4_get_song_by_name(self):
-    if not self.song_id:
-        self.fail("No song ID available for test.")
-    response = self.client.get(f"/song/get_by_name/{self.test2_get_song['Name']}")
-    self.assertEqual(response.status_code, 200)
-    data = json.loads(response.data.decode())
-    self.assertTrue("song" in data)
+    def test13_get_song_by_name(self):
+        response = self.client.get("/song/get_by_name/New Song")
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data.decode())
+        self.assertIn("song", data)
 
-
-    def test5_update_song(self):
-        song_id = "78Un1CEzUONSvewAA9Lz"
-        update_data = {"duration": 300}
+    def test14_update_song(self):
+        if not song_id:
+            self.fail("No song ID available for test.")
+        update_data = {"Name": "Updated Song"}
         response = self.client.put(
             f"/song/songs/{song_id}",
             data=json.dumps(update_data),
             content_type="application/json",
         )
+        self.assertEqual(response.status_code, 200)
         data = json.loads(response.data.decode())
-        if response.status_code == 200:
-            self.assertIn("Song updated!", data["message"])
-        elif response.status_code == 404:
-            self.assertIn("Song not found", data["message"])
+        self.assertIn("Song updated!", data["message"])
 
-    def test6_delete_song(self):
-        song_id = "qWHRVo4dW9x78ss8tGbk"  # Replace with an existing or non-existent song ID in your test environment
+    def test15_delete_song(self):
+        if not song_id:
+            self.fail("No song ID available for test.")
         response = self.client.delete(f"/song/songs/{song_id}")
+        self.assertEqual(response.status_code, 200)
         data = json.loads(response.data.decode())
+        self.assertIn("Song deleted!", data["message"])
 
-        if response.status_code == 200:
-            self.assertIn("Song deleted!", data["message"])
-        elif response.status_code == 404:
-            self.assertIn("Song not found", data["message"])
-        else:
-            # Check for unexpected status codes
-            self.fail(f"Unexpected status code: {response.status_code}, Message: {data['message']}")
+    ### Error Handling Tests ###
+
+    def test16_add_song_missing_fields(self):
+        song_data = {
+            "Name": "Incomplete Song",
+            # Missing other fields
+        }
+        response = self.client.post(
+            "/song/songs",
+            data=json.dumps(song_data),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test17_get_nonexistent_song(self):
+        response = self.client.get("/song/nonexistent_song_id")
+        self.assertEqual(response.status_code, 404)
+
+    def test18_update_nonexistent_song(self):
+        update_data = {"Name": "Nonexistent Song"}
+        response = self.client.put(
+            "/song/songs/nonexistent_song_id",
+            data=json.dumps(update_data),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 500)
 
 
 if __name__ == "__main__":

@@ -196,7 +196,6 @@ class UserService:
     def unrate_artist(self, user_id: str, artist_name: str):
         user = self.get_user_by_id(user_id)
         artist = self.firebase_artist_service.get_artist_by_name(artist_name).to_dict()
-        print(artist)
         user.rated_artists = [
             artist_iter
             for artist_iter in user.rated_artists
