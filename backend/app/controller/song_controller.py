@@ -65,9 +65,12 @@ def get_song(song_id):
     return:
         song: song object
     """
-    song = song_service.get_song_by_id(song_id)
+    try:
+        song = song_service.get_song_by_id(song_id)
+    except Exception as e:
+        return NotFound("Song not found."), 404
     if song is None:
-        raise NotFound("Song not found.")
+        return NotFound("Song not found."), 404
     return jsonify({"song": song.to_dict()}), 200
 
 
@@ -82,7 +85,7 @@ def get_song_by_name(song_name):
     """
     song = song_service.get_song_by_name(song_name)
     if song is None:
-        raise NotFound("Song not found.")
+        return NotFound("Song not found."), 404
     return jsonify({"song": song.to_dict()}), 200
 
 

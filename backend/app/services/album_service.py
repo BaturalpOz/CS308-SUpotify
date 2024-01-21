@@ -10,6 +10,7 @@ class AlbumService:
     def __init__(self):
         self.firebase_album_service = FirebaseAlbumService()
         self.song_service = SongService()
+
     def create_album(self, name: str, imageURL: str, release_date: datetime, total_tracks: int, songs: List[str], artists: List[str]):
         """
         Handles the business logic for creating a new album.

@@ -102,7 +102,7 @@ class FirebaseSongService:
             return True
         except Exception as e:
             print(f"An error occurred: {e}")
-            return False
+            return None
 
     def get_all_song_ids(self):
         """
