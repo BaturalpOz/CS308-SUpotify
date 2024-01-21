@@ -20,7 +20,7 @@ def get_artist_by_name(artist_name):
     artist = artist_service.get_artist_by_name(artist_name)
     if artist is None:
         raise NotFound(f"Artist with name {artist_name} not found.")
-    return jsonify({"artist": artist.to_dict()}), 200
+    return jsonify({"artist": artist}), 200
 
 
 @artist_blueprint.route("/create", methods=["POST"])

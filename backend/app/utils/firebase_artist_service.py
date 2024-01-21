@@ -37,8 +37,9 @@ class FirebaseArtistService:
             artists_ref = self.db.collection(u'Artists')
             query = artists_ref.where(u'Name', u'==', name)
             results = query.get()
-           
-            return Artist.from_dict(results[0].to_dict())
+            dict_artist = results[0].to_dict()
+            dict_artist["Id"] = results[0].id
+            return dict_artist
            
         except Exception as e:
             print(f"An error occurred: {e}")
