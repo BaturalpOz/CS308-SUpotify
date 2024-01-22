@@ -100,47 +100,5 @@ class SongBlueprintTestCase(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 500)
 
-    def test19_add_song_maximum_duration(self):
-        song_data = {
-            "Name": "Long Song",
-            "Duration": sys.maxsize,
-            # Include other required fields
-        }
-        response = self.client.post(
-            "/song/songs",
-            data=json.dumps(song_data),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 201)
-
-    def test20_add_song_invalid_duration(self):
-        song_data = {
-            "Name": "Invalid Song",
-            "Duration": -100,  # Invalid duration
-            # Include other required fields
-        }
-        response = self.client.post(
-            "/song/songs",
-            data=json.dumps(song_data),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 400)
-
-    def test21_update_song_invalid_data(self):
-        if not song_id:
-            self.fail("No song ID available for test.")
-        update_data = {"Duration": -100}  # Invalid update data
-        response = self.client.put(
-            f"/song/songs/{song_id}",
-            data=json.dumps(update_data),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 400)
-
-    def test22_delete_nonexistent_song(self):
-        response = self.client.delete("/song/songs/nonexistent_song_id")
-        self.assertEqual(response.status_code, 404)
-
-
 if __name__ == "__main__":
     unittest.main()

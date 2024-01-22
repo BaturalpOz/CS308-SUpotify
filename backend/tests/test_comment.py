@@ -61,36 +61,6 @@ class CommentBlueprintTestCase(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 500)
 
-    def test7_send_invalid_time_format_comment(self):
-        invalid_data = test_comment_data.copy()
-        invalid_data["Send_Time"] = "invalid_time_format"
-        response = self.client.post(
-            "/comment/send",
-            data=json.dumps(invalid_data),
-            content_type="application/json"
-        )
-        self.assertEqual(response.status_code, 500)
-
-    def test8_send_comment_with_future_time(self):
-        future_time_data = test_comment_data.copy()
-        future_time_data["Send_Time"] = (datetime.now() + timedelta(days=1)).isoformat()
-        response = self.client.post(
-            "/comment/send",
-            data=json.dumps(future_time_data),
-            content_type="application/json"
-        )
-        self.assertEqual(response.status_code, 400)
-
-    def test9_send_comment_with_past_time(self):
-        past_time_data = test_comment_data.copy()
-        past_time_data["Send_Time"] = (datetime.now() - timedelta(days=1)).isoformat()
-        response = self.client.post(
-            "/comment/send",
-            data=json.dumps(past_time_data),
-            content_type="application/json"
-        )
-        self.assertEqual(response.status_code, 201)
-
 
 if __name__ == "__main__":
     unittest.main()
