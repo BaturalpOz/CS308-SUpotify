@@ -322,7 +322,7 @@ class UserService:
 
             return sorted(to_ret, key=lambda x: x["artist"]["date"], reverse=True)[:10]
 
-    def add_playlist(self, user_id: str, playlist_name: str, song_names: List[str]) -> List[
+        def add_playlist(self, user_id: str, playlist_name: str, song_names: List[str]) -> List[
         Dict[str, Union[str, List[str]]]]:
         user = self.get_user_by_id(user_id)
         playlist_songs = []
@@ -331,10 +331,13 @@ class UserService:
             if song:
                 playlist_songs.append({"name": song["Name"]})
         new_playlist = {"name": playlist_name, "songs": playlist_songs}
-        user.playlists.append(new_playlist)
-        self.update_user(user_id, {"playlists": user.playlists})
 
-        return user.playlists
+        # Append the new playlist to the 'playlists' key in the user dictionary
+        user['playlists'].append(new_playlist)
+
+        self.update_user(user_id, {"playlists": user['playlists']})
+
+        return user['playlists']
 
     def add_song_to_playlist(self, user_id: str, playlist_name: str, song_name: str) -> List[
         Dict[str, Union[str, List[str]]]]:
