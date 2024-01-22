@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="assets/fontawesome-free-6.5.1-web/css/all.css">
+
+
+
+    <title>Artist Search</title>
+    <style>
+        
+        body {
+            background-color: #ffffff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Fixed background for better scrolling experience */
+        }
+        
+        .navbar {
+            background-color: #0F4C8F; /* Dark purple background */
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff; /* White text color for navigation links */
+            font-size: 30px;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #ffffff; /* White color for the toggler icon */
+        }
+
+        .btn-primary {
+            background-color: #5cbda7; /* Dark purple button background */
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #318974; /* Slightly darker purple on hover */
+        }
+
+        .custom-text {
+            font-size: 16px; 
+            color: #555; 
+            font-weight: bold; 
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .custom-text a {
+            text-decoration: none; /* Remove underline from links */
+            color: rgb(0, 0, 0); /* Change link color */
+            font-weight: bold; /* Make the link text bold */
+        }
+
+        .navbar-bottom {
+            background-color: #0F4C8F;
+            position: fixed;
+            bottom: -20px;
+            width: 100%;
+        }
+
+        .navbar-bottom .navbar-brand {
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .navbar-bottom-toggler-icon {
+            background-color: #ffffff;
+        }
+
+
+
+    </style>
+
+</head>
+<body>
+
+    <!-- Bottom Navbar -->
+    <nav class="navbar navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">© 2023 SUpotify</a>
+        </div>
+    </nav>
+    
+    <nav class="navbar navbar-expand-lg"> <!-- Navbar line-->
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                SUpotify
+            </a> 
+            <div class="collapse navbar-collapse" id="navbarColor01">
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Search Artists</h2>
+        <div>
+            <input type="text" id="searchQuery" placeholder="Enter song, artist, or album">
+            <button onclick="searchArtist()">Search</button>
+        </div>
+        <div id="searchResults">
+            <!-- Arama sonuçları burada görüntülenecek -->
+        </div>
+    </div>
+    <script>
+    function searchArtist() {
+        var artistName = document.getElementById('searchQuery').value;
+        if (!artistName) {
+            alert("Please enter an artist name.");
+            return;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: `http://127.0.0.1:5000/artist/get_by_name/${artistName}`,
+            success: function(response) {
+                displayArtistInfo(response.artist);
+            },
+            error: function(xhr) {
+                console.error("Error fetching artist info:", xhr.responseText);
+                displayArtistInfo(null);
+            }
+        });
+    }
+
+    function displayArtistInfo(artistData) {
+        var resultsDiv = document.getElementById('searchResults');
+        resultsDiv.innerHTML = ''; // Clear previous results
+
+        if (!artistData) {
+            resultsDiv.innerHTML = '<p>Artist not found</p>';
+            return;
+        }
+
+        var content = `
+            <h3>${artistData.Name}</h3>
+            <img src="${artistData.Image}" alt="${artistData.Name}" style="width:100px;height:100px;">
+            <p>Genres: ${artistData.Genres.join(', ')}</p>
+            <p>Popularity: ${artistData.Popularity}</p>
+        `;
+
+        resultsDiv.innerHTML = content;
+    }
+
+    </script>
+
+</body>
+</html>
+

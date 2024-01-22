@@ -104,6 +104,8 @@
         <div class="row">
             <div class="col-md-12 text-center">
                 <button id="subscribeButton" class="btn btn-primary">Subscribe</button>
+                <button id="unsubscribeButton" class="btn btn-secondary">Unsubscribe</button>
+                <a href="subscribe.html" class="btn btn-success">Subscriptions</a>
             </div>
         </div>
     </div>
@@ -127,45 +129,146 @@
         </div>
     </nav>
 
-<script>
-    window.onload = function () {
-        const urlParams = new URLSearchParams(window.location.search);
-        const artistName = urlParams.get('artistName');
+    <script>
+        window.onload = function () {
+            loadArtistDetails();
+    
+            document.getElementById('subscribeButton').addEventListener('click', function() {
+                handleSubscription(true);
+            });
+    
+            document.getElementById('unsubscribeButton').addEventListener('click', function() {
+                handleSubscription(false);
+            });
+        };
+    
+        function loadArtistDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const artistName = urlParams.get('artistName');
+    
+            fetch(`http://127.0.0.1:5000/artist/get_by_name/${encodeURIComponent(artistName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    displayArtistDetails(data.artist);
+                })
+                .catch(error => console.error('Error fetching artist details:', error));
+        }
+    
+        function displayArtistDetails(artist) {
+            const artistImage = document.getElementById('artistImage');
+            const artistNameElem = document.getElementById('artistName');
+            const genres = document.getElementById('genres');
+            const popularity = document.getElementById('popularity');
+            const albums = document.getElementById('albums');
+    
+            artistImage.src = artist.Image;
+            artistNameElem.textContent = `Artist: ${artist.Name}`;
+            genres.textContent = `Genres: ${artist.Genres.join(', ')}`;
+            popularity.textContent = `Popularity: ${artist.Popularity}`;
 
-        fetch(`http://127.0.0.1:5001/artist/get_by_name/${encodeURIComponent(artistName)}`)
-            .then(response => response.json())
-            .then(data => {
-                const artistImage = document.getElementById('artistImage');
-                const artistNameElem = document.getElementById('artistName');
-                const genres = document.getElementById('genres');
-                const popularity = document.getElementById('popularity');
-                const albums = document.getElementById('albums');
+            const albumsList = document.createElement('ul');
+            artist.Albums.forEach(album => {
+                const albumItem = document.createElement('li');
+                albumItem.textContent = album;
+                albumsList.appendChild(albumItem);
+            });
+            albums.appendChild(albumsList);
+        }
+    
+        function handleSubscription(isSubscribe) {
+            getArtistIdFromUrl().then(artistId => {
+                if (artistId) {
+                    var userId = getUserIdFromCookie();
+                    if (isSubscribe) {
+                        subscribeToArtist(userId, artistId);
+                    } else {
+                        unsubscribeFromArtist(userId, artistId);
+                    }
+                }
+            });
+        }
+    function subscribeToArtist(userId, artistId) {
+        var userId = getUserIdFromCookie()
+        fetch(`http://127.0.0.1:5000/user/subscriptions/add/${artistId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Cookie': `access_token_cookie=${getCookie('access_token_cookie')}`
+            },
+            body: JSON.stringify({ user_id: userId }),
+            credentials: 'include'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Subscription success:', data);
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+            }
 
-                artistImage.src = data.artist.Image;
-                artistNameElem.textContent = `Artist: ${data.artist.Name}`;
-                genres.textContent = `Genres: ${data.artist.Genres.join(', ')}`;
-                popularity.textContent = `Popularity: ${data.artist.Popularity}`;
-
-                // Albümleri listele
-                const albumsList = document.createElement('ul');
-                data.artist.Albums.forEach(album => {
-                    const albumItem = document.createElement('li');
-                    albumItem.textContent = album;
-                    albumsList.appendChild(albumItem);
-                });
-                albums.appendChild(albumsList);
-
-                // Subscribe butonuna işlevsellik ekle
-                const subscribeButton = document.getElementById('subscribeButton');
-                subscribeButton.addEventListener('click', function() {
-                    // Sanatçı adını local storage'a kaydet
-                    localStorage.setItem('subscribedArtist', data.artist.Name);
-                    alert(data.artist.Name + ' aboneliklere kaydedildi.');
-                });
-            })
-            .catch(error => console.error('Error fetching artist details:', error));
-    };
-</script>
+function unsubscribeFromArtist(userId, artistId) {
+    fetch(`http://127.0.0.1:5000/user/subscriptions/delete/${artistId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Cookie': `access_token_cookie=${getCookie('access_token_cookie')}`
+        },
+        body: JSON.stringify({ user_id: userId }), // artistId eklenmeli
+        credentials: 'include'
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log('Unsubscription success');
+        }
+    })
+    .catch(error => console.error('Error unsubscribing from artist:', error));
+}
+    
+        function getArtistIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const artistName = urlParams.get('artistName');
+            return fetchArtistIdByName(artistName);
+        }
+    
+        function fetchArtistIdByName(artistName) {
+            return fetch(`http://127.0.0.1:5000/artist/get_by_name/${(artistName)}`)
+                .then(response => response.json())
+                .then(data => data.artist.Id)
+                .catch(error => console.error('Error fetching artist ID:', error));
+        }
+    
+        function getUserIdFromCookie() {
+            var token = getCookie('access_token_cookie');
+            var payload = parseJwt(token);
+            console.log("Token Payload:", payload);  
+            return payload ? payload.user_id : null;
+        }
+    
+        function getCookie(name) {
+            var value = "; " + document.cookie;
+            var parts = value.split("; " + name + "=");
+            if (parts.length == 2) {
+                return parts.pop().split(";").shift();
+            }
+            return null;
+        }
+    
+        function parseJwt(token) {
+            var base64Url = token.split('.')[1]; 
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+    
+            return JSON.parse(jsonPayload);
+        }
+    </script>
 
 </body>
 
