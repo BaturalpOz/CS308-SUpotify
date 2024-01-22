@@ -328,10 +328,10 @@ class UserService:
 
         if song:
             new_playlist = {"name": playlist_name, "songs": [{"name": song["Name"]}]}
-            user['playlists'].append(new_playlist)
-            self.update_user(user_id, {"playlists": user['playlists']})
+            user.playlists.append(new_playlist)
+            self.update_user(user_id, {"playlists": user.playlists})
 
-        return user['playlists']
+        return user.playlists
         
     def add_song_to_playlist(self, user_id: str, playlist_name: str, song_name: str) -> List[
         Dict[str, Union[str, List[str]]]]:
