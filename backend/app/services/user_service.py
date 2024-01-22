@@ -322,7 +322,7 @@ class UserService:
 
             return sorted(to_ret, key=lambda x: x["artist"]["date"], reverse=True)[:10]
 
-        def add_playlist(self, user_id: str, playlist_name: str, song_names: List[str]) -> List[
+    def add_playlist(self, user_id: str, playlist_name: str, song_names: List[str]) -> List[
         Dict[str, Union[str, List[str]]]]:
         user = self.get_user_by_id(user_id)
         playlist_songs = []
