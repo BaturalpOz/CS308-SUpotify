@@ -118,6 +118,8 @@ function loadPlaylistDetails() {
     $.ajax({
         type: 'GET',
         url: `http://127.0.0.1:5001/user/get-playlist-by-name?playlist_name=${encodeURIComponent(playlistName)}`,
+        dataType: 'json', // Expecting JSON response
+        contentType: 'application/json', // Sending JSON data
         xhrFields: {
             withCredentials: true
         },

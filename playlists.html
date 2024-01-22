@@ -26,6 +26,8 @@
         .playlist-list {
             padding: 20px;
             text-align: center;
+            max-width: 800px; /* Centering playlists */
+            margin: auto;
         }
         .playlist-list-item {
             display: flex;
@@ -38,6 +40,8 @@
         }
         .playlist-name {
             flex-grow: 1;
+            font-weight: bold;
+            font-size: 1.5rem;
         }
         .navbar-bottom {
             background-color: #0F4C8F;
@@ -50,15 +54,35 @@
             color: #ffffff;
             font-size: 20px;
         }
+        /* Custom styles for playlists */
+        #playlist-list > li {
+            background-color: #e9ecef;
+            border-radius: 0.25rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            list-style: none; /* No bullets */
+        }
+        #playlist-list > li > ul {
+            padding-left: 1.5rem;
+            list-style: none; /* No bullets for songs */
+            padding-bottom: 0.5rem;
+        }
+        #playlist-list > li > ul > li {
+            padding: 0.5rem 0;
+            border-top: 1px solid #ccc;
+        }
+        #playlist-list > li > ul > li:first-child {
+            border-top: none;
+        }
     </style>
 </head>
 <body>
     <!-- Top Navbar -->
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="playlists.html">SUpotify Playlists</a>
-            <button class="btn btn-primary ml-auto" onclick="location.href='playlist_create.html'">Add Playlist</button>
-            <button class="btn btn-danger" onclick="location.href='delete_playlist.html'">Delete Playlist</button>
+            <a class="navbar-brand" href="playlists.html">SUpotify zp Playlists</a>
+            <button class="btn btn-primary ml-auto" onclick="window.location.href='add_playlist.html'">Add Playlist</button>
+            <button class="btn btn-danger" onclick="window.location.href='delete_playlist.html'">Delete Playlist</button>
         </div>
     </nav>
 
@@ -93,23 +117,22 @@
                     withCredentials: true
                 },
                 success: function(response) {
-            console.log(response); // Log the server response
-            var playlists = response.playlists;
-            $('#playlist-list').empty(); // Ensure the correct ID is used
-            // Iterate over the response object
-            for (var playlistName in playlists) {
-                // Check if the property is an actual playlist and not an inherited one
-                if (playlists.hasOwnProperty(playlistName)) {
-                    // Create a list item for each playlist
-                    var listItem = '<li>' + playlistName + 
-                                   ' <ul>';
-                    // Iterate over the songs in each playlist
-                    playlists[playlistName].forEach(function(song) {
-                        listItem += '<li>' + song + '</li>';
-                    });
-                    listItem += '</ul></li>';
-                    // Append the list item to the playlist list
-                    $('#playlist-list').append(listItem);
+                                console.log(response); // Log the server response
+                                var playlists = response.playlists;
+                                $('#playlist-list').empty(); // Ensure the correct ID is used
+                                // Iterate over the response object
+                                for (var playlistName in playlists) {
+                                    // Check if the property is an actual playlist and not an inherited one
+                                    if (playlists.hasOwnProperty(playlistName)) {
+                                        // Create a list item for each playlist
+                                        var listItem = '<li><a href="playlist_details.html?playlist_name=' + encodeURIComponent(playlistName) + '">' + playlistName +'</a> <ul>';
+                                        // Iterate over the songs in each playlist
+                                        playlists[playlistName].forEach(function(song) {
+                                            listItem += '<li>' + song + '</li>';
+                                        });
+                                        listItem += '</ul></li>';
+                                        // Append the list item to the playlist list
+                                        $('#playlist-list').append(listItem);
                 }
             }
         },
