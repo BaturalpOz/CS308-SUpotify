@@ -659,22 +659,14 @@ def get_all_playlists(user_id):
 @user_blueprint.route("/get-playlist-by-name", methods=["GET"])
 @token_required
 def get_playlist_by_name(user_id):
-    """
-    Get playlist by name
-    params:
-        playlist_name: name of playlist
-    return:
-        playlist: playlist object
-    """
-    data = request.get_json()
-    if not data or not "playlist_name" in data:
-        raise BadRequest("Missing playlist_name in the request body")
-    playlist_name = data["playlist_name"]
+    playlist_name = request.args.get("playlist_name")  # Correct way to get query parameter
+    if not playlist_name:
+        raise BadRequest("Missing playlist_name in the request")
     playlist = user_service.get_playlist_by_name(user_id, playlist_name)
     if playlist:
         return jsonify({"playlist": playlist}), 200
     else:
-        return jsonify({"message": "Playlist not found"}), 404
+        return jsonify({"message": "Playlist not found"}), 404
 
 # search song by name, its artist and album 
 @user_blueprint.route('/search', methods=['GET'])
