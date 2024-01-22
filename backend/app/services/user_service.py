@@ -195,7 +195,7 @@ class UserService:
     
     def unrate_artist(self, user_id: str, artist_name: str):
         user = self.get_user_by_id(user_id)
-        artist = self.firebase_artist_service.get_artist_by_name(artist_name).to_dict()
+        artist = self.firebase_artist_service.get_artist_by_name(artist_name)
         user.rated_artists = [
             artist_iter
             for artist_iter in user.rated_artists
@@ -322,16 +322,19 @@ class UserService:
 
             return sorted(to_ret, key=lambda x: x["artist"]["date"], reverse=True)[:10]
 
-    def add_playlist(self, user_id: str, playlist_name: str, song_name: str) -> List[Dict[str, Union[str, List[Dict[str, str]]]]]:
-        user = self.get_user_by_id(user_id)
-        song = self.firebase_song_service.get_song_by_name(song_name)
-
-        if song:
-            new_playlist = {"name": playlist_name, "songs": [{"name": song["Name"]}]}
+    def add_playlist(self, user_id: str, playlist_name: str, song_names: List[str]) -> List[
+            Dict[str, Union[str, List[str]]]]:
+            user = self.get_user_by_id(user_id)
+            playlist_songs = []
+            for song_name in song_names:
+                song = self.firebase_song_service.get_song_by_name(song_name)
+                if song:
+                    playlist_songs.append({"name": song["Name"]})
+            new_playlist = {"name": playlist_name, "songs": playlist_songs}
             user.playlists.append(new_playlist)
             self.update_user(user_id, {"playlists": user.playlists})
 
-        return user.playlists
+            return user.playlists
         
     def add_song_to_playlist(self, user_id: str, playlist_name: str, song_name: str) -> List[
         Dict[str, Union[str, List[str]]]]:

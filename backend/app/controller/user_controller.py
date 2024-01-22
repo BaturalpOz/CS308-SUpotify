@@ -666,7 +666,7 @@ def get_playlist_by_name(user_id):
     if playlist:
         return jsonify({"playlist": playlist}), 200
     else:
-        return jsonify({"message": "Playlist not found"}), 404
+        return jsonify({"message": "Playlist not found"}), 404
 
 # search song by name, its artist and album 
 @user_blueprint.route('/search', methods=['GET'])
