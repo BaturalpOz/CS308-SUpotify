@@ -148,7 +148,7 @@ class UserBlueprintTestCase(unittest.TestCase):
     def test23_add_playlist(self):
         response = self.client.post(
             "/user/add-playlist",
-            data=json.dumps({"playlist_name": "Chill Vibes", "song_names": ["Song1", "Song2"]}),
+            data=json.dumps({"playlist_name": "Chill Vibes", "song_names": ["HIRSIZ", "MAHVET"]}),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 201)
@@ -156,15 +156,16 @@ class UserBlueprintTestCase(unittest.TestCase):
     def test24_add_song_to_playlist(self):
         response = self.client.post(
             "/user/add-song-to-playlist",
-            data=json.dumps({"playlist_name": "Chill Vibes", "song_name": "Song3"}),
+            data=json.dumps({"playlist_name": "Chill Vibes", "song_name": "Sustalı"}),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 201)
     
+    
     def test25_delete_song_from_playlist(self):
         response = self.client.delete(
             "/user/delete-song-from-playlist",
-            data=json.dumps({"playlist_name": "Chill Vibes", "song_name": "Song3"}),
+            data=json.dumps({"playlist_name": "Chill Vibes", "song_name": "Sustalı"}),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -176,7 +177,7 @@ class UserBlueprintTestCase(unittest.TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
-
+    
     def test27_get_all_playlists(self):
         response = self.client.get(
             "/user/get-all-playlists",
@@ -278,6 +279,7 @@ class UserBlueprintTestCase(unittest.TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
+
 
 if __name__ == "__main__":
     unittest.main()
